@@ -186,6 +186,46 @@ svg text{font-family:"IBM Plex Mono",monospace}
 .doc-card ul{margin:0;padding-left:18px;color:var(--ink2);font-size:14.5px;line-height:1.6}
 .doc-card li{margin-bottom:8px}
 .doc-card li:last-child{margin-bottom:0}
+/* ---------- scenario presets ---------- */
+.scenario{margin:18px 0 0;padding:18px 20px}
+.scen-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.scenario h3{font-size:15.5px;font-weight:700}
+#scenarioSel{width:100%;min-height:48px;padding:10px 12px;font-size:15px}
+.scen-desc{font-size:13.5px;color:var(--ink2);line-height:1.55;margin:10px 0 0}
+/* ---------- small screens ---------- */
+@media (max-width:700px){
+  body{overflow-x:clip}
+  .wrap{padding:0 14px 56px}
+  .masthead{padding-top:26px}
+  .toc{position:static;margin:22px -14px 0;padding:8px 14px}
+  section{scroll-margin-top:16px}
+  input[type=number],input[type=text],select{font-size:16px}
+  .seg button{min-height:44px}
+  .btn{min-height:44px}
+  #pickerTier{min-height:44px;width:100%}
+  #rolloverState{display:none}
+  .card{padding:16px}
+  .scenario{padding:16px}
+  .finding{padding:18px}
+  .memo{padding:20px}
+  .kpis{gap:10px}
+  table.stack,table.stack tbody,table.stack tr,table.stack td{display:block;width:100%}
+  table.stack thead{display:none}
+  table.stack tr{border:1px solid var(--line);border-radius:8px;background:var(--paper);padding:6px 12px;margin:0 0 10px}
+  table.stack tbody tr:hover{background:var(--paper)}
+  table.stack td{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:7px 0;text-align:right}
+  table.stack td::before{content:attr(data-label);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:700;text-align:left;flex:none}
+  table.stack td:first-child{font-size:15px;padding-top:9px;justify-content:flex-start;gap:8px}
+  table.stack td:first-child::before{content:none}
+  table.stack tr td:last-child{border-bottom:none}
+  .big-table{overflow-x:visible}
+  .big-table table.stack{min-width:0}
+}
+@media (pointer:coarse){
+  input[type=range]{height:32px}
+  input[type=range]::-webkit-slider-thumb{width:26px;height:26px;margin-top:-10.5px}
+  input[type=range]::-moz-range-thumb{width:22px;height:22px}
+}
 </style>
 </head>
 <body>
@@ -203,7 +243,23 @@ svg text{font-family:"IBM Plex Mono",monospace}
   </div>
   <div class="finding" id="finding"><p>Running the model…</p></div>
 </header>
+<div class="card scenario" id="scenarios">
+  <div class="scen-top"><h3>Scenario presets</h3><span class="flag ok" id="scenState">Baseline</span></div>
+  <select id="scenarioSel" aria-label="Scenario preset">
+    <option value="baseline" selected>Baseline: published plans</option>
+    <option value="surge">Power-user surge</option>
+    <option value="frontier">Frontier price shock</option>
+    <option value="routing">Route to the standard model</option>
+    <option value="hardcap">Hard cap, 85% floor</option>
+    <option value="topup">Cheap top-up packs</option>
+    <option value="overage">Overage billing at 2×</option>
+    <option value="generous">Allowances sized to demand</option>
+    <option value="custom">Custom</option>
+  </select>
+  <p class="scen-desc" id="scenDesc">Squarespace's published plans as they stand: hard cap, no rollover, a 70% margin floor, and the current usage shape.</p>
+</div>
 <nav class="toc" aria-label="Contents">
+  <a class="seclink" href="#scenarios">Scenarios</a>
   <a class="seclink" href="#sec-h-plans"><b>01</b>Plans &amp; rates</a>
   <a class="seclink" href="#sec-h-tasks"><b>02</b>Tasks &amp; usage</a>
   <a class="seclink" href="#sec-h-policy"><b>03</b>Policy levers</a>
@@ -226,7 +282,7 @@ svg text{font-family:"IBM Plex Mono",monospace}
     <div class="card">
       <h3>Plans</h3>
       <p class="hint">Squarespace pricing page, October 2026.</p>
-      <table aria-label="Plan inputs">
+      <table class="stack" aria-label="Plan inputs">
         <thead><tr><th>Plan</th><th>Price $/mo</th><th>Credits / mo</th><th>One-time</th><th>Implied $/credit</th></tr></thead>
         <tbody id="planRows"></tbody>
       </table>
@@ -235,20 +291,20 @@ svg text{font-family:"IBM Plex Mono",monospace}
     <div class="card">
       <h3>Provider rate card</h3>
       <p class="hint">Public list prices per 1M tokens, November 2026. Blended cost assumes 60% input and 40% output on text tasks.</p>
-      <table aria-label="Rate card inputs">
+      <table class="stack" aria-label="Rate card inputs">
         <thead><tr><th>Model</th><th>Input $/1M</th><th>Output $/1M</th><th>Blended $/1M</th></tr></thead>
         <tbody>
-          <tr><td class="name">Frontier <span class="src">(Sonnet class)</span></td>
-            <td><input type="number" id="rFrontIn" value="3" step="0.1" min="0"></td>
-            <td><input type="number" id="rFrontOut" value="15" step="0.5" min="0"></td>
-            <td class="mono" id="rFrontBlend">—</td></tr>
-          <tr><td class="name">Standard <span class="src">(mini / Haiku class)</span></td>
-            <td><input type="number" id="rStdIn" value="0.30" step="0.05" min="0"></td>
-            <td><input type="number" id="rStdOut" value="1.50" step="0.1" min="0"></td>
-            <td class="mono" id="rStdBlend">—</td></tr>
-          <tr><td class="name">Image generation</td>
-            <td colspan="2" class="src" style="text-align:right">flat per image</td>
-            <td><input type="number" id="rImg" value="0.04" step="0.005" min="0" aria-label="Image cost per image in dollars"></td></tr>
+          <tr><td class="name" data-label="Model">Frontier <span class="src">(Sonnet class)</span></td>
+            <td data-label="Input $/1M"><input type="number" id="rFrontIn" value="3" step="0.1" min="0"></td>
+            <td data-label="Output $/1M"><input type="number" id="rFrontOut" value="15" step="0.5" min="0"></td>
+            <td class="mono" data-label="Blended $/1M" id="rFrontBlend">—</td></tr>
+          <tr><td class="name" data-label="Model">Standard <span class="src">(mini / Haiku class)</span></td>
+            <td data-label="Input $/1M"><input type="number" id="rStdIn" value="0.30" step="0.05" min="0"></td>
+            <td data-label="Output $/1M"><input type="number" id="rStdOut" value="1.50" step="0.1" min="0"></td>
+            <td class="mono" data-label="Blended $/1M" id="rStdBlend">—</td></tr>
+          <tr><td class="name" data-label="Model">Image generation</td>
+            <td colspan="2" class="src" data-label="Basis" style="text-align:right">flat per image</td>
+            <td data-label="Cost per image"><input type="number" id="rImg" value="0.04" step="0.005" min="0" aria-label="Image cost per image in dollars"></td></tr>
         </tbody>
       </table>
       <div class="ctl">
@@ -268,7 +324,7 @@ svg text{font-family:"IBM Plex Mono",monospace}
     <div class="card">
       <h3>Task table</h3>
       <p class="hint">Mix is each task's share of monthly actions, renormalized to 100%. Cost follows from the rate card and routing mix.</p>
-      <table aria-label="Task inputs">
+      <table class="stack" aria-label="Task inputs">
         <thead><tr><th>Task</th><th>Tokens</th><th>Credits</th><th>Mix %</th><th>Cost each</th><th>Value at Core $/cr</th></tr></thead>
         <tbody id="taskRows"></tbody>
       </table>
@@ -345,7 +401,7 @@ svg text{font-family:"IBM Plex Mono",monospace}
   <p class="sec-sub">Serving cost is what the plan pays under the policy above. Under a hard cap, heavy users cost no more than their allowance. Under overage, they cost their full demand and pay for the excess. Margin is per user per month.</p>
   <div class="kpis" id="kpis"></div>
   <div class="card big-table" style="padding:6px 14px">
-    <table aria-label="Tier margin results">
+    <table class="stack" aria-label="Tier margin results">
       <thead><tr>
         <th>Plan</th><th>Price</th><th>Included cr</th><th>Cost @ median user</th><th>Cost @ p90</th><th>Cost @ p99</th>
         <th>Mean cost</th><th>Extra rev</th><th>Gross margin</th><th>Margin @ p99 user</th><th>Breakage</th><th>Guardrail</th>
@@ -377,7 +433,7 @@ svg text{font-family:"IBM Plex Mono",monospace}
         </select>
         <p class="note">The right panel re-runs the plan with the new allowance, holding price and policy constant.</p>
       </div>
-      <table aria-label="Where current allowances sit">
+      <table class="stack" aria-label="Where current allowances sit">
         <thead><tr><th>Plan</th><th>Current allowance</th><th>Sits at percentile</th></tr></thead>
         <tbody id="allowRows"></tbody>
       </table>
@@ -628,22 +684,22 @@ function ordinal(n){var s=["th","st","nd","rd"],v=n%100;return n+(s[(v-20)%10]||
 var planRows=$("planRows");
 PLANS0.forEach(function(p,idx){
   var tr=document.createElement("tr");
-  tr.innerHTML='<td class="name">'+p.name+'</td>'+
-   '<td><input type="number" id="plan_price_'+idx+'" value="'+p.price+'" step="1" min="0" aria-label="'+p.name+' price"></td>'+
-   '<td><input type="number" id="plan_monthly_'+idx+'" value="'+p.monthly+'" step="1" min="0" aria-label="'+p.name+' monthly credits"></td>'+
-   '<td><input type="number" id="plan_one_'+idx+'" value="'+p.one+'" step="1" min="0" aria-label="'+p.name+' one-time credits"></td>'+
-   '<td class="mono" id="plan_implied_'+idx+'">—</td>';
+  tr.innerHTML='<td class="name" data-label="Plan">'+p.name+'</td>'+
+   '<td data-label="Price $/mo"><input type="number" id="plan_price_'+idx+'" value="'+p.price+'" step="1" min="0" aria-label="'+p.name+' price"></td>'+
+   '<td data-label="Credits / mo"><input type="number" id="plan_monthly_'+idx+'" value="'+p.monthly+'" step="1" min="0" aria-label="'+p.name+' monthly credits"></td>'+
+   '<td data-label="One-time"><input type="number" id="plan_one_'+idx+'" value="'+p.one+'" step="1" min="0" aria-label="'+p.name+' one-time credits"></td>'+
+   '<td class="mono" data-label="Implied $/credit" id="plan_implied_'+idx+'">—</td>';
   planRows.appendChild(tr);
 });
 var taskRows=$("taskRows");
 TASKS0.forEach(function(t,idx){
   var tr=document.createElement("tr");
-  tr.innerHTML='<td class="name">'+t.name+'</td>'+
-   '<td>'+(t.image?'<span class="src">1 image</span>':'<input type="number" class="sm" id="task_tokens_'+idx+'" value="'+t.tokens+'" step="1" min="0" aria-label="'+t.name+' tokens in thousands">K')+'</td>'+
-   '<td><input type="number" class="sm" id="task_credits_'+idx+'" value="'+t.credits+'" step="0.5" min="0" aria-label="'+t.name+' credits"></td>'+
-   '<td><input type="number" class="sm" id="task_mix_'+idx+'" value="'+t.mix+'" step="1" min="0" aria-label="'+t.name+' mix percent"></td>'+
-   '<td class="mono" id="task_cost_'+idx+'">—</td>'+
-   '<td class="mono" id="task_value_'+idx+'">—</td>';
+  tr.innerHTML='<td class="name" data-label="Task">'+t.name+'</td>'+
+   '<td data-label="Tokens">'+(t.image?'<span class="src">1 image</span>':'<input type="number" class="sm" id="task_tokens_'+idx+'" value="'+t.tokens+'" step="1" min="0" aria-label="'+t.name+' tokens in thousands">K')+'</td>'+
+   '<td data-label="Credits"><input type="number" class="sm" id="task_credits_'+idx+'" value="'+t.credits+'" step="0.5" min="0" aria-label="'+t.name+' credits"></td>'+
+   '<td data-label="Mix %"><input type="number" class="sm" id="task_mix_'+idx+'" value="'+t.mix+'" step="1" min="0" aria-label="'+t.name+' mix percent"></td>'+
+   '<td class="mono" data-label="Cost each" id="task_cost_'+idx+'">—</td>'+
+   '<td class="mono" data-label="Value at Core $/cr" id="task_value_'+idx+'">—</td>';
   taskRows.appendChild(tr);
 });
 
@@ -824,13 +880,13 @@ function update(){
     var breach=t.margin<S.floor||t.m99<S.floor, watch=!breach&&t.m90<S.floor;
     var flag=breach?'<span class="flag breach">Breach</span>':(watch?'<span class="flag watch">Watch: p90</span>':'<span class="flag ok">Within floor</span>');
     var flagNote=breach?(t.m99<S.floor?" p99 user at "+fmtPct(t.m99):" overall at "+fmtPct(t.margin)):"";
-    rows+="<tr><td class='name'>"+t.plan.name+"</td><td class='mono'>"+fmt$(t.plan.price,0)+"</td><td class='mono'>"+(t.monthly>0?fmtInt(t.monthly):(t.plan.one>0?fmtInt(t.plan.one)+" once":"0"))+"</td>"+
-     "<td class='mono'>"+fmt$(t.cost50)+"</td><td class='mono'>"+fmt$(t.cost90)+"</td><td class='mono'>"+fmt$(t.cost99)+"</td>"+
-     "<td class='mono'>"+fmt$(t.meanCost)+"</td><td class='mono'>"+fmt$(t.meanExtra)+"</td>"+
-     "<td><div style='display:flex;align-items:center;gap:8px;justify-content:flex-end'><span class='mono'>"+fmtPct(t.margin)+"</span><span class='mbar'><i style='width:"+clamp(t.margin*100,0,100)+"%' class='"+(t.margin<S.floor?"low":(t.margin<S.floor+0.1?"mid":""))+"'></i></span></div></td>"+
-     "<td class='mono "+(t.m99<S.floor?"neg":"")+"'>"+fmtPct(t.m99)+"</td>"+
-     "<td class='mono'>"+(t.breakage==null?"—":fmtPct(t.breakage))+"</td>"+
-     "<td>"+flag+"<div class='src'>"+flagNote+"</div></td></tr>";
+    rows+="<tr><td class='name' data-label='Plan'>"+t.plan.name+"</td><td class='mono' data-label='Price'>"+fmt$(t.plan.price,0)+"</td><td class='mono' data-label='Included cr'>"+(t.monthly>0?fmtInt(t.monthly):(t.plan.one>0?fmtInt(t.plan.one)+" once":"0"))+"</td>"+
+     "<td class='mono' data-label='Cost @ median user'>"+fmt$(t.cost50)+"</td><td class='mono' data-label='Cost @ p90'>"+fmt$(t.cost90)+"</td><td class='mono' data-label='Cost @ p99'>"+fmt$(t.cost99)+"</td>"+
+     "<td class='mono' data-label='Mean cost'>"+fmt$(t.meanCost)+"</td><td class='mono' data-label='Extra rev'>"+fmt$(t.meanExtra)+"</td>"+
+     "<td data-label='Gross margin'><div style='display:flex;align-items:center;gap:8px;justify-content:flex-end'><span class='mono'>"+fmtPct(t.margin)+"</span><span class='mbar'><i style='width:"+clamp(t.margin*100,0,100)+"%' class='"+(t.margin<S.floor?"low":(t.margin<S.floor+0.1?"mid":""))+"'></i></span></div></td>"+
+     "<td class='mono "+(t.m99<S.floor?"neg":"")+"' data-label='Margin @ p99 user'>"+fmtPct(t.m99)+"</td>"+
+     "<td class='mono' data-label='Breakage'>"+(t.breakage==null?"—":fmtPct(t.breakage))+"</td>"+
+     "<td data-label='Guardrail'>"+flag+"<div class='src'>"+flagNote+"</div></td></tr>";
   });
   $("tierRows").innerHTML=rows;
   /* allowance picker */
@@ -841,7 +897,7 @@ function update(){
   S.plans.forEach(function(p){
     var eff=p.monthly>0?p.monthly:p.one;
     var below=0;sim.demand.forEach(function(v){if(v<=eff)below++;});
-    arows+="<tr><td class='name'>"+p.name+"</td><td class='mono'>"+fmtInt(eff)+(p.monthly>0?" / mo":" one-time")+"</td><td class='mono'>"+ordinal(Math.max(1,Math.round(below/N*100)))+"</td></tr>";
+    arows+="<tr><td class='name' data-label='Plan'>"+p.name+"</td><td class='mono' data-label='Current allowance'>"+fmtInt(eff)+(p.monthly>0?" / mo":" one-time")+"</td><td class='mono' data-label='Percentile of demand'>"+ordinal(Math.max(1,Math.round(below/N*100)))+"</td></tr>";
   });
   $("allowRows").innerHTML=arows;
   drawHist(S,sim,rec);
@@ -890,19 +946,76 @@ function update(){
 }
 function rankOf(sorted,v){var c=0;for(var i=0;i<sorted.length;i++){if(sorted[i]<=v)c++;else break;}return Math.round(c/sorted.length*100);}
 /* ---------- events ---------- */
-var timer=null;
+var timer=null, applyingScen=false;
 document.addEventListener("input",function(e){
   if(e.target&&e.target.id==="pickerTier")return;
+  if(!applyingScen&&e.target.id!=="scenarioSel")markCustom();
   clearTimeout(timer);timer=setTimeout(update,110);
 });
 document.addEventListener("change",function(e){
-  if(e.target&&(e.target.id==="rollover"||e.target.id==="pickerTier")){clearTimeout(timer);timer=setTimeout(update,30);}
+  if(e.target&&(e.target.id==="rollover"||e.target.id==="pickerTier")){
+    if(!applyingScen)markCustom();
+    clearTimeout(timer);timer=setTimeout(update,30);
+  }
 });
 $("shortfallSeg").addEventListener("click",function(e){
   var b=e.target.closest("button");if(!b)return;
   shortfallMode=b.dataset.mode;
   Array.prototype.forEach.call($("shortfallSeg").querySelectorAll("button"),function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
+  if(!applyingScen)markCustom();
   update();
+});
+/* ---------- scenario presets ---------- */
+function setVal(id,v){var el=$(id);if(el)el.value=v;}
+function setSeg(mode){
+  shortfallMode=mode;
+  Array.prototype.forEach.call($("shortfallSeg").querySelectorAll("button"),function(x){x.setAttribute("aria-pressed",x.getAttribute("data-mode")===mode?"true":"false");});
+}
+function markCustom(){
+  var sel=$("scenarioSel");if(!sel||sel.value==="custom")return;
+  sel.value="custom";
+  var st=$("scenState");st.textContent="Custom";st.className="flag watch";
+  $("scenDesc").textContent="Settings differ from the last preset loaded.";
+}
+function applyBase(){
+  PLANS0.forEach(function(p,i){setVal("plan_price_"+i,p.price);setVal("plan_monthly_"+i,p.monthly);setVal("plan_one_"+i,p.one);});
+  TASKS0.forEach(function(t,i){setVal("task_tokens_"+i,t.tokens);setVal("task_credits_"+i,t.credits);setVal("task_mix_"+i,t.mix);});
+  setVal("rFrontIn",3);setVal("rFrontOut",15);setVal("rStdIn",0.30);setVal("rStdOut",1.50);setVal("rImg",0.04);
+  setVal("routing",30);setVal("abandoned",25);
+  setVal("uMedian",20);setVal("uP90",200);setVal("uP99",1500);
+  $("rollover").checked=false;setVal("floor",70);setSeg("cap");
+  setVal("ovMult",1.5);setVal("topupPrice",1);
+  setVal("pct",75);$("pickerTier").value="1";
+  setVal("sFront",0);setVal("sStd",0);setVal("sRoute",0);setVal("sGrowth",0);
+}
+var SCEN={
+  baseline:{name:"Baseline",desc:"Squarespace's published plans as they stand: hard cap, no rollover, a 70% margin floor, and the current usage shape."},
+  surge:{name:"Power-user surge",desc:"Usage jumps across the board. The median user runs 45 actions a month, the p99 user runs 3,200, and 35% of builds are abandoned after generation.",inputs:{uMedian:45,uP90:420,uP99:3200,abandoned:35,routing:40}},
+  frontier:{name:"Frontier price shock",desc:"Frontier list prices rise 50%, to $4.50 input and $22.50 output per 1M tokens, and 45% of text tasks route to it. The decomposition panel carries the same shock.",inputs:{rFrontIn:4.5,rFrontOut:22.5,routing:45,sFront:50}},
+  routing:{name:"Standard routing",desc:"Routing drops to 8% frontier, and standard rates fall to $0.20 input and $1.00 output per 1M tokens.",inputs:{routing:8,rStdIn:0.2,rStdOut:1}},
+  hardcap:{name:"Hard cap",desc:"The Wix shape. Actions stop at the balance, credits never roll over, and the margin floor rises to 85%.",inputs:{floor:85},mode:"cap",rollover:false},
+  topup:{name:"Top-up packs",desc:"Shortfalls are covered by top-up packs at $0.50 a credit, rollover is on, and the margin floor drops to 60%.",inputs:{topupPrice:0.5,floor:60},mode:"topup",rollover:true},
+  overage:{name:"Overage billing",desc:"Full demand is served and the excess is billed at twice each plan's implied per-credit price. Rollover is on and the floor sits at 65%.",inputs:{ovMult:2,floor:65},mode:"overage",rollover:true},
+  generous:{name:"Generous allowances",desc:"Monthly allowances rise to 75 credits on Core, 150 on Plus, and 400 on Advanced. The picker is set to the 85th percentile and rollover is on.",inputs:{pct:85},planMonthly:[null,75,150,400],rollover:true}
+};
+function applyScenario(key){
+  var sc=SCEN[key];if(!sc)return;
+  applyingScen=true;
+  applyBase();
+  if(sc.inputs)Object.keys(sc.inputs).forEach(function(id){setVal(id,sc.inputs[id]);});
+  if(sc.planMonthly)sc.planMonthly.forEach(function(v,i){if(v!=null)setVal("plan_monthly_"+i,v);});
+  if(sc.mode)setSeg(sc.mode);
+  if(sc.rollover!=null)$("rollover").checked=sc.rollover;
+  Array.prototype.forEach.call(document.querySelectorAll('input[type=range]'),function(el){el.dispatchEvent(new Event("input"));});
+  update();
+  $("scenarioSel").value=key;
+  var st=$("scenState");st.textContent=sc.name;st.className="flag ok";
+  $("scenDesc").textContent=sc.desc;
+  applyingScen=false;
+}
+$("scenarioSel").addEventListener("change",function(){
+  var v=$("scenarioSel").value;
+  if(SCEN[v])applyScenario(v);
 });
 $("copyMemo").addEventListener("click",function(){
   var text=$("memoBody").dataset.plain||$("memoBody").innerText;
