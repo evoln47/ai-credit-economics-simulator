@@ -195,7 +195,7 @@ svg text{font-family:"IBM Plex Mono",monospace}
 <header class="masthead">
   <p class="kicker">AI Pricing · Working Model</p>
   <h1>AI Credit Economics Simulator</h1>
-  <p class="lede">A model of a website builder that sells AI features through plan credits. The inputs are on this page and all of them are editable. Change one and the model re-runs. It simulates <strong>10,000 users per plan over six months</strong> and reports month six.</p>
+  <p class="lede">A model of a website builder that sells AI features through plan credits. It simulates <strong>10,000 users per plan over six months</strong> and reports month six.</p>
   <div class="stamp">
     <span>Plan data · Squarespace pricing page, Oct 2026</span>
     <span>Provider rates · Public list prices, Nov 2026</span>
@@ -225,7 +225,7 @@ svg text{font-family:"IBM Plex Mono",monospace}
   <div class="grid2">
     <div class="card">
       <h3>Plans</h3>
-      <p class="hint">Squarespace pricing page, October 2026. Edit any cell and the model updates.</p>
+      <p class="hint">Squarespace pricing page, October 2026.</p>
       <table aria-label="Plan inputs">
         <thead><tr><th>Plan</th><th>Price $/mo</th><th>Credits / mo</th><th>One-time</th><th>Implied $/credit</th></tr></thead>
         <tbody id="planRows"></tbody>
@@ -304,7 +304,7 @@ svg text{font-family:"IBM Plex Mono",monospace}
 <!-- ============ 3. POLICIES ============ -->
 <section id="sec-h-policy" aria-labelledby="h-policy">
   <div class="sec-head"><span class="sec-num">03</span><h2 id="h-policy">Policy levers</h2></div>
-  <p class="sec-sub">The choices a pricing team owns. Change one and sections 4 and 5 reprice. Two competitor shapes are in here: Wix is a hard cap with no top-ups, and Framer is top-ups with published burn rates.</p>
+  <p class="sec-sub">The choices a pricing team owns. Two competitor shapes are in here: Wix is a hard cap with no top-ups, and Framer is top-ups with published burn rates.</p>
   <div class="grid2">
     <div class="card">
       <div class="toggle-row">
@@ -462,7 +462,7 @@ svg text{font-family:"IBM Plex Mono",monospace}
 <!-- ============ 8. MEMO ============ -->
 <section id="sec-h-memo" aria-labelledby="h-memo">
   <div class="sec-head"><span class="sec-num">08</span><h2 id="h-memo">Decisions memo</h2></div>
-  <p class="sec-sub">Written from the settings above. Change an input and the memo rewrites itself.</p>
+  <p class="sec-sub">Written from the settings above.</p>
   <div class="memo" id="memoBody">—</div>
   <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
     <button class="btn" type="button" id="copyMemo">Copy the memo</button>
@@ -488,7 +488,7 @@ svg text{font-family:"IBM Plex Mono",monospace}
     <div class="sec-head"><span class="sec-num">01</span><h2 id="m-what">What the model does</h2></div>
     <div class="card doc-card">
       <p>The simulator prices one question: what does it cost to serve AI usage that is sold as plan credits, and which allowance and shortfall rules keep that cost inside a target margin?</p>
-      <p>It is a pricing model, not a forecast. It holds no data from Squarespace's actual business. Outputs follow from the inputs on the simulator page, and the inputs can be changed.</p>
+      <p>It is a pricing model, not a forecast. It holds no data from Squarespace's actual business.</p>
     </div>
   </section>
 
@@ -500,7 +500,7 @@ svg text{font-family:"IBM Plex Mono",monospace}
       <h4>Provider rate card</h4>
       <p>Public list prices per 1M tokens, November 2026. The frontier model (Sonnet class) is $3 input and $15 output. The standard model (mini and Haiku class) is $0.30 input and $1.50 output. Image generation is a flat $0.04 per image. A blended text rate assumes 60% input tokens and 40% output tokens. The effective rate is the routing-weighted average of the two blended rates. Routing defaults to 30% of text tasks on the frontier model.</p>
       <h4>Tasks</h4>
-      <p>Five tasks carry demand: site build, page regeneration, copy draft, image generation, and SEO scan. Each has a token count, a credit price, and a share of monthly actions. These are analyst estimates, not published figures. They are the softest inputs in the model, and they sit in editable cells for that reason.</p>
+      <p>Five tasks carry demand: site build, page regeneration, copy draft, image generation, and SEO scan. Each has a token count, a credit price, and a share of monthly actions. These are analyst estimates, not published figures, and they are the softest inputs in the model.</p>
       <h4>Competitor benchmarks</h4>
       <p>The packaging notes come from Framer, Wix, and Webflow public pricing and help pages, checked in October and November 2026. They describe packaging only. They do not feed the simulation.</p>
     </div>
