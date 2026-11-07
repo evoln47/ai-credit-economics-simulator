@@ -258,6 +258,34 @@ tr.current-row td.name{color:var(--accent-deep)}
 .scenario h3{font-size:15.5px;font-weight:700}
 #scenarioSel{width:100%;min-height:48px;padding:10px 12px;font-size:15px}
 .scen-desc{font-size:13.5px;color:var(--ink2);line-height:1.55;margin:10px 0 0}
+/* ---------- streamlined navigation ---------- */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0 4px}
+@media(max-width:700px){.steps{grid-template-columns:1fr}}
+.step{display:flex;gap:12px;align-items:flex-start;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;cursor:pointer;font-family:inherit;box-shadow:var(--shadow);width:100%}
+.step:hover{border-color:var(--accent)}
+.step .n{flex:none;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.step strong{display:block;font-size:14px;color:var(--ink)}
+.step span{font-size:12.5px;color:var(--muted);line-height:1.45}
+.group-label{display:flex;align-items:center;gap:12px;margin:40px 0 -28px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.group-label::after{content:"";flex:1;height:1px;background:var(--line2)}
+.group-label small{letter-spacing:0;text-transform:none;font-weight:600;color:var(--muted);font-size:12.5px}
+.fold-btn{margin-left:auto;appearance:none;border:1px solid var(--line2);background:var(--card);color:var(--ink);border-radius:999px;padding:7px 14px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;min-height:36px}
+.fold-btn:hover{border-color:var(--accent);color:var(--accent-deep)}
+section.fold:not(.fold-open) .fold-body{display:none}
+section.fold .sec-head{cursor:pointer}
+section.fold{margin-top:26px}
+section.fold .sec-sub{margin-bottom:0}
+section.fold.fold-open .sec-sub{margin-bottom:16px}
+.setup-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0 0}
+.setup-bar .hint2{font-size:12.5px;color:var(--muted);margin-right:auto}
+.setup-bar button{appearance:none;border:1px solid var(--line2);background:var(--card);color:var(--ink);border-radius:7px;padding:8px 13px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;min-height:38px}
+.setup-bar button:hover{border-color:var(--accent)}
+.resultbar{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--banner);color:var(--banner-ink);padding:10px 16px;display:none;box-shadow:0 -4px 18px rgba(15,27,45,.25)}
+.resultbar.show{display:block}
+.resultbar .in{max-width:1140px;margin:0 auto;display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;font-size:13px}
+.resultbar strong{color:#fff}
+.resultbar .rb-v{font-family:"IBM Plex Mono",monospace;font-weight:700;color:var(--banner-accent)}
+.resultbar button{margin-left:auto;appearance:none;border:1px solid var(--banner-accent);background:transparent;color:#fff;border-radius:7px;padding:8px 14px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;min-height:38px}
 /* ---------- small screens ---------- */
 @media (max-width:700px){
   body{overflow-x:clip}
@@ -310,6 +338,11 @@ tr.current-row td.name{color:var(--accent-deep)}
   </div>
   <div class="finding" id="finding"><p>Running the model…</p></div>
 </header>
+<div class="steps" aria-label="How to use this simulator">
+  <button type="button" class="step" data-goto="#scenarios"><span class="n">1</span><span><strong>Pick a scenario</strong><span>Start from a preset below. That alone gives you a complete answer.</span></span></button>
+  <button type="button" class="step" data-goto="#sec-h-margins"><span class="n">2</span><span><strong>Read the result</strong><span>Jump straight to tier margins and the headline numbers.</span></span></button>
+  <button type="button" class="step" data-goto="#sec-h-plans"><span class="n">3</span><span><strong>Fine-tune, if you want</strong><span>Open any setting group to change prices, usage, or policy.</span></span></button>
+</div>
 <div class="card scenario" id="scenarios">
   <div class="scen-top"><h3>Scenario presets</h3><span class="flag ok" id="scenState">Baseline</span></div>
   <select id="scenarioSel" aria-label="Scenario preset">
@@ -325,25 +358,21 @@ tr.current-row td.name{color:var(--accent-deep)}
   </select>
   <p class="scen-desc" id="scenDesc">Published plans as they stand: hard cap, no rollover, 70% margin floor.</p>
 </div>
-<nav class="toc" aria-label="Contents">
-  <a class="seclink" href="#scenarios">Scenarios</a>
-  <a class="seclink" href="#sec-h-plans"><b>01</b>Plans &amp; rates</a>
-  <a class="seclink" href="#sec-h-tasks"><b>02</b>Tasks &amp; usage</a>
-  <a class="seclink" href="#sec-h-policy"><b>03</b>Policy levers</a>
-  <a class="seclink" href="#sec-h-margins"><b>04</b>Tier margins</a>
-  <a class="seclink" href="#sec-h-picker"><b>05</b>Allowance picker</a>
-  <a class="seclink" href="#sec-h-decomp"><b>06</b>Margin decomposition</a>
-  <a class="seclink" href="#sec-h-bench"><b>07</b>Competitors</a>
-  <a class="seclink" href="#sec-h-memo"><b>08</b>Decisions memo</a>
-  <span class="spacer"></span>
+<nav class="toc" aria-label="Views and key sections">
   <a class="viewtab" href="#simulator" data-view="sim" aria-pressed="true">Simulator</a>
   <a class="viewtab" href="#comparison" data-view="compare" aria-pressed="false">Comparison</a>
   <a class="viewtab" href="#methodology" data-view="method" aria-pressed="false">Methodology</a>
+  <span class="spacer"></span>
+  <a class="seclink" href="#sec-h-plans">Settings</a>
+  <a class="seclink" href="#sec-h-margins">Results</a>
+  <a class="seclink" href="#sec-h-memo">Memo</a>
 </nav>
+<div class="group-label" id="setup-start">Step 1 · Settings <small>Folded by default. Open only what you want to change.</small></div>
+<div class="setup-bar"><span class="hint2">Most people only need the scenario picker above.</span><button type="button" id="openAllBtn">Show all settings</button><button type="button" id="closeAllBtn">Hide all settings</button></div>
 
 
 <!-- ============ 1. PLANS & RATE CARD ============ -->
-<section id="sec-h-plans" aria-labeledby="h-plans">
+<section id="sec-h-plans" class="fold" aria-labeledby="h-plans">
   <div class="sec-head"><span class="sec-num">01</span><h2 id="h-plans">Plans and rate card</h2></div>
   <p class="sec-sub">Monthly equivalents at annual billing. Basic credits are one-time only: none remain by month 6.</p>
   <div class="grid2">
@@ -385,7 +414,7 @@ tr.current-row td.name{color:var(--accent-deep)}
 </section>
 
 <!-- ============ 2. TASKS & USAGE ============ -->
-<section id="sec-h-tasks" aria-labeledby="h-tasks">
+<section id="sec-h-tasks" class="fold" aria-labeledby="h-tasks">
   <div class="sec-head"><span class="sec-num">02</span><h2 id="h-tasks">Tasks and usage</h2></div>
   <p class="sec-sub">Credit price is a decision, not a cost. A build uses ~60× a draft's tokens but costs 25× the credits: drafts carry the margin.</p>
   <div class="grid2">
@@ -426,7 +455,7 @@ tr.current-row td.name{color:var(--accent-deep)}
 </section>
 
 <!-- ============ 3. POLICIES ============ -->
-<section id="sec-h-policy" aria-labeledby="h-policy">
+<section id="sec-h-policy" class="fold" aria-labeledby="h-policy">
   <div class="sec-head"><span class="sec-num">03</span><h2 id="h-policy">Policy levers</h2></div>
   <p class="sec-sub">The pricing team's choices. Wix = hard cap, no top-ups. Framer = top-ups, published burn rates.</p>
   <div class="grid2">
@@ -491,6 +520,7 @@ tr.current-row td.name{color:var(--accent-deep)}
 </section>
 
 <!-- ============ 4. TIER MARGIN TABLE ============ -->
+<div class="group-label">Step 2 · Results <small>The answer, without changing anything.</small></div>
 <section id="sec-h-margins" aria-labeledby="h-margins">
   <div class="sec-head"><span class="sec-num">04</span><h2 id="h-margins">Tier margins, month six</h2></div>
   <p class="sec-sub">Per user per month, led by adjusted revenue per starting user. Hard cap: heavy users cost no more than their allowance. Overage: full demand is served and billed.</p>
@@ -509,7 +539,8 @@ tr.current-row td.name{color:var(--accent-deep)}
 </section>
 
 <!-- ============ 5. ALLOWANCE PICKER ============ -->
-<section id="sec-h-picker" aria-labeledby="h-picker">
+<div class="group-label">Step 3 · Go deeper <small>Optional tools. Open one at a time.</small></div>
+<section id="sec-h-picker" class="fold" aria-labeledby="h-picker">
   <div class="sec-head"><span class="sec-num">05</span><h2 id="h-picker">Allowance picker</h2></div>
   <p class="sec-sub">Set credits at a percentile of demand. The 70th–80th is the usual landing zone: most users never think about credits; the tail pays or upgrades.</p>
   <div class="grid2">
@@ -543,7 +574,7 @@ tr.current-row td.name{color:var(--accent-deep)}
 </section>
 
 <!-- ============ 6. DECOMPOSITION ============ -->
-<section id="sec-h-decomp" aria-labeledby="h-decomp">
+<section id="sec-h-decomp" class="fold" aria-labeledby="h-decomp">
   <div class="sec-head"><span class="sec-num">06</span><h2 id="h-decomp">Margin decomposition</h2></div>
   <p class="sec-sub">Splits a shock's effect on portfolio profit into rate, mix, and volume. Equal users per plan; the leftover is interaction.</p>
   <div class="grid2">
@@ -577,7 +608,7 @@ tr.current-row td.name{color:var(--accent-deep)}
 </section>
 
 <!-- ============ 7. BENCHMARKS ============ -->
-<section id="sec-h-bench" aria-labeledby="h-bench">
+<section id="sec-h-bench" class="fold" aria-labeledby="h-bench">
   <div class="sec-head"><span class="sec-num">07</span><h2 id="h-bench">Competitor packaging</h2></div>
   <p class="sec-sub">Three alternatives, from public pages checked Oct–Nov 2026: what burns credits, what happens at zero, whether you can buy more.</p>
   <div class="grid3">
@@ -1570,6 +1601,62 @@ update();
   });
   if(location.hash==="#methodology")show("method",false);
   else if(location.hash==="#comparison")show("compare",false);
+})();
+</script>
+<div class="resultbar" id="resultbar" aria-live="polite"><div class="in"><span><strong id="rbScen">Baseline</strong> · Adj. revenue / starting user <span class="rb-v" id="rbRev">—</span></span><span>Margin <span class="rb-v" id="rbMargin">—</span></span><span>Mean cost <span class="rb-v" id="rbCost">—</span></span><button type="button" id="rbCompare">Compare all scenarios →</button></div></div>
+<script>
+(function(){
+  "use strict";
+  /* foldable sections: wrap everything after the heading into .fold-body */
+  var folds=Array.prototype.slice.call(document.querySelectorAll("section.fold"));
+  folds.forEach(function(sec){
+    var head=sec.querySelector(".sec-head"); if(!head) return;
+    var body=document.createElement("div"); body.className="fold-body";
+    var kids=Array.prototype.slice.call(sec.childNodes);
+    kids.forEach(function(n){ if(n!==head) body.appendChild(n); });
+    sec.appendChild(body);
+    var btn=document.createElement("button"); btn.type="button"; btn.className="fold-btn";
+    function sync(){ var open=sec.classList.contains("fold-open"); btn.textContent=open?"Hide −":"Open +"; btn.setAttribute("aria-expanded",open?"true":"false"); }
+    btn.addEventListener("click",function(e){ e.stopPropagation(); sec.classList.toggle("fold-open"); sync(); });
+    head.appendChild(btn);
+    head.addEventListener("click",function(){ sec.classList.toggle("fold-open"); sync(); });
+    sync();
+  });
+  function setAll(open){ folds.forEach(function(s){ s.classList.toggle("fold-open",open); var b=s.querySelector(".fold-btn"); if(b){ b.textContent=open?"Hide −":"Open +"; b.setAttribute("aria-expanded",open?"true":"false"); } }); }
+  var oa=document.getElementById("openAllBtn"), ca=document.getElementById("closeAllBtn");
+  if(oa)oa.addEventListener("click",function(){ setAll(true); });
+  if(ca)ca.addEventListener("click",function(){ setAll(false); });
+  /* step buttons + Settings link: open the relevant fold, then scroll */
+  function goTo(sel,openFold){
+    var t=document.querySelector(sel); if(!t) return;
+    if(openFold) t.classList.add("fold-open");
+    if(openFold){ var b=t.querySelector(".fold-btn"); if(b){ b.textContent="Hide −"; b.setAttribute("aria-expanded","true"); } }
+    t.scrollIntoView({behavior:"smooth",block:"start"});
+  }
+  Array.prototype.forEach.call(document.querySelectorAll(".step[data-goto]"),function(b){
+    b.addEventListener("click",function(){ goTo(b.getAttribute("data-goto"), b.getAttribute("data-goto")==="#sec-h-plans"); });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('#view-sim .toc a.seclink'),function(a){
+    a.addEventListener("click",function(){ var t=document.querySelector(a.getAttribute("href")); if(t&&t.classList.contains("fold")){ t.classList.add("fold-open"); var b=t.querySelector(".fold-btn"); if(b)b.textContent="Hide −"; } });
+  });
+  /* sticky results bar: mirrors the KPI row once the reader scrolls past it */
+  var bar=document.getElementById("resultbar");
+  function syncBar(){
+    var simView=document.getElementById("view-sim");
+    var kpis=document.querySelectorAll("#kpis .kpi .v");
+    if(kpis.length>=3){
+      document.getElementById("rbRev").textContent=kpis[0].textContent;
+      document.getElementById("rbMargin").textContent=kpis[1].textContent;
+      document.getElementById("rbCost").textContent=kpis[2].textContent;
+    }
+    var st=document.getElementById("scenState"); if(st) document.getElementById("rbScen").textContent=st.textContent;
+    var past=window.scrollY>900 && simView && !simView.hidden;
+    bar.classList.toggle("show",!!past);
+  }
+  window.addEventListener("scroll",syncBar,{passive:true});
+  setInterval(syncBar,800); syncBar();
+  var rb=document.getElementById("rbCompare");
+  if(rb)rb.addEventListener("click",function(){ var t=document.querySelector('.viewtab[data-view="compare"]'); if(t)t.click(); });
 })();
 </script>
 </body>
