@@ -171,6 +171,65 @@ svg text{font-family:"IBM Plex Mono",monospace}
 @media(max-width:700px){.foot{grid-template-columns:1fr}}
 .status{font-size:12.5px;color:var(--accent);font-weight:600;margin-top:8px;align-self:center}
 
+/* ---------- behavior & comparison ---------- */
+.beh-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 28px}
+@media(max-width:700px){.beh-grid{grid-template-columns:1fr}}
+.beh-summary{margin-top:14px}
+.mixrow{display:grid;grid-template-columns:86px 1fr;gap:12px;align-items:center;padding:7px 0}
+.mixrow .mlab{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.mixbar{display:flex;height:20px;border-radius:6px;overflow:hidden;background:var(--paper2)}
+.mixbar i{display:block;height:100%;min-width:0}
+.mix-0{background:#8492A5}.mix-1{background:#0B6E5D}.mix-2{background:#B07C1F}.mix-3{background:#0F1B2D}
+@media (prefers-color-scheme: dark){.mix-3{background:#5B7CA6}.mix-2{background:#C99A3A}}
+.mixlegend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--ink2);margin-top:8px}
+.mixlegend span{display:inline-flex;align-items:center;gap:6px}
+.mixlegend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.delta{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:700;border-radius:999px;padding:2px 8px;margin-left:7px;white-space:nowrap;vertical-align:1px}
+.delta.up{background:var(--good-bg);color:var(--good)}
+.delta.down{background:var(--bad-bg);color:var(--bad)}
+.delta.flat{background:var(--paper2);color:var(--muted)}
+.cmp-table table{min-width:900px}
+.cmp-table td.best{background:var(--accent-soft)}
+tr.current-row td{background:var(--accent-soft)}
+tr.current-row td.name{color:var(--accent-deep)}
+@media (prefers-color-scheme: dark){tr.current-row td.name{color:var(--accent)}}
+.loadbtn{appearance:none;border:1px solid var(--line2);background:var(--card);color:var(--ink);border-radius:6px;padding:5px 11px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:6px}
+.loadbtn:hover{border-color:var(--accent);color:var(--accent-deep)}
+.cellmix{min-width:150px}
+.cellmix .mixbar{height:13px}
+.cellmix .mixnums{font-size:11.5px;color:var(--muted);margin-top:5px;text-align:left;line-height:1.5}
+.pol-tag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.03em;border-radius:999px;padding:2px 8px;background:var(--paper2);color:var(--ink2);margin-left:7px;white-space:nowrap}
+/* ---------- published evidence ---------- */
+.ev-tag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.04em;border-radius:999px;padding:2px 8px;white-space:nowrap;vertical-align:1px}
+.ev-tag.live{background:var(--good-bg);color:var(--good)}
+.ev-tag.index{background:var(--warn-bg);color:var(--warn)}
+.ev-tag.assump{background:var(--bad-bg);color:var(--bad)}
+.ev-tag.math{background:var(--accent-soft);color:var(--accent-deep)}
+@media (prefers-color-scheme: dark){.ev-tag.math{color:var(--accent)}}
+.ev-block{margin-top:16px}
+.ev-block:first-of-type{margin-top:4px}
+.ev-block h4{font-size:13px;font-weight:700;margin:0 0 4px;color:var(--ink)}
+.ev-block p{font-size:13.5px;color:var(--ink2);line-height:1.6;margin:0 0 10px}
+.ev-block p strong{color:var(--ink)}
+.ev-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.ev-scroll table{min-width:640px;font-size:13px}
+.ev-scroll td{text-align:left;vertical-align:top;line-height:1.5}
+.ev-scroll td.num,.ev-scroll th.num{text-align:right;white-space:nowrap}
+.ev-scroll th{text-align:left}
+.ev-scroll th.num{text-align:right}
+.bar-row{display:grid;grid-template-columns:118px 1fr 74px;gap:12px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);font-size:13px}
+.bar-row:last-child{border-bottom:none}
+.bar-row .mono{font-weight:600;text-align:right}
+.bar-track{height:10px;background:var(--paper2);border-radius:99px;overflow:hidden}
+.bar-track i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.bar-row.hl .bar-track i{background:var(--warn)}
+.gap-box{background:var(--warn-bg);border-radius:8px;padding:14px 16px;font-size:13.5px;color:var(--ink2);line-height:1.6}
+.gap-box strong{color:var(--ink)}
+.gap-box ul{margin:8px 0 0;padding-left:18px}
+.gap-box li{margin-bottom:6px}
+.srclist{font-size:12.5px;color:var(--muted);line-height:1.7;margin:10px 0 0;padding-left:18px}
+.srclist li{margin-bottom:4px;overflow-wrap:anywhere}
+@media(max-width:560px){.bar-row{grid-template-columns:92px 1fr 64px;font-size:12px}}
 /* ---------- views & methodology ---------- */
 .toc .spacer{flex:1 1 auto;min-width:10px}
 .toc a.viewtab{border:1px solid var(--line2);background:var(--card)}
@@ -239,6 +298,7 @@ svg text{font-family:"IBM Plex Mono",monospace}
   <div class="stamp">
     <span>Plan data · Squarespace pricing page, Oct 2026</span>
     <span>Provider rates · Public list prices, Nov 2026</span>
+    <span>Behavior defaults · Published evidence checked Nov 2026</span>
     <span>Monte Carlo · Fixed seed · Month 6 steady state</span>
   </div>
   <div class="finding" id="finding"><p>Running the model…</p></div>
@@ -264,10 +324,12 @@ svg text{font-family:"IBM Plex Mono",monospace}
   <a class="seclink" href="#sec-h-tasks"><b>02</b>Tasks &amp; usage</a>
   <a class="seclink" href="#sec-h-policy"><b>03</b>Policy levers</a>
   <a class="seclink" href="#sec-h-margins"><b>04</b>Tier margins</a>
-  <a class="seclink" href="#sec-h-picker"><b>05</b>Allowance picker</a>
-  <a class="seclink" href="#sec-h-decomp"><b>06</b>Margin decomposition</a>
-  <a class="seclink" href="#sec-h-bench"><b>07</b>Competitors</a>
-  <a class="seclink" href="#sec-h-memo"><b>08</b>Decisions memo</a>
+  <a class="seclink" href="#sec-h-compare"><b>05</b>Scenario comparison</a>
+  <a class="seclink" href="#sec-h-picker"><b>06</b>Allowance picker</a>
+  <a class="seclink" href="#sec-h-decomp"><b>07</b>Margin decomposition</a>
+  <a class="seclink" href="#sec-h-bench"><b>08</b>Competitors</a>
+  <a class="seclink" href="#sec-h-evidence"><b>09</b>Published evidence</a>
+  <a class="seclink" href="#sec-h-memo"><b>10</b>Decisions memo</a>
   <span class="spacer"></span>
   <a class="viewtab" href="#simulator" data-view="sim" aria-pressed="true">Simulator</a>
   <a class="viewtab" href="#methodology" data-view="method" aria-pressed="false">Methodology</a>
@@ -275,7 +337,7 @@ svg text{font-family:"IBM Plex Mono",monospace}
 
 
 <!-- ============ 1. PLANS & RATE CARD ============ -->
-<section id="sec-h-plans" aria-labelledby="h-plans">
+<section id="sec-h-plans" aria-labeledby="h-plans">
   <div class="sec-head"><span class="sec-num">01</span><h2 id="h-plans">Plans and rate card</h2></div>
   <p class="sec-sub">Squarespace's published plans. Prices are monthly equivalents at annual billing. Basic is the exception: its credits arrive once and never refill, so a Basic user holds no included credits in month six.</p>
   <div class="grid2">
@@ -317,7 +379,7 @@ svg text{font-family:"IBM Plex Mono",monospace}
 </section>
 
 <!-- ============ 2. TASKS & USAGE ============ -->
-<section id="sec-h-tasks" aria-labelledby="h-tasks">
+<section id="sec-h-tasks" aria-labeledby="h-tasks">
   <div class="sec-head"><span class="sec-num">02</span><h2 id="h-tasks">Tasks and usage</h2></div>
   <p class="sec-sub">Each task has a token profile and a credit price. The price is a decision, not a cost: a site build uses about 60 times the tokens of a copy draft but costs 25 times the credits. Builds are the best value in the catalogue. Copy drafts carry the margin.</p>
   <div class="grid2">
@@ -358,7 +420,7 @@ svg text{font-family:"IBM Plex Mono",monospace}
 </section>
 
 <!-- ============ 3. POLICIES ============ -->
-<section id="sec-h-policy" aria-labelledby="h-policy">
+<section id="sec-h-policy" aria-labeledby="h-policy">
   <div class="sec-head"><span class="sec-num">03</span><h2 id="h-policy">Policy levers</h2></div>
   <p class="sec-sub">The choices a pricing team owns. Two competitor shapes are in here: Wix is a hard cap with no top-ups, and Framer is top-ups with published burn rates.</p>
   <div class="grid2">
@@ -393,13 +455,41 @@ svg text{font-family:"IBM Plex Mono",monospace}
       </div>
     </div>
   </div>
+  <div class="card" style="margin-top:16px">
+    <h3>Buyer behavior: defaults from published evidence</h3>
+    <p class="hint">The defaults below are set from the published record assembled in section 9, checked in November 2026. That record contains no price-elasticity coefficient for SaaS from any named firm, so the price default comes from consumer subscription price events and is labeled as an analogue wherever it appears. One default, paid take-up at the wall, has no published value at all and is flagged as an assumption in its own note. These four settings drive the behavior figures in sections 4 and 5. They do not change the margin figures above them.</p>
+    <div class="beh-grid">
+      <div class="ctl">
+        <label for="bElasticity">Price elasticity <output id="bElasticityOut">-0.1</output></label>
+        <input type="range" id="bElasticity" min="-2" max="0" step="0.1" value="-0.1">
+        <p class="note">Default −0.1, from consumer subscription events: Antenna data reported by <a href="https://techcrunch.com/2022/05/21/premium-streaming-subscriptions-continue-to-increase-despite-netflix-tribulations/" target="_blank" rel="noopener">TechCrunch</a> put Netflix's monthly churn at 3.0% in January 2022 after a $1–$2 increase, up 0.95 points, and 3.3% by March, which works out to a short-run churn elasticity of roughly −0.1 to −0.15. Spotify's 10% increase in July 2023 produced no detectable churn change, which puts the lower bound between 0 and −0.1, and the 2011 Netflix case in OpenStax gives a realised arc elasticity of about −0.07. These are $10–$20 entertainment products with near-zero switching costs, so they read as an upper bound on sensitivity for a website a business runs on. At −0.1, a plan priced 10% above its published price loses about 1% of its share. About a third of the response leaves the product entirely, and the rest switches plans.</p>
+      </div>
+      <div class="ctl">
+        <label for="bTakeUp">Paid take-up at the wall <output id="bTakeUpOut">20%</output></label>
+        <input type="range" id="bTakeUp" min="0" max="90" step="5" value="20">
+        <p class="note"><span class="ev-tag assump">No published value</span> No study or vendor report found reports the share of users who hit a SaaS usage cap and pay for more. The 20% default is an explicit assumption placed inside the 10–25% sensitivity range the evidence review suggests modeling, and section 9 marks the gap as an open question. A hard cap offers nothing to buy, so take-up is zero there. Overage revenue in section 4 assumes everyone pays, and the behavior figures scale it by this rate.</p>
+      </div>
+      <div class="ctl">
+        <label for="bWallChurn">Churn at the wall, hard cap <output id="bWallChurnOut">13%</output></label>
+        <input type="range" id="bWallChurn" min="0" max="50" step="1" value="13">
+        <p class="note">Default 13%, derived from two published figures. ChartMogul's platform data put median monthly churn at 4.2% for subscriptions at $25–$100 per account, and Lambrecht and Skiera (2006) found that customers on a plan that was too small for their usage churned at monthly rates 3.4 to 10.4 times the rate of other customers. The default applies the conservative 3× stand-in to the 4.2% baseline, which gives 12.6% and rounds to 13%. The Lambrecht and Skiera evidence comes from internet access tariffs rather than SaaS credits and reaches this page through secondary summaries, so the multiple is an anchor rather than a measurement of credit walls. Overage billing applies 40% of this rate and top-up packs apply 55%, and those two scalings are modeling assumptions with no published source.</p>
+      </div>
+      <div class="ctl">
+        <label for="bWallDown">Downgrade at the wall, hard cap <output id="bWallDownOut">8%</output></label>
+        <input type="range" id="bWallDown" min="0" max="60" step="1" value="8">
+        <p class="note">Default 8%, set from the downgrade-to-cancel ratio in <a href="https://www.chargebee.com/blog/how-to-raise-prices-without-losing-subscribers/" target="_blank" rel="noopener">Chargebee's Global Consumer Insights survey</a> (2025, n=1,454 US and UK subscription consumers), where 14% of consumers who faced an increase downgraded and 22% cancelled some subscriptions, a ratio of about 0.6 downgraders for every canceller. Applied to the 13% wall churn default, that ratio gives about 8%. The survey records stated behavior across all of a respondent's subscriptions rather than observed billing data for one service, so the ratio is the transferable part and the levels are not. Overage billing applies 50% of this rate and top-up packs apply 60%, and those scalings are also modeling assumptions. Basic has no plan below it, so its downgraders count as churn.</p>
+      </div>
+    </div>
+    <p class="src" style="margin-top:12px">Baseline context for the wall rates: median monthly logo churn in this price band is about 4–6% before any wall is involved. ChartMogul measured 6.1% under $25 and 4.2% at $25–$100, and <a href="https://recurly.com/research/churn-rate-benchmarks/" target="_blank" rel="noopener">Recurly</a> measured 3.27% overall across more than 1,200 subscription sites in 2023, with B2B software and business services at 3.8%. Full figures, caveats, and sources are in section 9.</p>
+  </div>
 </section>
 
 <!-- ============ 4. TIER MARGIN TABLE ============ -->
-<section id="sec-h-margins" aria-labelledby="h-margins">
+<section id="sec-h-margins" aria-labeledby="h-margins">
   <div class="sec-head"><span class="sec-num">04</span><h2 id="h-margins">Tier margins, month six</h2></div>
   <p class="sec-sub">Serving cost is what the plan pays under the policy above. Under a hard cap, heavy users cost no more than their allowance. Under overage, they cost their full demand and pay for the excess. Margin is per user per month.</p>
   <div class="kpis" id="kpis"></div>
+  <div class="card beh-summary" id="behSummary"></div>
   <div class="card big-table" style="padding:6px 14px">
     <table class="stack" aria-label="Tier margin results">
       <thead><tr>
@@ -412,9 +502,24 @@ svg text{font-family:"IBM Plex Mono",monospace}
   <p class="src" id="simStatus">10,000 users per tier over six months, fixed seed, so the same settings always give the same figures. Breakage is the share of credits available in the month (grant plus banked rollover) that expire unused. Costs at the median, p90, and p99 come from the simulated users nearest those demand percentiles. One caution: overage and top-up revenue is a mechanical upper bound. It bills the full shortfall before any upgrade, churn, or spending cap. In a live product the heaviest users upgrade or leave instead of paying several times the plan price.</p>
 </section>
 
-<!-- ============ 5. ALLOWANCE PICKER ============ -->
-<section id="sec-h-picker" aria-labelledby="h-picker">
-  <div class="sec-head"><span class="sec-num">05</span><h2 id="h-picker">Allowance picker</h2></div>
+<!-- ============ 5. SCENARIO COMPARISON ============ -->
+<section id="sec-h-compare" aria-labeledby="h-compare">
+  <div class="sec-head"><span class="sec-num">05</span><h2 id="h-compare">Scenario comparison</h2></div>
+  <p class="sec-sub">All eight presets run on the same starting population: 10,000 users per plan, 40,000 in total. Margin and cost are per user per month in month six. The behavior columns apply the evidence-based settings from section 3 to that population. Deltas are against Baseline. The shaded cell in each column is the best value in it. Load puts a preset's settings into the controls above.</p>
+  <div class="card big-table cmp-table" style="padding:6px 14px">
+    <table class="stack" aria-label="Scenario comparison">
+      <thead><tr>
+        <th>Scenario</th><th>Policy</th><th>Portfolio margin</th><th>Mean cost / user</th><th>Adj. margin</th><th>Adj. revenue / starting user</th><th>Users left</th><th>Churn</th><th>Downgrades</th><th>Ending mix</th>
+      </tr></thead>
+      <tbody id="cmpRows"></tbody>
+    </table>
+  </div>
+  <p class="src" id="cmpNote">Adjusted figures account for movement only. Users who leave take their revenue and their serving cost with them. Users who downgrade are counted at the lower plan's price and cost. Paid take-up scales overage and top-up revenue to the rate set in section 3. Price changes in a preset are read against the published prices in section 1.</p>
+</section>
+
+<!-- ============ 6. ALLOWANCE PICKER ============ -->
+<section id="sec-h-picker" aria-labeledby="h-picker">
+  <div class="sec-head"><span class="sec-num">06</span><h2 id="h-picker">Allowance picker</h2></div>
   <p class="sec-sub">Set included credits at a percentile of simulated demand and read the effect on breakage and margin. The 70th to 80th percentile is the usual landing zone: most users never think about credits, and the tail pays or upgrades.</p>
   <div class="grid2">
     <div class="card">
@@ -446,9 +551,9 @@ svg text{font-family:"IBM Plex Mono",monospace}
   </div>
 </section>
 
-<!-- ============ 6. DECOMPOSITION ============ -->
-<section id="sec-h-decomp" aria-labelledby="h-decomp">
-  <div class="sec-head"><span class="sec-num">06</span><h2 id="h-decomp">Margin decomposition</h2></div>
+<!-- ============ 7. DECOMPOSITION ============ -->
+<section id="sec-h-decomp" aria-labeledby="h-decomp">
+  <div class="sec-head"><span class="sec-num">07</span><h2 id="h-decomp">Margin decomposition</h2></div>
   <p class="sec-sub">Set a shock and the change in portfolio AI margin is split into causes. The portfolio assumes equal user counts on the four plans. Each effect changes one factor at a time. What is left over is interaction.</p>
   <div class="grid2">
     <div class="card">
@@ -480,9 +585,9 @@ svg text{font-family:"IBM Plex Mono",monospace}
   </div>
 </section>
 
-<!-- ============ 7. BENCHMARKS ============ -->
-<section id="sec-h-bench" aria-labelledby="h-bench">
-  <div class="sec-head"><span class="sec-num">07</span><h2 id="h-bench">Competitor packaging</h2></div>
+<!-- ============ 8. BENCHMARKS ============ -->
+<section id="sec-h-bench" aria-labeledby="h-bench">
+  <div class="sec-head"><span class="sec-num">08</span><h2 id="h-bench">Competitor packaging</h2></div>
   <p class="sec-sub">Three alternatives to the Squarespace shape, from public pricing and help pages checked in October and November 2026. Each answers the same questions differently: what burns credits, what happens at zero, and whether you can buy more.</p>
   <div class="grid3">
     <div class="card bench">
@@ -515,9 +620,106 @@ svg text{font-family:"IBM Plex Mono",monospace}
   </div>
 </section>
 
-<!-- ============ 8. MEMO ============ -->
-<section id="sec-h-memo" aria-labelledby="h-memo">
-  <div class="sec-head"><span class="sec-num">08</span><h2 id="h-memo">Decisions memo</h2></div>
+<!-- ============ 9. PUBLISHED EVIDENCE ============ -->
+<section id="sec-h-evidence" aria-labeledby="h-evidence">
+  <div class="sec-head"><span class="sec-num">09</span><h2 id="h-evidence">Published evidence behind the behavior defaults</h2></div>
+  <p class="sec-sub">Checked in November 2026. The headline finding is a gap: no published, traceable price-elasticity coefficient for SaaS exists from any named firm, and no published split of users who hit a usage cap into pay, upgrade, reduce, or churn exists for any SaaS product. The defaults in section 3 therefore rest on the closest citable evidence, and each figure below carries the hedge its source carries. Tags mark how each source was checked: <span class="ev-tag live">Verified live</span> means the page was fetched and read during the review, <span class="ev-tag index">Index</span> means the figure rests on search-result text or a secondary reproduction, and <span class="ev-tag assump">Assumption</span> means no published value exists.</p>
+
+  <div class="card">
+    <div class="ev-block">
+      <h4>Price increases with a measurable response</h4>
+      <p>These consumer subscription events are the only price changes in the review from which an elasticity can be computed at all. They cover $10–$20 entertainment products with near-zero switching costs and no business dependency, so they read as an upper bound on sensitivity for a website builder whose customers have a custom domain, content, and search presence tied to the product. New-buyer response is likely larger than the incumbent churn response shown here, and none of these events measures new-buyer response cleanly.</p>
+      <div class="ev-scroll"><table aria-label="Price increase events">
+        <thead><tr><th>Event</th><th>Price change</th><th>Response</th><th class="num">Implied elasticity</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Netflix US, July 2011</td><td>About +60% to keep streaming and DVD, roughly $10 to $15.98 a month</td><td>810,000 cancellations on a 24.6 million base, a 3.3% fall in the quarter. Management had forecast 600,000 losses.</td><td class="num">−0.07 realised; −0.05 expected</td><td>OpenStax, Principles of Microeconomics, Ch. 5 <span class="ev-tag live">Verified live</span><br><a href="https://publishing.lib.umn.edu/openmicro/05_elasticity.html" target="_blank" rel="noopener">publishing.lib.umn.edu</a></td></tr>
+          <tr><td class="name">Netflix US, January 2022</td><td>+$1–$2 a month on all tiers, roughly one tenth</td><td>Monthly churn rose 0.95 points in January to 3.0% and reached 3.3% by the end of March. First-quarter cancellations were 3.6 million against about 2.5 million in each prior quarter. Average monthly churn was 2.0% in 2021 and 3.5% by the third quarter of 2022, with Antenna attributing the persistence partly to intensifying competition rather than price alone.</td><td class="num">About −0.1 to −0.15</td><td>Antenna data via TechCrunch, 2022, and Antenna Q3 2022 report <span class="ev-tag live">Verified live</span><br><a href="https://techcrunch.com/2022/05/21/premium-streaming-subscriptions-continue-to-increase-despite-netflix-tribulations/" target="_blank" rel="noopener">techcrunch.com</a> · <a href="https://www.antenna.live/insights/antenna-q3-2022-svod-growth-report-as-the-world-churns" target="_blank" rel="noopener">antenna.live</a></td></tr>
+          <tr><td class="name">Spotify, July 2023</td><td>Individual Premium $9.99 to $10.99 (+10%). Family $15.99 to $16.99. Duo $12.99 to $14.99</td><td>The chief financial officer said on the Q3 2023 call that churn was right in line with expectations, with no adverse impact. Premium added 6 million net subscribers in the quarter to 226 million, about 2 million ahead of guidance.</td><td class="num">0 to −0.1</td><td>Spotify Q3 2023 earnings call via Music Business Worldwide <span class="ev-tag live">Verified live</span><br><a href="https://www.bigdrumbeat.com/spotifys-price-hike-didnt-hurt-subscriptions-and-3-other-things-we-learned-on-its-latest-earnings-call/" target="_blank" rel="noopener">bigdrumbeat.com</a></td></tr>
+          <tr><td class="name">Superhuman, 2024</td><td>$30 to $40 a month (+33%), announced in August 2024 and effective in November, with three months of notice and a $30 Starter downgrade tier offered to existing users</td><td>Co-founder Gaurav Vohra told Schematic that churn ran 1–2 percentage points above normal for 60–90 days. A Schematic book summary describes the same event as 4% churn with a 28% overnight revenue lift, and whether that 4% is total or incremental churn is unclear, so that variant is treated as ambiguous.</td><td class="num">Not computed</td><td>Company-reported, single source, via secondary summaries <span class="ev-tag index">Index</span><br><a href="https://getlaunchlist.com/blog/how-to-price-a-saas-before-launch" target="_blank" rel="noopener">getlaunchlist.com</a> · <a href="https://www.productcompass.pm/p/pricing-architecture-four-pillars" target="_blank" rel="noopener">productcompass.pm</a></td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:10px">A price rise stays revenue-positive on the incumbent base unless the share of the base lost exceeds a break-even bound, and the bound is arithmetic rather than a source: <strong>a 5% rise tolerates a 4.8% base loss, a 10% rise tolerates 9.1%, a 20% rise tolerates 16.7%, and a 33% rise tolerates 25%</strong>. Every observed response in the table sits far inside those bounds. <span class="ev-tag math">Arithmetic</span></p>
+      <p>Three widely repeated figures were checked and rejected because no primary publication could be traced for any of them: a claimed Stripe 2023 median SaaS elasticity of 0.6, a claimed OpenView average elasticity of −0.5 to −1.5, and a precise table attributed to ProfitWell and Paddle that maps increase size to added churn. None of the three is used anywhere in this simulator.</p>
+    </div>
+
+    <div class="ev-block">
+      <h4>Baseline churn by price point</h4>
+      <p>ChartMogul's platform data, measured from November 2021 to January 2022 and published in February 2022, is the most directly applicable SaaS dataset in the review because its bands are average revenue per account and they cover this simulator's $19–$99 range exactly. The table reaches this page through GrowPanel's reproduction, and ChartMogul's own help page corroborates the direction of the gradient, with churn at 6–7% a month under $10 and 1–2% a month above $500.</p>
+      <div aria-label="Median monthly customer churn by average revenue per account, ChartMogul">
+        <div class="bar-row hl"><span>Under $25</span><span class="bar-track"><i style="width:100%"></i></span><span class="mono">6.1% / mo</span></div>
+        <div class="bar-row hl"><span>$25–$100</span><span class="bar-track"><i style="width:68.9%"></i></span><span class="mono">4.2% / mo</span></div>
+        <div class="bar-row"><span>$100–$250</span><span class="bar-track"><i style="width:50.8%"></i></span><span class="mono">3.1% / mo</span></div>
+        <div class="bar-row"><span>$250–$500</span><span class="bar-track"><i style="width:49.2%"></i></span><span class="mono">3.0% / mo</span></div>
+        <div class="bar-row"><span>$500–$1,000</span><span class="bar-track"><i style="width:36.1%"></i></span><span class="mono">2.2% / mo</span></div>
+        <div class="bar-row"><span>Over $1,000</span><span class="bar-track"><i style="width:29.5%"></i></span><span class="mono">1.8% / mo</span></div>
+      </div>
+      <p style="margin-top:10px">The top quartile at $25–$100 churns at 2.8% a month, and the top quartile under $25 churns at 4.0%. Source: ChartMogul via <a href="https://growpanel.io/academy/churn-rate/" target="_blank" rel="noopener">GrowPanel</a>, corroborated by the <a href="https://help.chartmogul.com/article/203-chart-customer-churn-rate" target="_blank" rel="noopener">ChartMogul Help Center</a>. <span class="ev-tag index">Index</span></p>
+      <p><strong>Recurly</strong> measured an overall median monthly churn of <strong>3.27%</strong> across more than 1,200 subscription sites from January to December 2023, split into 2.41% voluntary and 0.86% involuntary, with B2B categories including software and business services at <strong>3.8%</strong> a month against 6.5% for direct-to-consumer categories. Recurly's mix skews toward larger merchants than a pure website-builder base. Source: <a href="https://recurly.com/research/churn-rate-benchmarks/" target="_blank" rel="noopener">Recurly churn benchmarks</a>. <span class="ev-tag live">Verified live</span></p>
+      <p>The <strong>KeyBanc Capital Markets SaaS survey</strong> from 2022, cited in Zuora's churn guide, reported median annual revenue churn of 14% across 173 companies and logo churn of 13% across 79 companies, all private SaaS companies above $5 million in revenue. That is larger, sales-led B2B software, so it reads as a floor for churn rather than an estimate for this segment, and the citing page's address was not returned by the search, so no link is given for it. <span class="ev-tag index">Index</span></p>
+    </div>
+
+    <div class="ev-block">
+      <h4>What customers say they did after an increase</h4>
+      <p><strong>Chargebee's Global Consumer Insights survey</strong> (2025, n=1,454 US and UK subscription consumers) asked people who had faced price increases in the prior year what they did. <strong>58% accepted</strong> an increase they felt was value-justified, <strong>22% cancelled some subscriptions</strong>, <strong>14% downgraded</strong> to cheaper plans, 8% sought discounts, 8% reduced usage but kept the subscription, 7% cancelled most of their subscriptions, and 7% cancelled all of them. The categories overlap because respondents reported actions across all of their subscriptions, so these figures are not per-service churn rates. Acceptance varied sharply by engagement, at 71% among the most engaged group and 36% among the group Chargebee labels flight risks. The downgrade-to-cancel ratio of about 0.6 is the transferable parameter, and it sets the downgrade default in section 3. Source: <a href="https://www.chargebee.com/blog/how-to-raise-prices-without-losing-subscribers/" target="_blank" rel="noopener">Chargebee</a>. <span class="ev-tag live">Verified live</span></p>
+      <p>In <strong>Zuora's Subscription Economy Index 2025</strong>, which draws on a Harris Poll survey of 3,087 US adults from January 8–10, 2025, <strong>47% of consumers who cancelled a subscription in 2024 cited a price hike</strong>, the most common single reason given. That measures attribution among people who cancelled rather than the incidence of price-driven churn. Source: <a href="https://www.zuora.com/resource/the-subscription-economy-index-thank-you/" target="_blank" rel="noopener">Zuora</a>. <span class="ev-tag live">Verified live</span></p>
+      <p>Chargebee's 2025 State of Recurring Revenue and Monetization Report, drawn from 473 subscription-business leaders, found that 77% of businesses changed their pricing model in 2024 and <strong>70% raised prices</strong>, which establishes that increases are routine even though the report carries no churn outcome. Source: <a href="https://www.chargebee.com/blog/small-pricing-experiments-recurring-revenue/" target="_blank" rel="noopener">Chargebee</a>. <span class="ev-tag index">Index</span></p>
+    </div>
+
+    <div class="ev-block">
+      <h4>Tier mix and willingness to pay, from filings and price ladders</h4>
+      <p>No website builder publishes subscriber counts by plan tier. Squarespace, Wix, and Shopify filings and reporting contain no Basic, Core, and Plus subscriber split and no disclosure of how the mix shifted after a price or allowance change, so tier-mix shift elasticities do not exist in the public record found. What the filings do establish is where revenue and buyers concentrate.</p>
+      <p><strong>Squarespace</strong> reported fiscal 2023 revenue in two plan families: Presence at <strong>$704.3 million, 69.6%</strong> of revenue, and Commerce at <strong>$308.0 million, 30.4%</strong>, with more than 4.6 million unique subscriptions and average revenue per unique subscription of <strong>$228.02 a year</strong>, up 9% year over year, or roughly $19 a month blended across all subscriptions including domain-only products. Because Commerce plans cost more, the Commerce share of subscribers sits below its 30.4% share of revenue. Source: Squarespace fiscal 2023 results, SEC filing, February 28, 2024. <a href="https://www.sec.gov/Archives/edgar/data/1496963/000149696324000007/sqsp-02282024x8kexhibit991.htm" target="_blank" rel="noopener">sec.gov</a> <span class="ev-tag live">Verified live</span></p>
+      <p><strong>Wix</strong> reported about <strong>6.3 million premium subscriptions</strong> against 263 million registered users for fiscal 2023, which works out to a cumulative free-to-paid conversion of about 2.4%, a figure the review computed from the two reported numbers because Wix does not publish the rate. Creative Subscriptions revenue was $1.15 billion, 74% of the total, and Business Solutions was $409.7 million, 26%, including transaction revenue. Total revenue over premium subscriptions works out to about $248 a year, roughly $21 a month per premium subscription including transaction revenue. Source: Wix fiscal 2023 results, February 21, 2024. <a href="https://www.nasdaq.com/press-release/wix-reports-fourth-quarter-and-full-year-2023-results-2024-02-21" target="_blank" rel="noopener">nasdaq.com</a> <span class="ev-tag live">Verified live</span></p>
+      <p>Two consumer analogues bound the shape of a tier mix. After <strong>Netflix</strong> phased out its mid-priced ad-free Basic tier for new and rejoining members, its cheapest ads tier grew about 70% quarter over quarter for two consecutive quarters and took <strong>40% of all new sign-ups</strong> in ads markets, according to the Q4 2023 shareholder letter. That shift was engineered by removing a tier rather than by a pure price change. Source: <a href="https://www.sec.gov/Archives/edgar/data/1065280/000106528024000029/ex991_q423.htm" target="_blank" rel="noopener">sec.gov</a> <span class="ev-tag live">Verified live</span> At <strong>Spotify</strong> in Q3 2023, 226 million Premium subscribers against 574 million total monthly users means <strong>39% of users pay and 61% stay free</strong> after a decade of freemium operation.</p>
+      <p>The category's current price ladders, taken from October 2026 checked-pricing compilations, clear the market inside the same band this simulator models: Squarespace at $19, $29, $49, and $99 a month billed annually and $25 to $139 billed monthly; Wix at $17, $29, $39, and $159; Shopify at $29, $79, and $299 with Plus from $2,300; and GoDaddy entry pricing at about $9.99. A live check of Squarespace's own pricing page was attempted during the review and the browser failed, so these ladder figures are index-grade. Sources: <a href="https://rankite.com/blog/best-web-building-software" target="_blank" rel="noopener">Rankite</a> and <a href="https://www.wix.com/blog/squarespace-alternatives" target="_blank" rel="noopener">Wix</a>. <span class="ev-tag index">Index</span></p>
+      <p>Outside options bound willingness to pay from above. A do-it-yourself builder build runs $0 to $450 on Forbes Advisor's figures, a freelancer-built basic site runs about $6,760 all-in for year one on FreshBooks' breakdown, and most agency projects reviewed on Clutch cost under $10,000, all as compiled in Zarla's 2026 cost guide. A $19–$99 monthly plan, $228 to $1,188 a year, sits an order of magnitude below the freelancer and agency alternatives, which is consistent with the low price sensitivity observed inside this band, although no published study converts that relationship into a sensitivity coefficient. Source: <a href="https://www.zarla.com/guides/how-much-does-a-website-cost" target="_blank" rel="noopener">Zarla</a>. <span class="ev-tag index">Index</span></p>
+      <p>On billing period, the modal annual discount across more than 1,000 SaaS businesses in Recurly's plan-structure study from January 2017 to July 2018 was 16.7%, or two months free, while Squarespace's own ladder embeds an annual discount of about 24% at Basic. Recurly's 2025 State of Subscriptions reports that annual plans generate 50–60% more revenue per user than monthly plans, with early monthly churn as the driver. Source: <a href="https://recurly.com/blog/pricing-subscription-strategies/" target="_blank" rel="noopener">Recurly</a>. <span class="ev-tag index">Index</span></p>
+    </div>
+
+    <div class="ev-block">
+      <h4>Allowance and overage behavior, from the academic record</h4>
+      <p>The strongest evidence on what happens at an allowance limit comes from metered telecom and internet tariffs rather than from SaaS, and the review found no published split for any SaaS product. The components that are published point in one direction: the risk sits with users on a plan that is too small for them, and it expresses itself as churn rather than as willing overage payment.</p>
+      <p><strong>Grubb and Osborne (2015)</strong>, in the American Economic Review, studied US cellular bills from 2002 to 2004 and found that about <strong>20% of users on $35–$55 monthly plans incurred overage fees of about $20 a month</strong>. Across the sample period, 19% of subscribers incurred an overage above $100, 8% above $200, and 3% above $300. Consumers were overconfident about how much their usage would vary, that overconfidence cost them $76 a year at 2002–04 prices, and users who received usage alerts reduced their usage significantly. The one-in-five incidence rate is the best published anchor for the share of allowance-plan users who hit a cap in a period. Sources: <a href="https://www.aeaweb.org/articles?id=10.1257/aer.20120283&page=129&per-page=21&from=j" target="_blank" rel="noopener">American Economic Association</a> and the <a href="http://www.utm.utoronto.ca/main-news/utm-professor-explores-impact-cellphone-bill-shock-warnings" target="_blank" rel="noopener">University of Toronto</a> summary. <span class="ev-tag live">Verified live</span></p>
+      <p>An <strong>FCC consumer survey from 2010</strong> with 3,005 US adults found that <strong>17% of mobile users</strong>, about one in six or roughly 30 million people, had experienced a sudden bill increase that was not caused by a plan change, and <strong>84%</strong> of them said their carrier did not contact them as they approached or exceeded their allowance. More than a third of those users saw a jump of at least $50 and 23% saw at least $100. A GAO figure from 2009 cited in the same proceeding put unexpected charges at 34% of wireless subscribers. Source: <a href="https://docs.fcc.gov/public/attachments/DOC-298415A1.pdf" target="_blank" rel="noopener">FCC</a>. <span class="ev-tag live">Verified live</span></p>
+      <p><strong>Lambrecht and Skiera (2006)</strong>, in the Journal of Marketing Research, examined about 10,882 internet-access bills over five months and found that up to <strong>46.4% of customers showed flat-rate bias</strong>, choosing a tariff that was too large, against at most 5.8% who chose one that was too small. More than half of the flat-rate-biased group paid at least 100% more than the cheapest available tariff would have cost them. Customers on too-large plans did not churn more and carried 87–135% higher lifetime value, while customers on too-small plans, the group that hits caps and pays overages, <strong>churned at monthly rates 340–1,040% higher</strong> and carried slightly negative lifetime value. A related literature summary puts the share of flat-rate internet subscribers who would have saved money on pay-per-use at about 48%. Source: literature summary in the <a href="https://link.springer.com/article/10.1057/s41272-024-00508-3" target="_blank" rel="noopener">Journal of Revenue and Pricing Management</a>. <span class="ev-tag index">Index</span></p>
+      <p><strong>DellaVigna and Malmendier (2006)</strong>, in the American Economic Review, studied 7,752 US health-club members and found that members on flat monthly contracts above $70 attended 4.3 times a month and paid more than $17 per visit when a $10 per-visit pass existed, about 70% more per visit. <strong>80% of monthly members would have saved money paying per visit</strong>, and average forgone savings ran to about $600 per membership. Buyers over-buy allowance because they choose for their expected peak usage rather than their average usage. <span class="ev-tag index">Index</span></p>
+      <p>Two smaller findings complete the picture. Spotify Premium includes 15 hours a month of audiobooks with paid top-ups beyond that allowance, and management said on the Q3 2023 call that some users were already buying extra hours on the first day while describing the base as very small, with <strong>no take-up rate disclosed</strong>. In Chargebee's 2025 survey, 70% of consumers said they are open to usage-based pricing, which records an attitude rather than behavior at a cap. <span class="ev-tag index">Index</span></p>
+    </div>
+
+    <div class="ev-block">
+      <h4>The defaults this evidence supports</h4>
+      <div class="ev-scroll"><table aria-label="Evidence-based defaults adopted">
+        <thead><tr><th>Parameter</th><th>Default adopted</th><th>Basis</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Baseline monthly logo churn, $25–$100 self-serve SaaS</td><td class="num">4.2% a month; 6.1% under $25; sensitivity range 2.8% to 6.1%</td><td>ChartMogul platform data <span class="ev-tag index">Index</span>, corroborated in direction by Recurly's 3.8% for B2B software <span class="ev-tag live">Verified live</span>. Shown as context in section 3 and used to derive the wall churn default.</td></tr>
+          <tr><td class="name">Price elasticity</td><td class="num">−0.1</td><td>The review's equivalent short-run churn elasticity from the Netflix January 2022 event, with Spotify 2023 as the lower bound. Consumer analogue, treated as an upper bound on sensitivity for this category.</td></tr>
+          <tr><td class="name">Added churn from a 10% increase</td><td class="num">+1.0 point of monthly churn for about three months, range 0 to +1.3 points</td><td>Antenna data on Netflix, +0.95 points in the increase month from a 2.0% baseline <span class="ev-tag live">Verified live</span>, with Spotify's undetectable change as the best case.</td></tr>
+          <tr><td class="name">Added churn from a 25–35% increase with a downgrade path</td><td class="num">+1–2 points of monthly churn for 60–90 days</td><td>Superhuman 2024, company-reported to Schematic <span class="ev-tag index">Index</span>. Without a downgrade path this reads as a floor rather than a central estimate.</td></tr>
+          <tr><td class="name">Downgrade at the wall</td><td class="num">8%, about 0.6 downgraders per canceller</td><td>Chargebee 2025 ratio of 14% downgraded to 22% cancelled <span class="ev-tag live">Verified live</span>, applied to the wall churn default. Stated behavior, used as a ratio only.</td></tr>
+          <tr><td class="name">Churn at the wall</td><td class="num">13%, a 3× multiple of the 4.2% baseline</td><td>Lambrecht and Skiera's published range runs from 3.4× to 10.4× for users on too-small plans, and the default takes a conservative stand-in below the bottom of that range. <span class="ev-tag index">Index</span></td></tr>
+          <tr><td class="name">Paid take-up at the wall</td><td class="num">20%, inside a 10–25% sensitivity range</td><td><span class="ev-tag assump">No published value</span> The review suggests modeling 10–25% with sensitivity analysis and flagging the parameter as unsourced, which is what section 3 does.</td></tr>
+          <tr><td class="name">Share of allowance users who hit the cap</td><td class="num">About 20% in a period</td><td>Grubb and Osborne 2015 overage incidence on $35–$55 cellular plans <span class="ev-tag live">Verified live</span>. In this simulator the hit rate comes from the simulated demand distribution itself, and the published figure is a check on whether that rate is plausible.</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="gap-box">
+      <strong>Open questions, stated plainly.</strong> The published record found in November 2026 does not answer the following, and this simulator does not pretend otherwise.
+      <ul>
+        <li>No SaaS price-elasticity coefficient from ProfitWell or Paddle, OpenView, KeyBanc, Stripe, Zuora, Recurly, or Chargebee, and no academic elasticity estimate for subscription software, was found. The figures in circulation on aggregator pages could not be traced to a primary publication and were rejected.</li>
+        <li>No subscriber counts by plan tier exist for Wix, Squarespace, Shopify, or GoDaddy, and no published tier-mix shift after a price or allowance change at a website builder was found. Shopify's plan mix was searched for specifically and does not appear in recent filings.</li>
+        <li>No published three-way split of users who hit a usage limit into pay for more, upgrade, or reduce usage and churn exists for any metered SaaS, email, storage, or API product.</li>
+        <li>No published willingness-to-pay sensitivity study, whether Van Westendorp, conjoint, or Gabor-Granger, exists for website builders or SMB online-presence software.</li>
+        <li>The Superhuman churn figures rest on a single company-reported account relayed by secondary pages, and the 4% churn variant of that account is ambiguous between total and incremental churn.</li>
+        <li>Current builder price ladders are index-grade because the live check of Squarespace's pricing page failed during the review, so the ladder figures rest on October 2026 checked-pricing compilations.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10. MEMO ============ -->
+<section id="sec-h-memo" aria-labeledby="h-memo">
+  <div class="sec-head"><span class="sec-num">10</span><h2 id="h-memo">Decisions memo</h2></div>
   <p class="sec-sub">Written from the settings above.</p>
   <div class="memo" id="memoBody">—</div>
   <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
@@ -529,7 +731,7 @@ svg text{font-family:"IBM Plex Mono",monospace}
 
 <footer class="foot">
   <p><strong>Method.</strong> Demand per user is drawn from a lognormal fitted to the median, p90, and p99 in section 2, then scaled by the task mix averages for credits and cost. Users are simulated for six months so rollover banks settle, and month six is reported. Hard cap: actions stop at the balance. Overage: full demand is served and the excess is billed. Top-ups: half the shortfall is bought and half is forgone. Outputs come from these assumptions. They are not Squarespace's internal numbers. Full detail is on the Methodology page.</p>
-  <p>Defaults: Squarespace's published prices and allowances (Basic $19 with 10 one-time credits; Core $29 with 20 a month; Plus $49 with 40; Advanced $99 with 120; annual billing, October 2026). Public per-token list prices for frontier and standard model classes, November 2026. Competitor packaging from Framer, Wix, and Webflow public pages. No internal Squarespace figures are used.</p>
+  <p>Defaults: Squarespace's published prices and allowances (Basic $19 with 10 one-time credits; Core $29 with 20 a month; Plus $49 with 40; Advanced $99 with 120; annual billing, October 2026). Public per-token list prices for frontier and standard model classes, November 2026. Competitor packaging from Framer, Wix, and Webflow public pages. Behavior defaults from the published evidence in section 9, checked November 2026: an elasticity of −0.1 from consumer subscription price events, a wall churn default derived from ChartMogul's 4.2% baseline churn at $25–$100 and Lambrecht and Skiera's too-small-plan churn multiple, and a downgrade default from Chargebee's downgrade-to-cancel ratio. Paid take-up at the wall has no published value and is modelled as an explicit assumption. No internal Squarespace figures are used.</p>
 </footer>
 </div><!-- /view-sim -->
 
@@ -540,7 +742,7 @@ svg text{font-family:"IBM Plex Mono",monospace}
     <p class="lede">How the simulator works, where its defaults come from, and where it stops being useful. This page describes the code on the simulator page. If the two disagree, the code is right and this page is out of date.</p>
   </div>
 
-  <section aria-labelledby="m-what">
+  <section aria-labeledby="m-what">
     <div class="sec-head"><span class="sec-num">01</span><h2 id="m-what">What the model does</h2></div>
     <div class="card doc-card">
       <p>The simulator prices one question: what does it cost to serve AI usage that is sold as plan credits, and which allowance and shortfall rules keep that cost inside a target margin?</p>
@@ -548,7 +750,7 @@ svg text{font-family:"IBM Plex Mono",monospace}
     </div>
   </section>
 
-  <section aria-labelledby="m-inputs">
+  <section aria-labeledby="m-inputs">
     <div class="sec-head"><span class="sec-num">02</span><h2 id="m-inputs">Inputs and defaults</h2></div>
     <div class="card doc-card">
       <h4>Plans</h4>
@@ -559,10 +761,12 @@ svg text{font-family:"IBM Plex Mono",monospace}
       <p>Five tasks carry demand: site build, page regeneration, copy draft, image generation, and SEO scan. Each has a token count, a credit price, and a share of monthly actions. These are analyst estimates, not published figures, and they are the softest inputs in the model.</p>
       <h4>Competitor benchmarks</h4>
       <p>The packaging notes come from Framer, Wix, and Webflow public pricing and help pages, checked in October and November 2026. They describe packaging only. They do not feed the simulation.</p>
+      <h4>Behavior evidence</h4>
+      <p>The behavior defaults come from a review of the published record completed in November 2026 and reproduced in section 9 of the simulator. Its main sources are Antenna data on Netflix reported by TechCrunch in 2022, Spotify's Q3 2023 earnings call, ChartMogul churn data by revenue per account as reproduced by GrowPanel, Recurly's 2023 churn benchmarks, Chargebee's 2025 Global Consumer Insights survey, and two academic papers, Grubb and Osborne (2015) and Lambrecht and Skiera (2006). Each figure in section 9 is tagged by how it was checked. Figures tagged as index-grade rest on search-result text or a secondary reproduction rather than a page fetched and read during the review, and the defaults that rest on them carry that status with them.</p>
     </div>
   </section>
 
-  <section aria-labelledby="m-usage">
+  <section aria-labeledby="m-usage">
     <div class="sec-head"><span class="sec-num">03</span><h2 id="m-usage">Usage distribution</h2></div>
     <div class="card doc-card">
       <p>Monthly actions per user follow a lognormal distribution. The median slider sets the centre exactly. The spread (sigma) is fitted to the p90 and p99 sliders by least squares on the log scale, with each point weighted by its z-score: 1.2816 for p90 and 2.3263 for p99.</p>
@@ -571,7 +775,7 @@ svg text{font-family:"IBM Plex Mono",monospace}
     </div>
   </section>
 
-  <section aria-labelledby="m-sim">
+  <section aria-labeledby="m-sim">
     <div class="sec-head"><span class="sec-num">04</span><h2 id="m-sim">Simulation design</h2></div>
     <div class="card doc-card">
       <p>The simulation is a Monte Carlo with a fixed seed. A mulberry32 generator produces the same 10,000 standard normal draws for any plan and any setting. Identical settings therefore give identical figures, and a change in the output comes from a change in the inputs, not from fresh randomness.</p>
@@ -579,7 +783,7 @@ svg text{font-family:"IBM Plex Mono",monospace}
     </div>
   </section>
 
-  <section aria-labelledby="m-policy">
+  <section aria-labeledby="m-policy">
     <div class="sec-head"><span class="sec-num">05</span><h2 id="m-policy">Policy mechanics</h2></div>
     <div class="card doc-card">
       <h4>Hard cap</h4>
@@ -593,7 +797,7 @@ svg text{font-family:"IBM Plex Mono",monospace}
     </div>
   </section>
 
-  <section aria-labelledby="m-margin">
+  <section aria-labeledby="m-margin">
     <div class="sec-head"><span class="sec-num">06</span><h2 id="m-margin">Margins and the picker</h2></div>
     <div class="card doc-card">
       <p>Margin is per user per month: (revenue minus serving cost) divided by revenue. Revenue is the plan price plus any overage or top-up revenue. A tier breaches the guardrail when its overall margin, or the margin on its p99 user, falls below the floor set in the simulator.</p>
@@ -601,7 +805,7 @@ svg text{font-family:"IBM Plex Mono",monospace}
     </div>
   </section>
 
-  <section aria-labelledby="m-decomp">
+  <section aria-labeledby="m-decomp">
     <div class="sec-head"><span class="sec-num">07</span><h2 id="m-decomp">Decomposition</h2></div>
     <div class="card doc-card">
       <p>The decomposition starts from portfolio profit per user under the current settings, then applies each shock on its own. Rate: provider prices change and nothing else moves. Mix: the routing share changes at unchanged prices. Volume: a user's action count scales by the growth factor. A fourth run applies all three together.</p>
@@ -609,15 +813,32 @@ svg text{font-family:"IBM Plex Mono",monospace}
     </div>
   </section>
 
-  <section aria-labelledby="m-assump">
-    <div class="sec-head"><span class="sec-num">08</span><h2 id="m-assump">Assumptions</h2></div>
+  <section aria-labeledby="m-behavior">
+    <div class="sec-head"><span class="sec-num">08</span><h2 id="m-behavior">Buyer behavior</h2></div>
+    <div class="card doc-card">
+      <p>The margin simulation holds the population fixed: 10,000 users per plan, whatever the prices and rules. The behavior layer sits on top of it and lets the population move. It runs in two steps, in month six only, and it does not feed back into the margin figures in section 4 of the simulator. It produces its own adjusted revenue and margin, shown next to the static ones.</p>
+      <p>The defaults in this layer are set from published evidence checked in November 2026, and section 9 of the simulator carries the figures, the sources, and the caveats in full. The evidence base has a clear shape. No published, traceable price-elasticity coefficient for SaaS exists from any named firm, and no public source reports how Squarespace's users react to the credit wall, because Squarespace does not publish upgrade, downgrade, or churn rates by plan. The defaults therefore combine the closest citable evidence: consumer subscription price events for elasticity, billing-platform churn levels for the baseline, a survey ratio for downgrades against cancellations, and an academic finding on churn among users whose plan is too small for their usage. One rate, paid take-up at the wall, has no published value anywhere in the record found, and it is kept as an explicit assumption with a flagged sensitivity range.</p>
+      <h4>Price response</h4>
+      <p>Each plan's price is read against its published price. A plan's share shifts by its relative price change raised to the elasticity, which defaults to −0.1. That default is the short-run churn elasticity the evidence review derived from the Netflix increase of January 2022, where Antenna data put monthly churn at 3.0% in the increase month, up 0.95 points from a 2.0% average in 2021, and 3.3% by March after a $1–$2 increase on all tiers. Spotify's 10% increase in July 2023 produced no detectable churn change, which places the lower bound between 0 and −0.1, and the 2011 Netflix case reported in OpenStax gives a realised arc elasticity of about −0.07. All three are consumer entertainment products priced at $10–$20 with near-zero switching costs, so the default reads as an upper bound on sensitivity for a product that hosts a business's website, domain, and search presence. Plans that got cheaper relative to the others gain share, and plans that got dearer lose it. About a third of the response is treated as leaving the product entirely, applied through the average price change across the four plans, and the rest is switching between plans. That one-third split is a modeling choice with no published source. Users who arrive because prices fell are added the same way, so a price cut can end with more users than it started with.</p>
+      <h4>The wall</h4>
+      <p>The share of users who hit the wall on each plan comes from the simulation itself: one minus the share whose demand fits inside the available credits in month six. The published check on that share is Grubb and Osborne (2015), who found that about 20% of users on $35–$55 cellular plans incurred overage fees in a period. Those users split four ways. A share cancels, a share drops one plan, a share pays to keep going where the policy allows it, and the rest stay and accept the limit. Churn at the wall defaults to 13% under a hard cap. The figure is derived rather than measured: ChartMogul's platform data put median monthly churn at 4.2% for subscriptions at $25–$100 per account, and Lambrecht and Skiera (2006) found that customers on a plan too small for their usage churned at monthly rates 3.4 to 10.4 times the rate of other customers, so the default applies a conservative 3× stand-in to the baseline and rounds the resulting 12.6% to 13%. Downgrade at the wall defaults to 8%, from the downgrade-to-cancel ratio in Chargebee's 2025 Global Consumer Insights survey, where 14% of consumers who faced an increase downgraded and 22% cancelled some subscriptions. The churn and downgrade rates are set for a hard cap and then scaled down for the paid policies, with churn at 40% of the hard cap rate under overage billing and 55% under top-up packs, and downgrades at 50% and 60%. Those four scalings are modeling assumptions with no published source, retained so a reader can test how much a paid way through the wall would have to soften the response before it changes the answer. Basic has no plan below it, so its downgraders are counted as churn.</p>
+      <h4>Paid take-up</h4>
+      <p>Take-up is the share of wall users who pay. It defaults to 20%. No published study or vendor report found reports this rate for any SaaS product, so the default is an assumption placed inside the 10–25% sensitivity range the evidence review suggests modeling, and it should be read that way rather than as a sourced parameter. Under a hard cap it is zero, because there is nothing to buy. The static overage figures bill the full shortfall, and the static top-up figures assume half of it is bought. The behavior layer restates that revenue at the take-up rate instead: overage revenue is scaled by the rate, and top-up revenue is scaled against the half already assumed. Serving cost per remaining user is not restated. That is a simplification, and it is stated as one in the limits.</p>
+      <h4>Adjusted totals</h4>
+      <p>Users who leave take their revenue and their cost with them. Users who downgrade are counted at the lower plan's price and cost from that point. Adjusted revenue is the total across the ending population. Adjusted margin is that revenue minus the ending population's serving cost, divided by the revenue. Comparing adjusted revenue per starting user against the static figure is what turns a margin gain into a revenue loss when a policy change pushes people out.</p>
+    </div>
+  </section>
+
+  <section aria-labeledby="m-assump">
+    <div class="sec-head"><span class="sec-num">09</span><h2 id="m-assump">Assumptions</h2></div>
     <div class="card doc-card">
       <ul>
         <li>Task token counts, credit prices, and mix shares are estimates set by the analyst.</li>
         <li>Text tasks split 60% input tokens and 40% output tokens.</li>
         <li>An abandoned build costs the same as a kept build. No refund and no partial credit.</li>
         <li>Top-up buyers cover exactly half of any shortfall.</li>
-        <li>Users keep their plan, do not churn, and do not time usage to the billing cycle.</li>
+        <li>In the margin simulation, users keep their plan, do not churn, and do not time usage to the billing cycle. Movement between plans is estimated separately, in the behavior layer.</li>
+        <li>Behavior defaults are set from published evidence where the record provides it: price elasticity of −0.1 from consumer subscription price events reported by Antenna and Spotify, hard-cap wall churn of 13% derived from ChartMogul's 4.2% baseline monthly churn at $25–$100 and Lambrecht and Skiera's too-small-plan churn multiple, and wall downgrades of 8% from Chargebee's downgrade-to-cancel ratio of about 0.6. Paid take-up of 20% where a paid option exists has no published value and remains an analyst assumption inside a 10–25% sensitivity range. The scalings that soften wall churn and downgrades under overage billing and top-up packs, and the one-third share of the price response treated as leaving the product, are also analyst assumptions.</li>
         <li>Users on all four plans share one usage distribution.</li>
         <li>Prices are list prices. No negotiated rates, prompt caching, or batch discounts.</li>
         <li>All AI cost is charged against the full plan price, including the part of the price that pays for the website itself.</li>
@@ -625,11 +846,17 @@ svg text{font-family:"IBM Plex Mono",monospace}
     </div>
   </section>
 
-  <section aria-labelledby="m-limits">
-    <div class="sec-head"><span class="sec-num">09</span><h2 id="m-limits">Limits</h2></div>
+  <section aria-labeledby="m-limits">
+    <div class="sec-head"><span class="sec-num">10</span><h2 id="m-limits">Limits</h2></div>
     <div class="card doc-card">
       <ul>
         <li>Overage and top-up revenue is an upper bound. It bills the full simulated shortfall. Real heavy users upgrade, churn, or stop before paying several times the plan price.</li>
+        <li>The behavior defaults are anchored in published evidence from adjacent products rather than measured on this one. The elasticity comes from $10–$20 consumer entertainment subscriptions whose switching costs are far lower than a business website's, so it likely overstates how strongly this category responds, and the wall churn multiple comes from internet access tariffs rather than software credits. The vendor's real elasticity and wall reactions are not public, so the behavior outputs show what follows from the rates chosen, not what will happen. A reader who sets different rates gets different answers, by design.</li>
+        <li>Paid take-up at the wall has no published value for any SaaS product in the record searched, and no published split of users who hit a usage cap into pay, upgrade, reduce, or churn exists. Any answer that depends on the take-up slider depends on an assumption the published record cannot settle.</li>
+        <li>No builder publishes subscriber counts by plan tier, so the equal starting mix of 10,000 users per plan is a modeling convention rather than an observed mix. The filings in section 9 show that real revenue concentrates in the lower plan families, with Squarespace's Presence family at 69.6% of fiscal 2023 revenue.</li>
+        <li>Movement happens once, in month six. A user who downgrades is not tested against the lower plan's wall in the same step, and nobody is won back in later months.</li>
+        <li>Price response uses one elasticity for all four plans. In practice the cheapest and most expensive plans rarely respond at the same rate, and a price change on one plan can pull in users from competitors, which the model does not represent.</li>
+        <li>Take-up restates revenue only. Serving cost per remaining user is held at the simulated figure, so adjusted margins under the paid policies are approximate.</li>
         <li>One distribution serves all four tiers. Higher tiers attract heavier users in practice, so costs at the top are likely understated and costs at the bottom overstated.</li>
         <li>Mix averages hide variation. Users with the same action count are costed identically.</li>
         <li>There is no demand response. A larger allowance does not change usage in the model. In a product, it would.</li>
@@ -637,6 +864,35 @@ svg text{font-family:"IBM Plex Mono",monospace}
         <li>The model says nothing about willingness to pay, conversion, or churn. It covers cost and margin only.</li>
       </ul>
       <p style="margin-top:16px"><button class="btn" type="button" id="backToSim">Back to the simulator</button></p>
+    </div>
+  </section>
+
+  <section aria-labeledby="m-sources">
+    <div class="sec-head"><span class="sec-num">11</span><h2 id="m-sources">Evidence sources</h2></div>
+    <div class="card doc-card">
+      <p>The sources below support the behavior defaults and the evidence tables in section 9 of the simulator. Each address is reproduced exactly as the November 2026 review recorded it. Sources the review marked as index-grade were located through search results or secondary reproductions rather than fetched and read in full. The KeyBanc survey figures in section 9 carry no link because the citing page's address was not returned by the search that located them.</p>
+      <ol class="srclist" style="color:var(--ink2);font-size:13.5px">
+        <li>Recurly, customer churn benchmarks, data from January to December 2023 across more than 1,200 sites. <a href="https://recurly.com/research/churn-rate-benchmarks/" target="_blank" rel="noopener">recurly.com/research/churn-rate-benchmarks</a></li>
+        <li>Chargebee, The 58% Rule, Global Consumer Insights with 1,454 respondents, published October 8, 2025 and updated June 26, 2026. <a href="https://www.chargebee.com/blog/how-to-raise-prices-without-losing-subscribers/" target="_blank" rel="noopener">chargebee.com/blog/how-to-raise-prices-without-losing-subscribers</a></li>
+        <li>Zuora, The Subscription Economy Index 2025, with a Harris Poll survey of 3,087 US adults. <a href="https://www.zuora.com/resource/the-subscription-economy-index-thank-you/" target="_blank" rel="noopener">zuora.com/resource/the-subscription-economy-index-thank-you</a></li>
+        <li>Antenna, Q3 2022 SVOD Growth Report. <a href="https://www.antenna.live/insights/antenna-q3-2022-svod-growth-report-as-the-world-churns" target="_blank" rel="noopener">antenna.live/insights/antenna-q3-2022-svod-growth-report-as-the-world-churns</a></li>
+        <li>TechCrunch, May 21, 2022, reporting Antenna data on Netflix. <a href="https://techcrunch.com/2022/05/21/premium-streaming-subscriptions-continue-to-increase-despite-netflix-tribulations/" target="_blank" rel="noopener">techcrunch.com/2022/05/21/premium-streaming-subscriptions-continue-to-increase-despite-netflix-tribulations</a></li>
+        <li>OpenStax through the University of Minnesota, Principles of Microeconomics, Chapter 5 on elasticity, carrying the 2011 Netflix case. <a href="https://publishing.lib.umn.edu/openmicro/05_elasticity.html" target="_blank" rel="noopener">publishing.lib.umn.edu/openmicro/05_elasticity</a></li>
+        <li>Netflix, Q4 2023 shareholder letter, SEC Exhibit 99.1, January 23, 2024. <a href="https://www.sec.gov/Archives/edgar/data/1065280/000106528024000029/ex991_q423.htm" target="_blank" rel="noopener">sec.gov/Archives/edgar/data/1065280/000106528024000029/ex991_q423</a></li>
+        <li>Squarespace, Q4 and fiscal 2023 results, SEC 8-K Exhibit 99.1, February 28, 2024. <a href="https://www.sec.gov/Archives/edgar/data/1496963/000149696324000007/sqsp-02282024x8kexhibit991.htm" target="_blank" rel="noopener">sec.gov/Archives/edgar/data/1496963/000149696324000007/sqsp-02282024x8kexhibit991</a></li>
+        <li>Wix, Q4 and full year 2023 results, February 21, 2024, via Nasdaq. <a href="https://www.nasdaq.com/press-release/wix-reports-fourth-quarter-and-full-year-2023-results-2024-02-21" target="_blank" rel="noopener">nasdaq.com/press-release/wix-reports-fourth-quarter-and-full-year-2023-results-2024-02-21</a></li>
+        <li>Music Business Worldwide coverage of Spotify's Q3 2023 earnings call, via bigdrumbeat.com. <a href="https://www.bigdrumbeat.com/spotifys-price-hike-didnt-hurt-subscriptions-and-3-other-things-we-learned-on-its-latest-earnings-call/" target="_blank" rel="noopener">bigdrumbeat.com/spotifys-price-hike-didnt-hurt-subscriptions-and-3-other-things-we-learned-on-its-latest-earnings-call</a></li>
+        <li>Grubb and Osborne (2015), Cellular Service Demand, American Economic Review 105(1), pages 234–271, abstract page. <a href="https://www.aeaweb.org/articles?id=10.1257/aer.20120283&page=129&per-page=21&from=j" target="_blank" rel="noopener">aeaweb.org/articles?id=10.1257/aer.20120283</a></li>
+        <li>University of Toronto Mississauga summary of Grubb and Osborne, carrying the overage incidence of about 20% and fees of about $20 a month. <a href="http://www.utm.utoronto.ca/main-news/utm-professor-explores-impact-cellphone-bill-shock-warnings" target="_blank" rel="noopener">utm.utoronto.ca/main-news/utm-professor-explores-impact-cellphone-bill-shock-warnings</a></li>
+        <li>FCC, May 26, 2010, survey release on mobile bill shock with 3,005 respondents. <a href="https://docs.fcc.gov/public/attachments/DOC-298415A1.pdf" target="_blank" rel="noopener">docs.fcc.gov/public/attachments/DOC-298415A1.pdf</a></li>
+        <li>ChartMogul churn-by-revenue table as reproduced by GrowPanel, with ChartMogul's help page as corroboration. <a href="https://growpanel.io/academy/churn-rate/" target="_blank" rel="noopener">growpanel.io/academy/churn-rate</a> and <a href="https://help.chartmogul.com/article/203-chart-customer-churn-rate" target="_blank" rel="noopener">help.chartmogul.com/article/203-chart-customer-churn-rate</a></li>
+        <li>Lambrecht and Skiera (2006) findings as summarized in a Journal of Revenue and Pricing Management literature review, which also carries DellaVigna and Malmendier (2006). <a href="https://link.springer.com/article/10.1057/s41272-024-00508-3" target="_blank" rel="noopener">link.springer.com/article/10.1057/s41272-024-00508-3</a></li>
+        <li>Superhuman repricing accounts relaying the Schematic interview and book summary. <a href="https://getlaunchlist.com/blog/how-to-price-a-saas-before-launch" target="_blank" rel="noopener">getlaunchlist.com/blog/how-to-price-a-saas-before-launch</a> and <a href="https://www.productcompass.pm/p/pricing-architecture-four-pillars" target="_blank" rel="noopener">productcompass.pm/p/pricing-architecture-four-pillars</a></li>
+        <li>Chargebee, 2025 State of Recurring Revenue and Monetization Report with 473 subscription-business leaders. <a href="https://www.chargebee.com/blog/small-pricing-experiments-recurring-revenue/" target="_blank" rel="noopener">chargebee.com/blog/small-pricing-experiments-recurring-revenue</a></li>
+        <li>Recurly, subscription pricing strategies, carrying the 2025 State of Subscriptions finding on annual against monthly plans. <a href="https://recurly.com/blog/pricing-subscription-strategies/" target="_blank" rel="noopener">recurly.com/blog/pricing-subscription-strategies</a></li>
+        <li>Price ladders from October 2026 compilations by Rankite and Wix, with Zarla's website cost guide for outside-option prices. <a href="https://rankite.com/blog/best-web-building-software" target="_blank" rel="noopener">rankite.com/blog/best-web-building-software</a>, <a href="https://www.wix.com/blog/squarespace-alternatives" target="_blank" rel="noopener">wix.com/blog/squarespace-alternatives</a>, and <a href="https://www.zarla.com/guides/how-much-does-a-website-cost" target="_blank" rel="noopener">zarla.com/guides/how-much-does-a-website-cost</a></li>
+      </ol>
+      <p style="margin-top:14px">Three sources were checked during the review and rejected as untraceable, and none of them is used: a calculator page attributing a median SaaS elasticity of 0.6 to a Stripe 2023 report, articles attributing an average elasticity of −0.5 to −1.5 to OpenView, and a page presenting a precise churn-by-increase-size table under a ProfitWell and Paddle label. No primary publication was found for any of the three.</p>
     </div>
   </section>
 </div>
@@ -721,7 +977,8 @@ function readState(){
     rollover:$("rollover").checked,floor:num("floor",70)/100,
     mode:shortfallMode,ovMult:num("ovMult",1.5),topup:num("topupPrice",1),
     pct:num("pct",75),pickerTier:parseInt($("pickerTier").value,10)||0,
-    sFront:num("sFront",0)/100,sStd:num("sStd",0)/100,sRoute:num("sRoute",0)/100,sGrowth:num("sGrowth",0)/100
+    sFront:num("sFront",0)/100,sStd:num("sStd",0)/100,sRoute:num("sRoute",0)/100,sGrowth:num("sGrowth",0)/100,
+    bElasticity:num("bElasticity",-0.1),bWallChurn:num("bWallChurn",13)/100,bWallDown:num("bWallDown",8)/100,bTakeUp:num("bTakeUp",20)/100
   };
 }
 function derived(S,ov){
@@ -797,6 +1054,96 @@ function simulate(S,ov){
 function portfolioProfit(S,ov){
   var r=simulate(S,ov);var s=0;r.tiers.forEach(function(t){s+=(t.meanRev-t.meanCost);});return s/r.tiers.length;
 }
+/* ---------- buyer behavior layer ---------- */
+var WALL_MULT={cap:{churn:1,down:1},overage:{churn:0.4,down:0.5},topup:{churn:0.55,down:0.6}};
+var START_TOTAL=N*4;
+function computeBehavior(S,sim){
+  var E=S.bElasticity, mult=WALL_MULT[S.mode]||WALL_MULT.cap;
+  var takeFactor=S.mode==="overage"?S.bTakeUp:(S.mode==="topup"?clamp(S.bTakeUp/0.5,0,1.5):1);
+  /* price response: relative prices move share, average price moves the total */
+  var ratios=S.plans.map(function(p,i){var b=PLANS0[i].price;return b>0&&p.price>0?p.price/b:1;});
+  var avgRatio=ratios.reduce(function(a,r){return a+r;},0)/ratios.length;
+  var totalFactor=clamp(Math.pow(Math.max(avgRatio,0.05),E*0.35),0.4,1.8);
+  var weights=ratios.map(function(r){return Math.pow(Math.max(r/Math.max(avgRatio,0.05),0.05),E);});
+  var wSum=weights.reduce(function(a,w){return a+w;},0)||1;
+  var afterPrice=weights.map(function(w){return START_TOTAL*totalFactor*(w/wSum)/1;});
+  /* note: starting mix is equal counts, so share weights apply to the total directly */
+  var priceChurn=START_TOTAL-afterPrice.reduce(function(a,v){return a+v;},0);
+  /* wall response */
+  var churnWall=0,downCount=0,takers=0,wallUsers=0;
+  var endUsers=[0,0,0,0], adjRevTier=[], adjCostTier=[];
+  sim.tiers.forEach(function(t,i){
+    adjRevTier.push(t.plan.price+t.meanExtra*takeFactor);
+    adjCostTier.push(t.meanCost);
+  });
+  sim.tiers.forEach(function(t,i){
+    var users=afterPrice[i];
+    var wall=users*(1-t.covered);
+    wallUsers+=wall;
+    var churn=wall*S.bWallChurn*mult.churn;
+    var down=wall*S.bWallDown*mult.down;
+    if(S.mode!=="cap")takers+=wall*S.bTakeUp;
+    var stay=users-churn-down;
+    if(i===0){churnWall+=churn+down;endUsers[0]+=stay;}
+    else{churnWall+=churn;downCount+=down;endUsers[i]+=stay;endUsers[i-1]+=down;}
+  });
+  var endTotal=endUsers.reduce(function(a,v){return a+v;},0);
+  var adjRevTotal=0,adjCostTotal=0;
+  endUsers.forEach(function(u,i){adjRevTotal+=u*adjRevTier[i];adjCostTotal+=u*adjCostTier[i];});
+  var staticRevTotal=0,staticCostTotal=0;
+  sim.tiers.forEach(function(t){staticRevTotal+=N*t.meanRev;staticCostTotal+=N*t.meanCost;});
+  var portRev=staticRevTotal/START_TOTAL, portCost=staticCostTotal/START_TOTAL;
+  return {
+    afterPrice:afterPrice,endUsers:endUsers,endTotal:endTotal,
+    priceChurn:priceChurn,churnWall:churnWall,totalChurn:START_TOTAL-endTotal,
+    downCount:downCount,takers:takers,wallUsers:wallUsers,
+    adjRevTotal:adjRevTotal,adjCostTotal:adjCostTotal,
+    adjMargin:adjRevTotal>0?(adjRevTotal-adjCostTotal)/adjRevTotal:1,
+    adjRevPerStart:adjRevTotal/START_TOTAL,
+    staticMargin:staticRevTotal>0?(staticRevTotal-staticCostTotal)/staticRevTotal:1,
+    staticRevPerUser:portRev,staticCostPerUser:portCost,
+    takeFactor:takeFactor
+  };
+}
+/* preset states, built from the published baseline plus each preset's changes.
+   Behavior settings carry over from the current controls. */
+function baseState(S){
+  return {
+    plans:PLANS0.map(function(p){return {name:p.name,price:p.price,monthly:p.monthly,one:p.one};}),
+    tasks:TASKS0.map(function(t){return {name:t.name,image:t.image,tokens:t.tokens,credits:t.credits,mix:t.mix};}),
+    frontIn:3,frontOut:15,stdIn:0.30,stdOut:1.50,img:0.04,
+    routing:0.30,abandoned:0.25,uMedian:20,uP90:200,uP99:1500,
+    rollover:false,floor:0.70,mode:"cap",ovMult:1.5,topup:1,
+    pct:75,pickerTier:1,sFront:0,sStd:0,sRoute:0,sGrowth:0,
+    bElasticity:S.bElasticity,bWallChurn:S.bWallChurn,bWallDown:S.bWallDown,bTakeUp:S.bTakeUp
+  };
+}
+function presetState(key,S){
+  var sc=SCEN[key];if(!sc)return null;
+  var st=baseState(S);
+  if(sc.planMonthly)sc.planMonthly.forEach(function(v,i){if(v!=null)st.plans[i].monthly=v;});
+  if(sc.mode)st.mode=sc.mode;
+  if(sc.rollover!=null)st.rollover=sc.rollover;
+  if(sc.inputs)Object.keys(sc.inputs).forEach(function(id){
+    var v=sc.inputs[id];
+    if(id==="routing")st.routing=v/100;
+    else if(id==="abandoned")st.abandoned=v/100;
+    else if(id==="floor")st.floor=v/100;
+    else if(id==="topupPrice")st.topup=v;
+    else if(id==="sFront")st.sFront=v/100;
+    else if(id==="uMedian"||id==="uP90"||id==="uP99"||id==="pct")st[id]=v;
+    else st[id]=v;
+  });
+  return st;
+}
+var presetCache={};
+function presetSim(key,S){
+  if(!presetCache[key]){
+    var st=presetState(key,S);
+    presetCache[key]={state:st,sim:simulate(st)};
+  }
+  return presetCache[key];
+}
 /* ---------- chart ---------- */
 function drawHist(S,sim,recommended){
   var data=sim.demand;var W=640,H=230,padL=8,padB=30,padT=14;
@@ -845,6 +1192,10 @@ function update(){
   $("sStdOut").textContent=(S.sStd>=0?"+":"")+Math.round(S.sStd*100)+"%";
   $("sRouteOut").textContent=(S.sRoute>=0?"+":"")+Math.round(S.sRoute*100)+" pts";
   $("sGrowthOut").textContent=(S.sGrowth>=0?"+":"")+Math.round(S.sGrowth*100)+"%";
+  $("bElasticityOut").textContent=S.bElasticity.toFixed(1);
+  $("bWallChurnOut").textContent=Math.round(S.bWallChurn*100)+"%";
+  $("bWallDownOut").textContent=Math.round(S.bWallDown*100)+"%";
+  $("bTakeUpOut").textContent=Math.round(S.bTakeUp*100)+"%";
   /* rate card blends */
   $("rFrontBlend").textContent=fmt$(D.frontBlend);$("rStdBlend").textContent=fmt$(D.stdBlend);$("effBlend").textContent=fmt$(D.eff);
   S.plans.forEach(function(p,i){$("plan_implied_"+i).textContent=p.monthly>0?fmt$(p.price/p.monthly):"—";});
@@ -889,6 +1240,10 @@ function update(){
      "<td data-label='Guardrail'>"+flag+"<div class='src'>"+flagNote+"</div></td></tr>";
   });
   $("tierRows").innerHTML=rows;
+  /* buyer behavior + scenario comparison */
+  var beh=computeBehavior(S,sim);
+  renderBehavior(S,sim,beh);
+  renderComparison(S,sim,beh);
   /* allowance picker */
   var rec=quantile(sim.demand,S.pct/100);
   $("pctCredits").textContent=fmtInt(rec)+" credits";
@@ -941,15 +1296,94 @@ function update(){
    "<p><strong>Abandoned builds.</strong> Every build is charged its full serving cost, including the "+Math.round(S.abandoned*100)+"% assumed abandoned after generation. Nothing is refunded. That is what justifies pricing a build at "+build.credits+" credits instead of a handful: the price has to cover the builds nobody keeps.</p>"+
    "<p><strong>Rollover.</strong> Rollover is "+(S.rollover?"on, with banked credits capped at one month of allowance":"off, matching Squarespace's published position")+". Building is episodic. A user generates heavily for a month, then publishes for three. "+(S.rollover?"Banking credits across that gap costs breakage and buys goodwill where churn risk is highest.":"Expiring credits across that gap gives an episodic user a reason to downgrade. The breakage it protects is worth less than the retention it risks.")+" This is the call I would argue hardest.</p>"+
    "<p><strong>Shortfall and guardrails.</strong> When credits run out: "+(S.mode==="cap"?"actions stop at the balance, so heavy users cost no more than their allowance and the floor is protected by construction":S.mode==="overage"?"overage billing at "+S.ovMult.toFixed(1)+"× the implied per-credit price, so the tail pays for itself":"top-up packs at "+fmt$(S.topup)+" per credit, with half of any shortfall bought and half forgone")+". "+(breachNames.length?("The tiers breaching the "+Math.round(S.floor*100)+"% floor are "+breachNames.join(", ")+". The breach sits in the tail, at the p99 user, not the average. That is where a cap or an overage price earns its place."):("Every tier clears the "+Math.round(S.floor*100)+"% floor, p99 users included. There is headroom to give allowance away before a harder cap is needed."))+"</p>";
+  memo+="<p><strong>Buyer behavior.</strong> Under the behavior settings in section 3, the starting 40,000 users end the month at "+fmtInt(beh.endTotal)+". Churn takes "+fmtInt(beh.totalChurn)+" and "+fmtInt(beh.downCount)+" drop one plan. Adjusted revenue per starting user is "+fmt$(beh.adjRevPerStart)+" against "+fmt$(beh.staticRevPerUser)+" if nobody moved, and adjusted margin is "+fmtPct(beh.adjMargin)+" against "+fmtPct(beh.staticMargin)+". Section 5 runs the same calculation for every preset, so the movement can be compared across policies instead of read one setting at a time. The defaults behind those figures come from the published evidence in section 9. The elasticity of "+S.bElasticity.toFixed(1)+" is drawn from consumer subscription price events, the wall churn rate is derived from ChartMogul's baseline churn and Lambrecht and Skiera's too-small-plan multiple, and the downgrade rate follows Chargebee's downgrade-to-cancel ratio. Paid take-up has no published value and remains an assumption, and the vendor's own response rates are not public.</p>";
   $("memoBody").innerHTML=memo;
   $("memoBody").dataset.plain=memo.replace(/<[^>]+>/g,"").replace(/\s+\n/g,"\n");
+}
+/* ---------- behavior & comparison rendering ---------- */
+function mixBar(users){
+  var tot=users.reduce(function(a,v){return a+v;},0)||1;
+  var s='<div class="mixbar" role="img" aria-label="Tier mix: '+users.map(function(u,i){return PLANS0[i].name+" "+fmtPct(u/tot,0);}).join(", ")+'">';
+  users.forEach(function(u,i){if(u>0.5)s+='<i class="mix-'+i+'" style="width:'+(u/tot*100).toFixed(1)+'%"></i>';});
+  return s+"</div>";
+}
+function mixNums(users){return users.map(function(u,i){return PLANS0[i].name+" "+fmtInt(u);}).join(" · ");}
+function mixLegend(){
+  return '<div class="mixlegend">'+PLANS0.map(function(p,i){return '<span><i class="mix-'+i+'"></i>'+p.name+"</span>";}).join("")+"</div>";
+}
+function ptsChip(delta){
+  var pts=delta*100;
+  if(Math.abs(pts)<0.05)return '<span class="delta flat">0.0 pts</span>';
+  return '<span class="delta '+(pts>0?"up":"down")+'">'+(pts>0?"+":"")+pts.toFixed(1)+" pts</span>";
+}
+function moneyChip(delta){
+  if(Math.abs(delta)<0.005)return '<span class="delta flat">$0.00</span>';
+  return '<span class="delta '+(delta>0?"up":"down")+'">'+(delta>0?"+":"-")+fmt$(Math.abs(delta))+"</span>";
+}
+var MODE_LABEL={cap:"Hard cap",overage:"Overage billing",topup:"Top-up packs"};
+function renderBehavior(S,sim,beh){
+  var start=[N,N,N,N];
+  var churnNote=beh.priceChurn>=0?("Price changes account for "+fmtInt(beh.priceChurn)+" of the departures and the wall for "+fmtInt(beh.churnWall)+"."):("Prices pull in a net "+fmtInt(-beh.priceChurn)+" users, and the wall costs "+fmtInt(beh.churnWall)+".");
+  $("behSummary").innerHTML=
+    "<h3>Buyer behavior, month six</h3>"+
+    '<p class="hint">Movement under the evidence-based settings in section 3, whose defaults and sources are set out in section 9. The margin figures in this section do not include it. The adjusted figures below do.</p>'+
+    '<div class="mixrow"><span class="mlab">Starting mix</span><span>'+mixBar(start)+'<div class="src" style="margin-top:4px">'+mixNums(start)+"</div></span></div>"+
+    '<div class="mixrow"><span class="mlab">Ending mix</span><span>'+mixBar(beh.endUsers)+'<div class="src" style="margin-top:4px">'+mixNums(beh.endUsers)+"</div></span></div>"+
+    mixLegend()+
+    '<div class="kpis" style="margin-bottom:4px">'+
+    kpi2(fmtInt(beh.endTotal),"Users left, of "+fmtInt(START_TOTAL),fmtPct(beh.endTotal/START_TOTAL,0)+" of the starting population")+
+    kpi2(fmtInt(beh.totalChurn),"Churn in the month",churnNote)+
+    kpi2(fmtInt(beh.downCount),"Downgrades in the month","One plan down. Basic downgraders count as churn.")+
+    kpi2(S.mode==="cap"?"None":fmtInt(beh.takers),S.mode==="cap"?"Paid take-up":"Paid take-up at the wall",S.mode==="cap"?"A hard cap offers nothing to buy.":fmtPct(S.bTakeUp,0)+" of the "+fmtInt(beh.wallUsers)+" users who hit the wall")+
+    "</div>"+
+    '<p class="src" style="margin-top:8px">Adjusted revenue per starting user: <span class="mono" style="color:var(--ink)">'+fmt$(beh.adjRevPerStart)+"</span> against "+fmt$(beh.staticRevPerUser)+" with no movement"+moneyChip(beh.adjRevPerStart-beh.staticRevPerUser)+'. Adjusted portfolio margin: <span class="mono" style="color:var(--ink)">'+fmtPct(beh.adjMargin)+"</span> against "+fmtPct(beh.staticMargin)+ptsChip(beh.adjMargin-beh.staticMargin)+". A policy can raise the margin and lower the revenue at the same time. This is where that trade shows.</p>";
+  function kpi2(v,k,s){return '<div class="kpi"><div class="v">'+v+'</div><div class="k">'+k+'</div><div class="s">'+s+"</div></div>";}
+}
+function renderComparison(S,sim,beh){
+  var keys=Object.keys(SCEN);
+  var rowsData=keys.map(function(key){
+    var entry=presetSim(key,S);
+    var bS={};Object.keys(entry.state).forEach(function(k){bS[k]=entry.state[k];});
+    bS.bElasticity=S.bElasticity;bS.bWallChurn=S.bWallChurn;bS.bWallDown=S.bWallDown;bS.bTakeUp=S.bTakeUp;
+    return {key:key,name:SCEN[key].name,mode:entry.state.mode,b:computeBehavior(bS,entry.sim)};
+  });
+  var base=rowsData[0].b;
+  var curKey=$("scenarioSel").value;
+  var curName=SCEN[curKey]?SCEN[curKey].name:"Custom settings";
+  rowsData.push({key:null,name:"Current: "+curName,mode:S.mode,b:beh,current:true});
+  function best(fn,cmp){var v=rowsData.map(fn);return cmp.apply(null,v);}
+  var bestMargin=best(function(r){return r.b.staticMargin;},Math.max),
+      bestCost=best(function(r){return r.b.staticCostPerUser;},Math.min),
+      bestAdj=best(function(r){return r.b.adjMargin;},Math.max),
+      bestRev=best(function(r){return r.b.adjRevPerStart;},Math.max),
+      bestUsers=best(function(r){return r.b.endTotal;},Math.max),
+      bestChurn=best(function(r){return r.b.totalChurn;},Math.min),
+      bestDown=best(function(r){return r.b.downCount;},Math.min);
+  function tdBest(v,bestV){return Math.abs(v-bestV)<1e-9?' class="best"':"";}
+  var html="";
+  rowsData.forEach(function(r){
+    var b=r.b;
+    html+="<tr"+(r.current?' class="current-row"':"")+">"+
+     "<td class='name' data-label='Scenario'>"+r.name+(r.key?'<br><button type="button" class="loadbtn" data-load="'+r.key+'">Load</button>':"")+"</td>"+
+     "<td data-label='Policy' style='text-align:left'>"+MODE_LABEL[r.mode]+"</td>"+
+     "<td class='mono' data-label='Portfolio margin'"+tdBest(b.staticMargin,bestMargin)+">"+fmtPct(b.staticMargin)+ptsChip(b.staticMargin-base.staticMargin)+"</td>"+
+     "<td class='mono' data-label='Mean cost / user'"+tdBest(b.staticCostPerUser,bestCost)+">"+fmt$(b.staticCostPerUser)+"</td>"+
+     "<td class='mono' data-label='Adj. margin'"+tdBest(b.adjMargin,bestAdj)+">"+fmtPct(b.adjMargin)+ptsChip(b.adjMargin-base.adjMargin)+"</td>"+
+     "<td class='mono' data-label='Adj. revenue / starting user'"+tdBest(b.adjRevPerStart,bestRev)+">"+fmt$(b.adjRevPerStart)+moneyChip(b.adjRevPerStart-base.adjRevPerStart)+"</td>"+
+     "<td class='mono' data-label='Users left'"+tdBest(b.endTotal,bestUsers)+">"+fmtInt(b.endTotal)+"</td>"+
+     "<td class='mono' data-label='Churn'"+tdBest(b.totalChurn,bestChurn)+">"+fmtInt(b.totalChurn)+"</td>"+
+     "<td class='mono' data-label='Downgrades'"+tdBest(b.downCount,bestDown)+">"+fmtInt(b.downCount)+"</td>"+
+     "<td class='cellmix' data-label='Ending mix'>"+mixBar(b.endUsers)+'<div class="mixnums">'+mixNums(b.endUsers)+"</div></td></tr>";
+  });
+  $("cmpRows").innerHTML=html;
 }
 function rankOf(sorted,v){var c=0;for(var i=0;i<sorted.length;i++){if(sorted[i]<=v)c++;else break;}return Math.round(c/sorted.length*100);}
 /* ---------- events ---------- */
 var timer=null, applyingScen=false;
+var BEH_IDS={bElasticity:1,bWallChurn:1,bWallDown:1,bTakeUp:1};
 document.addEventListener("input",function(e){
   if(e.target&&e.target.id==="pickerTier")return;
-  if(!applyingScen&&e.target.id!=="scenarioSel")markCustom();
+  if(!applyingScen&&e.target.id!=="scenarioSel"&&!BEH_IDS[e.target.id])markCustom();
   clearTimeout(timer);timer=setTimeout(update,110);
 });
 document.addEventListener("change",function(e){
@@ -1016,6 +1450,10 @@ function applyScenario(key){
 $("scenarioSel").addEventListener("change",function(){
   var v=$("scenarioSel").value;
   if(SCEN[v])applyScenario(v);
+});
+$("cmpRows").addEventListener("click",function(e){
+  var b=e.target.closest("button[data-load]");if(!b)return;
+  if(SCEN[b.getAttribute("data-load")])applyScenario(b.getAttribute("data-load"));
 });
 $("copyMemo").addEventListener("click",function(){
   var text=$("memoBody").dataset.plain||$("memoBody").innerText;
