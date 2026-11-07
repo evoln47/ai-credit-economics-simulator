@@ -1,0 +1,727 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>AI Credit Economics Simulator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FAF8F2; --paper2:#F3F0E6; --card:#FFFFFF; --ink:#1C1B16; --ink2:#55524A; --muted:#7A766B;
+  --line:#E2DDCF; --line2:#CFC9B8; --accent:#9A3B12; --accent-soft:#F7E8DF; --good:#2E6B34; --good-bg:#E7F0E4;
+  --bad:#A92C1E; --bad-bg:#F9E7E2; --warn:#8A5A00; --warn-bg:#F7EDD2;
+  --radius:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --paper:#171613; --paper2:#1E1D19; --card:#211F1B; --ink:#EDE9DC; --ink2:#B9B4A6; --muted:#948F81;
+  --line:#33312A; --line2:#454238; --accent:#E07F4E; --accent-soft:#3A2618; --good:#8FCB93; --good-bg:#22301F;
+  --bad:#F09A8C; --bad-bg:#38201B; --warn:#E3B95C; --warn-bg:#332B14; }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15.5px;line-height:1.55}
+.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+h1,h2,h3{font-family:"Newsreader",Georgia,serif;line-height:1.12;margin:0}
+.wrap{max-width:1060px;margin:0 auto;padding:0 18px 64px}
+a{color:var(--accent)}
+/* header */
+.masthead{padding:34px 0 8px;border-bottom:2px solid var(--ink)}
+.kicker{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700;margin:0 0 10px}
+h1{font-size:clamp(30px,5.4vw,46px);font-weight:600;letter-spacing:-.01em}
+.lede{font-size:17px;color:var(--ink2);max-width:720px;margin:12px 0 14px}
+.stamp{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 18px}
+.stamp span{font-size:12px;border:1px solid var(--line2);border-radius:999px;padding:4px 10px;color:var(--ink2);background:var(--card)}
+.finding{background:var(--accent-soft);border:1px solid var(--line2);border-radius:var(--radius);padding:14px 16px;margin:18px 0 4px}
+.finding p{margin:0;font-size:15px}
+.finding strong{color:var(--accent)}
+/* sections */
+section{margin-top:38px}
+.sec-head{display:flex;align-items:baseline;gap:12px;border-bottom:1px solid var(--line2);padding-bottom:8px;margin-bottom:6px}
+.sec-num{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--accent);font-weight:600}
+h2{font-size:24px;font-weight:600}
+.sec-sub{color:var(--ink2);font-size:14px;max-width:760px;margin:8px 0 14px}
+.src{font-size:12px;color:var(--muted)}
+/* layout */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:820px){.grid2,.grid3{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.card h3{font-size:17px;margin-bottom:4px}
+.card .hint{font-size:12.5px;color:var(--muted);margin:0 0 10px}
+/* tables & inputs */
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:right;padding:6px 6px;border-bottom:1px solid var(--line2);font-weight:600}
+th:first-child,td:first-child{text-align:left}
+td{padding:7px 6px;border-bottom:1px solid var(--line);text-align:right;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+td.name{font-weight:600;text-align:left}
+input[type=number]{width:76px;padding:5px 7px;border:1px solid var(--line2);border-radius:6px;background:var(--paper);color:var(--ink);font-family:"IBM Plex Mono",monospace;font-size:13px;text-align:right}
+input[type=number].sm{width:58px}
+input[type=number]:focus{outline:2px solid var(--accent);outline-offset:0;border-color:var(--accent)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+input[type=text]{padding:6px 8px;border:1px solid var(--line2);border-radius:6px;background:var(--paper);color:var(--ink);font-size:13.5px;width:110px}
+/* controls */
+.ctl{margin:12px 0}
+.ctl label{display:flex;justify-content:space-between;font-size:13.5px;font-weight:600;margin-bottom:4px}
+.ctl label output{font-family:"IBM Plex Mono",monospace;color:var(--accent);font-weight:600}
+.ctl .note{font-size:12px;color:var(--muted);margin-top:2px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{appearance:none;border:1px solid var(--line2);background:var(--card);color:var(--ink);border-radius:999px;padding:7px 13px;font-size:13px;font-weight:600;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.toggle-row:last-child{border-bottom:none}
+.toggle-row .t{font-weight:600;font-size:14px}
+.toggle-row .d{font-size:12.5px;color:var(--muted)}
+.switch{position:relative;width:46px;height:26px;flex:none}
+.switch input{opacity:0;width:100%;height:100%;position:absolute;margin:0;cursor:pointer}
+.switch .tr{position:absolute;inset:0;background:var(--line2);border-radius:999px;pointer-events:none;transition:background .15s}
+.switch .tr::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--card);transition:left .15s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.switch input:checked + .tr{background:var(--accent)}
+.switch input:checked + .tr::after{left:23px}
+.switch input:focus-visible + .tr{outline:2px solid var(--accent);outline-offset:2px}
+/* outputs */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}
+@media(max-width:820px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px}
+.kpi .v{font-family:"IBM Plex Mono",monospace;font-size:21px;font-weight:600}
+.kpi .k{font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+.kpi .s{font-size:12px;color:var(--ink2);margin-top:3px}
+.flag{display:inline-block;font-size:11px;font-weight:700;border-radius:999px;padding:2px 8px;letter-spacing:.03em;white-space:nowrap}
+.flag.ok{background:var(--good-bg);color:var(--good)}
+.flag.breach{background:var(--bad-bg);color:var(--bad)}
+.flag.watch{background:var(--warn-bg);color:var(--warn)}
+.mbar{height:8px;border-radius:99px;background:var(--paper2);overflow:hidden;min-width:70px}
+.mbar i{display:block;height:100%;background:var(--good)}
+.mbar i.low{background:var(--bad)}
+.mbar i.mid{background:var(--warn)}
+.big-table{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.big-table table{min-width:760px}
+.pos{color:var(--good)} .neg{color:var(--bad)}
+svg text{font-family:"IBM Plex Mono",monospace}
+.memo{background:var(--card);border:1px solid var(--line2);border-left:4px solid var(--accent);border-radius:6px;padding:18px 20px;font-size:15.5px}
+.memo p{margin:0 0 12px}.memo p:last-child{margin-bottom:0}
+.btn{appearance:none;border:1px solid var(--ink);background:var(--ink);color:var(--paper);border-radius:8px;padding:9px 16px;font-size:13.5px;font-weight:600;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn:active{transform:translateY(1px)}
+.bench{border-top:3px solid var(--accent)}
+.bench h3{font-size:18px}
+.bench ul{margin:8px 0 0;padding-left:18px;font-size:13.5px;color:var(--ink2)}
+.bench li{margin-bottom:5px}
+.foot{margin-top:44px;border-top:1px solid var(--line2);padding-top:14px;font-size:12.5px;color:var(--muted)}
+.foot p{margin:0 0 8px}
+select{padding:6px 8px;border:1px solid var(--line2);border-radius:6px;background:var(--paper);color:var(--ink);font-size:13.5px}
+.decomp-row{display:grid;grid-template-columns:150px 1fr 110px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.decomp-row:last-child{border-bottom:none}
+.dbar{height:14px;background:var(--paper2);border-radius:4px;position:relative;overflow:hidden}
+.dbar i{position:absolute;top:0;bottom:0;background:var(--accent)}
+@media(max-width:560px){.decomp-row{grid-template-columns:110px 1fr 84px;font-size:13px}}
+.status{font-size:12.5px;color:var(--muted);margin-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <p class="kicker">Personal project · Interview prep for Senior Lead, AI Pricing &amp; Margin Strategy</p>
+  <h1>AI Credit Economics Simulator</h1>
+  <p class="lede">A working model of a website builder that sells AI features through plan credits. Every number below is an editable input, every figure traces to an assumption printed next to it, and the whole model re-runs live — 10,000 simulated users per tier over six months, reported for the steady-state month.</p>
+  <div class="stamp">
+    <span>Plans: Squarespace pricing page, checked October 2026</span>
+    <span>Provider prices: public list prices, defaults as of November 2026</span>
+    <span>Simulation: Monte Carlo, fixed seed, steady-state month 6</span>
+  </div>
+  <div class="finding" id="finding"><p>Running the model…</p></div>
+</header>
+
+<!-- ============ 1. PLANS & RATE CARD ============ -->
+<section aria-labelledby="h-plans">
+  <div class="sec-head"><span class="sec-num">01</span><h2 id="h-plans">The plans and the rate card</h2></div>
+  <p class="sec-sub">The skeleton is Squarespace's real published structure. Prices are the annual-billing monthly equivalents. Basic is the odd shape in the set: its credits arrive once and never refill, so in the steady-state month a Basic user holds no included credits at all.</p>
+  <div class="grid2">
+    <div class="card">
+      <h3>Plans</h3>
+      <p class="hint">Source: Squarespace pricing page, checked October 2026. Edit any cell — the model follows.</p>
+      <table aria-label="Plan inputs">
+        <thead><tr><th>Plan</th><th>Price $/mo</th><th>Credits / mo</th><th>One-time</th><th>Implied $/credit</th></tr></thead>
+        <tbody id="planRows"></tbody>
+      </table>
+      <p class="src" style="margin-top:10px">Implied $/credit is plan price ÷ monthly credits. It is the anchor for overage pricing below. Basic has no monthly refill, so it has no implied monthly rate.</p>
+    </div>
+    <div class="card">
+      <h3>Provider rate card</h3>
+      <p class="hint">Public list prices per 1M tokens, defaults as of November 2026. Blended token cost assumes a 60% input / 40% output split on text tasks.</p>
+      <table aria-label="Rate card inputs">
+        <thead><tr><th>Model</th><th>Input $/1M</th><th>Output $/1M</th><th>Blended $/1M</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Frontier <span class="src">(Sonnet class)</span></td>
+            <td><input type="number" id="rFrontIn" value="3" step="0.1" min="0"></td>
+            <td><input type="number" id="rFrontOut" value="15" step="0.5" min="0"></td>
+            <td class="mono" id="rFrontBlend">—</td></tr>
+          <tr><td class="name">Standard <span class="src">(mini / Haiku class)</span></td>
+            <td><input type="number" id="rStdIn" value="0.30" step="0.05" min="0"></td>
+            <td><input type="number" id="rStdOut" value="1.50" step="0.1" min="0"></td>
+            <td class="mono" id="rStdBlend">—</td></tr>
+          <tr><td class="name">Image generation</td>
+            <td colspan="2" class="src" style="text-align:right">flat per image</td>
+            <td><input type="number" id="rImg" value="0.04" step="0.005" min="0" aria-label="Image cost per image in dollars"></td></tr>
+        </tbody>
+      </table>
+      <div class="ctl">
+        <label for="routing">Routing mix — text tasks on the frontier model <output id="routingOut">30%</output></label>
+        <input type="range" id="routing" min="0" max="100" step="1" value="30">
+        <p class="note">The rest route to the standard model. Effective blended rate: <span class="mono" id="effBlend">—</span> per 1M tokens. Routing is the cheapest margin lever in the model because the frontier model costs ten times the standard model per token.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. TASKS & USAGE ============ -->
+<section aria-labelledby="h-tasks">
+  <div class="sec-head"><span class="sec-num">02</span><h2 id="h-tasks">What a credit buys, and how much people use</h2></div>
+  <p class="sec-sub">Each task carries a token profile and a credit exchange rate. The exchange rate is a pricing decision, not a cost figure: a site build burns roughly sixty times the tokens of a copy draft but is priced at twenty-five times the credits, so the build is deliberately the best value in the catalogue and the copy draft carries the margin.</p>
+  <div class="grid2">
+    <div class="card">
+      <h3>Task table</h3>
+      <p class="hint">Mix is each task's share of monthly actions and is renormalized to 100% in the model. Serving cost follows from the rate card and routing mix.</p>
+      <table aria-label="Task inputs">
+        <thead><tr><th>Task</th><th>Tokens</th><th>Credits</th><th>Mix %</th><th>Cost each</th><th>Value at Core $/cr</th></tr></thead>
+        <tbody id="taskRows"></tbody>
+      </table>
+      <p class="src" style="margin-top:10px">Averages across the mix: <span class="mono" id="avgLine">—</span>. Abandoned builds still incur their full serving cost — see the memo assumption in panel 6.</p>
+      <div class="ctl">
+        <label for="abandoned">Abandoned builds — share of site builds given up after generation <output id="abandonedOut">25%</output></label>
+        <input type="range" id="abandoned" min="0" max="80" step="1" value="25">
+        <p class="note">Their tokens are spent either way, so abandonment is pure sunk serving cost. It is reported in the memo, and it is the reason a build should cost many credits rather than few.</p>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Usage distribution</h3>
+      <p class="hint">Actions per user per month, fitted as a lognormal through your three points: the median is matched exactly, and the spread is the least-squares fit to your p90 and p99 on the log scale, so all three sliders move the simulated demand.</p>
+      <div class="ctl">
+        <label for="uMedian">Median actions / month <output id="uMedianOut">20</output></label>
+        <input type="range" id="uMedian" min="2" max="120" step="1" value="20">
+      </div>
+      <div class="ctl">
+        <label for="uP90">p90 actions / month <output id="uP90Out">200</output></label>
+        <input type="range" id="uP90" min="30" max="800" step="5" value="200">
+      </div>
+      <div class="ctl">
+        <label for="uP99">p99 actions / month <output id="uP99Out">1,500</output></label>
+        <input type="range" id="uP99" min="200" max="5000" step="25" value="1500">
+        <p class="note" id="fitNote">—</p>
+      </div>
+      <div id="histChart" role="img" aria-label="Histogram of simulated monthly credit demand with plan allowance markers"></div>
+      <p class="src">Simulated monthly credit demand (10,000 users, log-spaced bins). Vertical markers are each plan's included credits and the allowance picker's recommendation. Most of the distribution sits to the right of every marker — that gap is the whole pricing problem.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. POLICIES ============ -->
+<section aria-labelledby="h-policy">
+  <div class="sec-head"><span class="sec-num">03</span><h2 id="h-policy">Policy levers</h2></div>
+  <p class="sec-sub">These are the choices a pricing team actually owns. Flip any of them and panels 4 and 5 reprice revenue, margin, and breakage on the spot. This is also where the competitor shapes can be replayed: Wix is hard cap with no top-ups, Framer is top-ups with published burn rates.</p>
+  <div class="grid2">
+    <div class="card">
+      <div class="toggle-row">
+        <div><div class="t">Credit rollover</div><div class="d">Unused credits bank into next month, capped at one month of allowance. Off matches Squarespace today: monthly credits do not roll over.</div></div>
+        <label class="switch"><input type="checkbox" id="rollover"><span class="tr"></span><span class="src" style="position:absolute;left:54px;top:4px" id="rolloverState">Off</span></label>
+      </div>
+      <div class="ctl" style="margin-top:16px">
+        <label for="floor">Margin floor — guardrail <output id="floorOut">70%</output></label>
+        <input type="range" id="floor" min="0" max="95" step="1" value="70">
+        <p class="note">AI gross margin is (revenue − AI serving cost) ÷ revenue, per user per month, plan price plus any overage or top-up revenue. A tier is flagged when its overall margin or its p99 user's margin falls under this floor.</p>
+      </div>
+    </div>
+    <div class="card">
+      <h3>When a user runs out of credits</h3>
+      <p class="hint">Pick one shortfall rule. It applies to every tier at once, the way a real rate card would.</p>
+      <div class="seg" role="group" aria-label="Shortfall handling" id="shortfallSeg">
+        <button type="button" data-mode="cap" aria-pressed="true">Hard cap — actions stop</button>
+        <button type="button" data-mode="overage" aria-pressed="false">Overage billing</button>
+        <button type="button" data-mode="topup" aria-pressed="false">Top-up packs</button>
+      </div>
+      <div class="ctl">
+        <label for="ovMult">Overage multiple of the implied $/credit <output id="ovMultOut">1.5×</output></label>
+        <input type="range" id="ovMult" min="0.5" max="3" step="0.1" value="1.5">
+        <p class="note">Only used under overage billing. Basic has no implied rate, so its overage is priced off the top-up price instead.</p>
+      </div>
+      <div class="ctl">
+        <label for="topupPrice">Top-up price, $ per credit <output id="topupOut">$1.00</output></label>
+        <input type="range" id="topupPrice" min="0.1" max="2.5" step="0.05" value="1">
+        <p class="note">Only used under top-up packs. Assumption, stated plainly: half of any shortfall is covered by top-up purchases and the other half is forgone — the user just does fewer actions.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4. TIER MARGIN TABLE ============ -->
+<section aria-labelledby="h-margins">
+  <div class="sec-head"><span class="sec-num">04</span><h2 id="h-margins">Tier margins in the steady-state month</h2></div>
+  <p class="sec-sub">Expected serving cost is what the plan actually pays out under the policy above — under a hard cap, heavy users cost no more than their allowance; under overage, they cost their full demand and pay for the excess. Margin is per user per month on plan revenue plus overage or top-up revenue.</p>
+  <div class="kpis" id="kpis"></div>
+  <div class="card big-table" style="padding:6px 14px">
+    <table aria-label="Tier margin results">
+      <thead><tr>
+        <th>Plan</th><th>Price</th><th>Included cr</th><th>Cost @ median user</th><th>Cost @ p90</th><th>Cost @ p99</th>
+        <th>Mean cost</th><th>Extra rev</th><th>Gross margin</th><th>Margin @ p99 user</th><th>Breakage</th><th>Guardrail</th>
+      </tr></thead>
+      <tbody id="tierRows"></tbody>
+    </table>
+  </div>
+  <p class="src" id="simStatus">Simulation: 10,000 users per tier × 6 months, fixed seed so identical settings always give identical figures. Breakage is the share of credits available in the month (grant plus banked rollover) that expire unused. Costs at median / p90 / p99 are read from the simulated users nearest those demand percentiles, not from the fitted curve. One caution on the overage and top-up columns: that revenue is a mechanical upper bound, because it bills the simulated shortfall in full before any upgrade, churn, or spending-cap behaviour — in a live product the heaviest users upgrade or leave rather than pay many multiples of the plan price, and the mean is dominated by that tail.</p>
+</section>
+
+<!-- ============ 5. ALLOWANCE PICKER ============ -->
+<section aria-labelledby="h-picker">
+  <div class="sec-head"><span class="sec-num">05</span><h2 id="h-picker">The allowance picker</h2></div>
+  <p class="sec-sub">The allowance question, made concrete: set the included credits at a chosen percentile of simulated credit demand, then read what that allowance does to breakage and margin. The 70th to 80th percentile is the usual landing zone — generous enough that most users never think about credits, tight enough that the tail pays or upgrades.</p>
+  <div class="grid2">
+    <div class="card">
+      <div class="ctl">
+        <label for="pct">Set the allowance at this percentile of demand <output id="pctOut">75th</output></label>
+        <input type="range" id="pct" min="40" max="97" step="1" value="75">
+        <p class="note">At the current usage shape, that percentile is <strong class="mono" id="pctCredits">—</strong>. For scale, the fitted demand percentiles are: <span class="mono" id="pctLadder">—</span>.</p>
+      </div>
+      <div class="ctl">
+        <label for="pickerTier">Apply it to this plan</label>
+        <select id="pickerTier">
+          <option value="0">Basic</option>
+          <option value="1" selected>Core</option>
+          <option value="2">Plus</option>
+          <option value="3">Advanced</option>
+        </select>
+        <p class="note">The panel on the right re-runs the selected plan with the allowance replaced by the percentile figure, holding price and policy constant. It is the cleanest way to see what Squarespace's current allowances leave on the table — and what they protect.</p>
+      </div>
+      <table aria-label="Where current allowances sit">
+        <thead><tr><th>Plan</th><th>Current allowance</th><th>Sits at percentile</th></tr></thead>
+        <tbody id="allowRows"></tbody>
+      </table>
+    </div>
+    <div class="card" id="pickerOutCard">
+      <h3 id="pickerTitle">Core at the 75th percentile</h3>
+      <p class="hint">Same price, same policy, new allowance. Current settings shown for comparison.</p>
+      <div id="pickerBody">—</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6. DECOMPOSITION ============ -->
+<section aria-labelledby="h-decomp">
+  <div class="sec-head"><span class="sec-num">06</span><h2 id="h-decomp">Where did the margin go?</h2></div>
+  <p class="sec-sub">A scenario panel for the question every pricing review eventually asks. Set a shock — a provider price move, a routing shift, usage growth — and the change in portfolio AI margin is split into its causes, each in plain words. The portfolio assumes equal user counts on the four plans; the split is computed by changing one factor at a time and assigning what is left to interaction.</p>
+  <div class="grid2">
+    <div class="card">
+      <h3>Scenario</h3>
+      <p class="hint">All shocks are relative to the current settings in panels 1 to 3.</p>
+      <div class="ctl">
+        <label for="sFront">Frontier price change <output id="sFrontOut">+0%</output></label>
+        <input type="range" id="sFront" min="-60" max="120" step="5" value="0">
+      </div>
+      <div class="ctl">
+        <label for="sStd">Standard price change <output id="sStdOut">+0%</output></label>
+        <input type="range" id="sStd" min="-60" max="120" step="5" value="0">
+      </div>
+      <div class="ctl">
+        <label for="sRoute">Routing shift toward frontier <output id="sRouteOut">+0 pts</output></label>
+        <input type="range" id="sRoute" min="-30" max="50" step="1" value="0">
+      </div>
+      <div class="ctl">
+        <label for="sGrowth">Usage growth (all percentiles scale) <output id="sGrowthOut">+0%</output></label>
+        <input type="range" id="sGrowth" min="-40" max="150" step="5" value="0">
+      </div>
+    </div>
+    <div class="card">
+      <h3>Decomposition</h3>
+      <p class="hint" id="decompBase">—</p>
+      <div id="decompBody">—</div>
+      <p class="src" style="margin-top:10px">Rate effect: what the provider price changes alone do to margin. Mix effect: what sending a different share of tasks to the frontier model does, at unchanged prices. Volume effect: what usage growth does under the current policy — under a hard cap it is near zero by construction, which is itself a finding. Interaction: the part that only exists because the shocks land together.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7. BENCHMARKS ============ -->
+<section aria-labelledby="h-bench">
+  <div class="sec-head"><span class="sec-num">07</span><h2 id="h-bench">How the neighbours package it</h2></div>
+  <p class="sec-sub">Three live alternatives to the Squarespace shape, from public pricing and help pages checked in October and November 2026. Each one is a different answer to the same three questions: what burns credits, what happens at zero, and can you buy more.</p>
+  <div class="grid3">
+    <div class="card bench">
+      <h3>Framer</h3>
+      <p class="src">Published burn rates, per-model pricing</p>
+      <ul>
+        <li>A full AI landing page costs roughly <strong>300 credits</strong> — the burn rate is published, so users can budget before they click.</li>
+        <li>Model choice is priced as a multiplier: <strong>0.9× / 1× / 1.8×</strong> across its model tiers, passing the routing decision to the user.</li>
+        <li>The contrast with this model: Squarespace's build at 25 credits hides the same choice inside one blended rate.</li>
+      </ul>
+    </div>
+    <div class="card bench">
+      <h3>Wix</h3>
+      <p class="src">Generation unmetered, agents metered</p>
+      <ul>
+        <li>Site generation itself is <strong>unmetered</strong>; credits apply only to agentic tools that keep working after the site exists.</li>
+        <li><strong>No rollover and no top-ups</strong> — the only way to get more capacity is to upgrade the plan.</li>
+        <li>In this simulator, that shape is the hard cap with top-ups switched away: margin is protected by construction, and heavy users become upgrade leads instead of cost centres.</li>
+      </ul>
+    </div>
+    <div class="card bench">
+      <h3>Webflow</h3>
+      <p class="src">Pooled workspace credits, cheap refills</p>
+      <ul>
+        <li>Credits are <strong>pooled at the workspace</strong>, not per site, so one busy site can draw on the whole pool.</li>
+        <li>Refill packs run <strong>2,000 credits for $20</strong> — one cent per credit, far under any plan's implied per-credit price in panel 1.</li>
+        <li>That price point only works if a Webflow credit buys far less compute per unit than a Squarespace credit does here — a reminder that credit counts mean nothing across vendors; cost per credit is the comparable figure.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8. MEMO ============ -->
+<section aria-labelledby="h-memo">
+  <div class="sec-head"><span class="sec-num">08</span><h2 id="h-memo">Decisions memo</h2></div>
+  <p class="sec-sub">Generated from the settings above, in plain sentences. Change any input and the memo rewrites itself, so the reasoning on record always matches the numbers on the page.</p>
+  <div class="memo" id="memoBody">—</div>
+  <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+    <button class="btn" type="button" id="copyMemo">Copy the memo</button>
+    <button class="btn ghost" type="button" id="resetBtn">Reset all defaults</button>
+    <span class="status" id="copyStatus" role="status"></span>
+  </div>
+</section>
+
+<footer class="foot">
+  <p><strong>Method, in one paragraph.</strong> Demand per user is drawn from a lognormal fitted to the median and p90 in panel 2. Each action draws a task from the mix, burns that task's credits, and costs what the rate card and routing mix say it costs. Users are simulated for six months so rollover banks settle, and month six is reported. Under a hard cap, actions stop at the credit balance; under overage, the full demand is served and the excess is billed; under top-ups, half the shortfall is bought and half is forgone. Figures are model outputs from these stated assumptions, not Squarespace's internal numbers.</p>
+  <p>Sources for the defaults: Squarespace's published plan prices and credit allowances (Basic $19 with 10 one-time credits; Core $29 with 20 a month; Plus $49 with 40 a month; Advanced $99 with 120 a month, annual billing, checked October 2026); public per-token list prices for frontier and standard model classes (defaults as of November 2026, editable above); competitor packaging from Framer, Wix, and Webflow public pages. Built as a personal interview-prep project using public data only.</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+"use strict";
+/* ---------- defaults ---------- */
+var PLANS0=[
+ {name:"Basic",price:19,monthly:0,one:10},
+ {name:"Core",price:29,monthly:20,one:0},
+ {name:"Plus",price:49,monthly:40,one:0},
+ {name:"Advanced",price:99,monthly:120,one:0}
+];
+var TASKS0=[
+ {name:"Site build",tokens:120,credits:25,mix:5,image:false},
+ {name:"Page regeneration",tokens:15,credits:5,mix:20,image:false},
+ {name:"Copy draft",tokens:2,credits:1,mix:40,image:false},
+ {name:"Image generation",tokens:0,credits:3,mix:20,image:true},
+ {name:"SEO scan",tokens:6,credits:2,mix:15,image:false}
+];
+var N=10000, MONTHS=6;
+/* ---------- seeded draws (fixed, so identical settings give identical figures) ---------- */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;}}
+var rng=mulberry32(20261106);
+var Z=new Float32Array(N*MONTHS);
+for(var i=0;i<N*MONTHS;i+=2){
+  var u1=Math.max(rng(),1e-9),u2=rng(),r=Math.sqrt(-2*Math.log(u1)),th=2*Math.PI*u2;
+  Z[i]=r*Math.cos(th); if(i+1<N*MONTHS)Z[i+1]=r*Math.sin(th);
+}
+/* ---------- helpers ---------- */
+function $(id){return document.getElementById(id);}
+function num(id,def){var el=$(id);if(!el)return def;var v=parseFloat(el.value);return isFinite(v)?v:def;}
+function fmt$(v,d){if(!isFinite(v))return "—";return "$"+v.toLocaleString("en-US",{minimumFractionDigits:(d==null?2:d),maximumFractionDigits:(d==null?2:d)});}
+function fmtInt(v){return Math.round(v).toLocaleString("en-US");}
+function fmtPct(v,d){if(!isFinite(v))return "—";return (v*100).toFixed(d==null?1:d)+"%";}
+function clamp(v,a,b){return Math.min(b,Math.max(a,v));}
+function quantile(sorted,q){if(!sorted.length)return 0;var idx=clamp(q,0,1)*(sorted.length-1);var lo=Math.floor(idx),hi=Math.ceil(idx);return sorted[lo]+(sorted[hi]-sorted[lo])*(idx-lo);}
+function ordinal(n){var s=["th","st","nd","rd"],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
+
+/* ---------- build editable rows ---------- */
+var planRows=$("planRows");
+PLANS0.forEach(function(p,idx){
+  var tr=document.createElement("tr");
+  tr.innerHTML='<td class="name">'+p.name+'</td>'+
+   '<td><input type="number" id="plan_price_'+idx+'" value="'+p.price+'" step="1" min="0" aria-label="'+p.name+' price"></td>'+
+   '<td><input type="number" id="plan_monthly_'+idx+'" value="'+p.monthly+'" step="1" min="0" aria-label="'+p.name+' monthly credits"></td>'+
+   '<td><input type="number" id="plan_one_'+idx+'" value="'+p.one+'" step="1" min="0" aria-label="'+p.name+' one-time credits"></td>'+
+   '<td class="mono" id="plan_implied_'+idx+'">—</td>';
+  planRows.appendChild(tr);
+});
+var taskRows=$("taskRows");
+TASKS0.forEach(function(t,idx){
+  var tr=document.createElement("tr");
+  tr.innerHTML='<td class="name">'+t.name+'</td>'+
+   '<td>'+(t.image?'<span class="src">1 image</span>':'<input type="number" class="sm" id="task_tokens_'+idx+'" value="'+t.tokens+'" step="1" min="0" aria-label="'+t.name+' tokens in thousands">K')+'</td>'+
+   '<td><input type="number" class="sm" id="task_credits_'+idx+'" value="'+t.credits+'" step="0.5" min="0" aria-label="'+t.name+' credits"></td>'+
+   '<td><input type="number" class="sm" id="task_mix_'+idx+'" value="'+t.mix+'" step="1" min="0" aria-label="'+t.name+' mix percent"></td>'+
+   '<td class="mono" id="task_cost_'+idx+'">—</td>'+
+   '<td class="mono" id="task_value_'+idx+'">—</td>';
+  taskRows.appendChild(tr);
+});
+
+/* ---------- state ---------- */
+var shortfallMode="cap";
+function readState(){
+  var plans=PLANS0.map(function(p,idx){
+    return {name:p.name,price:num("plan_price_"+idx,p.price),monthly:num("plan_monthly_"+idx,p.monthly),one:num("plan_one_"+idx,p.one)};
+  });
+  var tasks=TASKS0.map(function(t,idx){
+    return {name:t.name,image:t.image,tokens:t.image?0:num("task_tokens_"+idx,t.tokens),credits:num("task_credits_"+idx,t.credits),mix:Math.max(0,num("task_mix_"+idx,t.mix))};
+  });
+  return {
+    plans:plans,tasks:tasks,
+    frontIn:num("rFrontIn",3),frontOut:num("rFrontOut",15),stdIn:num("rStdIn",0.30),stdOut:num("rStdOut",1.50),img:num("rImg",0.04),
+    routing:num("routing",30)/100,
+    abandoned:num("abandoned",25)/100,
+    uMedian:Math.max(1,num("uMedian",20)),uP90:Math.max(2,num("uP90",200)),uP99:Math.max(3,num("uP99",1500)),
+    rollover:$("rollover").checked,floor:num("floor",70)/100,
+    mode:shortfallMode,ovMult:num("ovMult",1.5),topup:num("topupPrice",1),
+    pct:num("pct",75),pickerTier:parseInt($("pickerTier").value,10)||0,
+    sFront:num("sFront",0)/100,sStd:num("sStd",0)/100,sRoute:num("sRoute",0)/100,sGrowth:num("sGrowth",0)/100
+  };
+}
+function derived(S,ov){
+  ov=ov||{};
+  var frontIn=S.frontIn*(ov.frontMult||1),frontOut=S.frontOut*(ov.frontMult||1);
+  var stdIn=S.stdIn*(ov.stdMult||1),stdOut=S.stdOut*(ov.stdMult||1);
+  var routing=clamp((ov.routing!=null?ov.routing:S.routing),0,1);
+  var frontBlend=0.6*frontIn+0.4*frontOut, stdBlend=0.6*stdIn+0.4*stdOut;
+  var eff=routing*frontBlend+(1-routing)*stdBlend;
+  var mixSum=S.tasks.reduce(function(a,t){return a+t.mix;},0)||1;
+  var taskCosts=S.tasks.map(function(t){return t.image?S.img:(t.tokens/1000)*eff;});
+  var avgCredits=0,avgCost=0;
+  S.tasks.forEach(function(t,i){var w=t.mix/mixSum;avgCredits+=w*t.credits;avgCost+=w*taskCosts[i];});
+  var mu=Math.log(S.uMedian);
+  var p90=Math.max(S.uP90,S.uMedian*1.05), p99=Math.max(S.uP99,p90*1.05);
+  /* least-squares fit of sigma to both the p90 and p99 points (median is exact),
+     so all three sliders genuinely shape the simulated distribution */
+  var z90=1.2816,z99=2.3263;
+  var sigma=Math.max(0.05,(z90*(Math.log(p90)-mu)+z99*(Math.log(p99)-mu))/(z90*z90+z99*z99));
+  return {frontBlend:frontBlend,stdBlend:stdBlend,eff:eff,taskCosts:taskCosts,avgCredits:avgCredits,avgCost:avgCost,
+    costPerCredit:avgCredits>0?avgCost/avgCredits:0,mu:mu,sigma:sigma,
+    fittedP90:Math.exp(mu+1.2816*sigma),fittedP99:Math.exp(mu+2.3263*sigma),routing:routing};
+}
+/* ---------- simulation ---------- */
+function simulate(S,ov){
+  ov=ov||{};
+  var D=derived(S,ov), scale=ov.scale||1, allowMap=ov.allowMap||null;
+  var tiers=[];
+  var demand6=null;
+  S.plans.forEach(function(plan,ti){
+    var monthly=(allowMap&&allowMap[ti]!=null)?allowMap[ti]:plan.monthly;
+    var implied=monthly>0?plan.price/monthly:S.topup;
+    var sumCost=0,sumExtra=0,sumAvail=0,sumExpired=0,sumServed=0,sumDem=0,covered=0;
+    var dArr=new Float32Array(N),cArr=new Float32Array(N),rArr=new Float32Array(N);
+    for(var u=0;u<N;u++){
+      var bank=0,cost6=0,rev6=0,dem6=0,av6=0,exp6=0;
+      for(var m=0;m<MONTHS;m++){
+        var A=Math.exp(D.mu+D.sigma*Z[u*MONTHS+m])*scale;
+        var Dcr=A*D.avgCredits, Dcost=A*D.avgCost;
+        var grant=monthly+(m===0?plan.one:0);
+        var avail=grant+bank;
+        var servedCost,extraRev,unused;
+        if(Dcr<=avail){servedCost=Dcost;extraRev=0;unused=avail-Dcr;}
+        else{
+          var short=Dcr-avail, shortCost=Dcost*(short/Dcr||0);
+          if(S.mode==="overage"){servedCost=Dcost;extraRev=short*implied*S.ovMult;unused=0;}
+          else if(S.mode==="topup"){var bought=short*0.5;servedCost=Dcost-shortCost*0.5;extraRev=bought*S.topup;unused=0;}
+          else{servedCost=Dcost-shortCost;extraRev=0;unused=0;}
+        }
+        var bankOut=S.rollover?Math.min(unused,monthly):0;
+        var expired=unused-bankOut;
+        bank=bankOut;
+        if(m===MONTHS-1){cost6=servedCost;rev6=plan.price+extraRev;dem6=Dcr;av6=avail;exp6=expired;
+          if(Dcr<=avail)covered++;}
+        sumServed+=0;
+      }
+      dArr[u]=dem6;cArr[u]=cost6;rArr[u]=rev6;
+      sumCost+=cost6;sumExtra+=(rev6-plan.price);sumAvail+=av6;sumExpired+=exp6;sumDem+=dem6;
+    }
+    var order=Array.prototype.slice.call(dArr).sort(function(a,b){return a-b;});
+    if(ti===0)demand6=order;
+    function costAt(q){var target=quantile(order,q);var best=0,bd=Infinity;for(var u2=0;u2<N;u2+=7){var dd=Math.abs(dArr[u2]-target);if(dd<bd){bd=dd;best=u2;}}return {cost:cArr[best],rev:rArr[best]};}
+    var c50=costAt(0.5),c90=costAt(0.9),c99=costAt(0.99);
+    var meanCost=sumCost/N,meanExtra=sumExtra/N,meanRev=plan.price+meanExtra;
+    function umargin(c){return c.rev>0?(c.rev-c.cost)/c.rev:1;}
+    tiers.push({plan:plan,monthly:monthly,implied:implied,meanCost:meanCost,meanExtra:meanExtra,meanRev:meanRev,
+      margin:meanRev>0?(meanRev-meanCost)/meanRev:1,
+      cost50:c50.cost,cost90:c90.cost,cost99:c99.cost,m50:umargin(c50),m90:umargin(c90),m99:umargin(c99),
+      breakage:sumAvail>0?sumExpired/sumAvail:null,covered:covered/N,meanDemand:sumDem/N});
+  });
+  return {tiers:tiers,demand:demand6,derived:D};
+}
+function portfolioProfit(S,ov){
+  var r=simulate(S,ov);var s=0;r.tiers.forEach(function(t){s+=(t.meanRev-t.meanCost);});return s/r.tiers.length;
+}
+/* ---------- chart ---------- */
+function drawHist(S,sim,recommended){
+  var data=sim.demand;var W=640,H=230,padL=8,padB=30,padT=14;
+  var lo=Math.log10(1),hi=Math.log10(Math.max(10000,data[data.length-1]));
+  var bins=26,counts=new Array(bins).fill(0);
+  data.forEach(function(v){var b=Math.floor((Math.log10(Math.max(1,v))-lo)/(hi-lo)*bins);counts[clamp(b,0,bins-1)]++;});
+  var maxC=Math.max.apply(null,counts);
+  var bw=(W-padL*2)/bins, bh=H-padT-padB;
+  var s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="presentation" aria-hidden="true">';
+  counts.forEach(function(c,i){var h=(c/maxC)*bh;var x=padL+i*bw;
+    s+='<rect x="'+x.toFixed(1)+'" y="'+(padT+bh-h).toFixed(1)+'" width="'+(bw-1.5).toFixed(1)+'" height="'+h.toFixed(1)+'" fill="var(--accent)" opacity="0.82"></rect>';});
+  function xFor(v){return padL+(Math.log10(Math.max(1,v))-lo)/(hi-lo)*(W-padL*2);}
+  [1,10,100,1000,10000].forEach(function(v){if(v<=Math.pow(10,hi)){var x=xFor(v);
+    s+='<text x="'+x.toFixed(1)+'" y="'+(H-14)+'" font-size="10" fill="var(--muted)" text-anchor="middle">'+fmtInt(v)+'</text>';
+    s+='<line x1="'+x.toFixed(1)+'" y1="'+padT+'" x2="'+x.toFixed(1)+'" y2="'+(padT+bh)+'" stroke="var(--line)" stroke-width="1"></line>';}});
+  s+='<text x="'+(W/2)+'" y="'+(H-1)+'" font-size="10" fill="var(--muted)" text-anchor="middle">credits demanded per user per month (log scale)</text>';
+  var marks=[];
+  S.plans.forEach(function(p){if(p.monthly>0)marks.push({v:p.monthly,label:p.name+" "+p.monthly,color:"var(--ink2)",dash:"4 3"});});
+  marks.push({v:10,label:"Basic 10 once",color:"var(--ink2)",dash:"4 3"});
+  marks.push({v:recommended,label:ordinal(S.pct)+" pct "+fmtInt(recommended),color:"var(--accent)",dash:""});
+  var seen=[];
+  marks.forEach(function(mk,mi){
+    var x=xFor(mk.v);var ly=padT+8+mi*0; /* labels along top, staggered by collision */
+    var slot=mi;seen.forEach(function(p2){if(Math.abs(p2-x)<86)slot=Math.max(slot,p2+1);});seen.push(x);
+    s+='<line x1="'+x.toFixed(1)+'" y1="'+padT+'" x2="'+x.toFixed(1)+'" y2="'+(padT+bh)+'" stroke="'+mk.color+'" stroke-width="'+(mk.dash?1:2)+'" '+(mk.dash?'stroke-dasharray="'+mk.dash+'"':'')+'></line>';
+  });
+  s+='</svg>';
+  /* marker legend as text (keeps labels readable on a phone) */
+  s+='<p class="src" style="margin:2px 0 0">Markers: '+marks.map(function(mk){return mk.label;}).join(" · ")+' credits.</p>';
+  $("histChart").innerHTML=s;
+}
+/* ---------- render ---------- */
+var lastSim=null,lastS=null;
+function update(){
+  var S=readState();lastS=S;
+  var D=derived(S);
+  /* outputs / labels */
+  $("routingOut").textContent=Math.round(S.routing*100)+"%";
+  $("abandonedOut").textContent=Math.round(S.abandoned*100)+"%";
+  $("uMedianOut").textContent=fmtInt(S.uMedian);$("uP90Out").textContent=fmtInt(S.uP90);$("uP99Out").textContent=fmtInt(S.uP99);
+  $("floorOut").textContent=Math.round(S.floor*100)+"%";
+  $("ovMultOut").textContent=S.ovMult.toFixed(1)+"×";$("topupOut").textContent=fmt$(S.topup);
+  $("rolloverState").textContent=S.rollover?"On":"Off";
+  $("pctOut").textContent=ordinal(S.pct);
+  $("sFrontOut").textContent=(S.sFront>=0?"+":"")+Math.round(S.sFront*100)+"%";
+  $("sStdOut").textContent=(S.sStd>=0?"+":"")+Math.round(S.sStd*100)+"%";
+  $("sRouteOut").textContent=(S.sRoute>=0?"+":"")+Math.round(S.sRoute*100)+" pts";
+  $("sGrowthOut").textContent=(S.sGrowth>=0?"+":"")+Math.round(S.sGrowth*100)+"%";
+  /* rate card blends */
+  $("rFrontBlend").textContent=fmt$(D.frontBlend);$("rStdBlend").textContent=fmt$(D.stdBlend);$("effBlend").textContent=fmt$(D.eff);
+  S.plans.forEach(function(p,i){$("plan_implied_"+i).textContent=p.monthly>0?fmt$(p.price/p.monthly):"—";});
+  var core=S.plans[1],coreImplied=core.monthly>0?core.price/core.monthly:0;
+  S.tasks.forEach(function(t,i){
+    $("task_cost_"+i).textContent=fmt$(D.taskCosts[i],3);
+    $("task_value_"+i).textContent=coreImplied?fmt$(t.credits*coreImplied):"—";
+  });
+  $("avgLine").textContent=fmtInt(D.avgCredits*100)/100+" credits and "+fmt$(D.avgCost,3)+" of serving cost per action, on average";
+  var fitMsg="Fitted curve: σ "+D.sigma.toFixed(2)+", fitted p90 "+fmtInt(D.fittedP90)+" actions against your "+fmtInt(S.uP90)+", fitted p99 "+fmtInt(D.fittedP99)+" against your "+fmtInt(S.uP99)+". A single lognormal cannot pass exactly through all three points unless they happen to agree, so the fitted pair splits the difference — that residual is the honest measure of how lognormal your three points are.";
+  $("fitNote").textContent=fitMsg;
+  /* main simulation */
+  var sim=simulate(S);lastSim=sim;
+  /* finding banner */
+  var medD=quantile(sim.demand,0.5),p99D=quantile(sim.demand,0.99);
+  var medCostFull=medD*D.costPerCredit,p99CostFull=p99D*D.costPerCredit;
+  var covering=S.plans.filter(function(p){return p.monthly>=medD;}).map(function(p){return p.name;});
+  $("finding").innerHTML="<p><strong>The headline:</strong> at the default usage shape, the median user demands <strong>"+fmtInt(medD)+" credits a month</strong> ("+fmt$(medCostFull)+" of serving cost if fully served) — "+(covering.length?("only "+covering.join(", ")+" covers that from its allowance."):("more than every plan's included allowance, Advanced included."))+" The p99 user's full demand costs <strong>"+fmt$(p99CostFull)+"</strong>, roughly "+(p99CostFull/Math.max(1,S.plans[1].price)).toFixed(1)+"× the Core plan's price. Everything in panels 4 and 5 follows from that gap.</p>";
+  /* KPIs */
+  var portRev=0,portProfit=0,portCost=0,breaches=[];
+  sim.tiers.forEach(function(t){portRev+=t.meanRev;portProfit+=(t.meanRev-t.meanCost);portCost+=t.meanCost;
+    if(t.margin<S.floor||t.m99<S.floor)breaches.push(t.plan.name);});
+  var portMargin=portRev>0?portProfit/portRev:1;portCost/=sim.tiers.length;
+  $("kpis").innerHTML=
+    kpi(fmtPct(portMargin),"Portfolio AI gross margin","Equal user counts per plan, current policy")+
+    kpi(fmt$(portCost),"Mean AI cost per user / mo","Steady-state month, policy applied")+
+    kpi(fmtInt(medD)+" cr","Median monthly demand",fmt$(medCostFull)+" to serve in full")+
+    kpi(breaches.length?breaches.join(", "):"None","Tiers breaching the guardrail","Floor set at "+Math.round(S.floor*100)+"% in panel 3");
+  function kpi(v,k,s){return '<div class="kpi"><div class="v">'+v+'</div><div class="k">'+k+'</div><div class="s">'+s+'</div></div>';}
+  /* tier table */
+  var rows="";
+  sim.tiers.forEach(function(t){
+    var breach=t.margin<S.floor||t.m99<S.floor, watch=!breach&&t.m90<S.floor;
+    var flag=breach?'<span class="flag breach">Breach</span>':(watch?'<span class="flag watch">Watch — p90</span>':'<span class="flag ok">Within floor</span>');
+    var flagNote=breach?(t.m99<S.floor?" p99 user at "+fmtPct(t.m99):" overall at "+fmtPct(t.margin)):"";
+    rows+="<tr><td class='name'>"+t.plan.name+"</td><td class='mono'>"+fmt$(t.plan.price,0)+"</td><td class='mono'>"+(t.monthly>0?fmtInt(t.monthly):(t.plan.one>0?fmtInt(t.plan.one)+" once":"0"))+"</td>"+
+     "<td class='mono'>"+fmt$(t.cost50)+"</td><td class='mono'>"+fmt$(t.cost90)+"</td><td class='mono'>"+fmt$(t.cost99)+"</td>"+
+     "<td class='mono'>"+fmt$(t.meanCost)+"</td><td class='mono'>"+fmt$(t.meanExtra)+"</td>"+
+     "<td><div style='display:flex;align-items:center;gap:8px;justify-content:flex-end'><span class='mono'>"+fmtPct(t.margin)+"</span><span class='mbar'><i style='width:"+clamp(t.margin*100,0,100)+"%' class='"+(t.margin<S.floor?"low":(t.margin<S.floor+0.1?"mid":""))+"'></i></span></div></td>"+
+     "<td class='mono "+(t.m99<S.floor?"neg":"")+"'>"+fmtPct(t.m99)+"</td>"+
+     "<td class='mono'>"+(t.breakage==null?"—":fmtPct(t.breakage))+"</td>"+
+     "<td>"+flag+"<div class='src'>"+flagNote+"</div></td></tr>";
+  });
+  $("tierRows").innerHTML=rows;
+  /* allowance picker */
+  var rec=quantile(sim.demand,S.pct/100);
+  $("pctCredits").textContent=fmtInt(rec)+" credits";
+  $("pctLadder").textContent=[50,70,75,80,90,95].map(function(q){return "p"+q+" "+fmtInt(quantile(sim.demand,q/100));}).join(" · ");
+  var arows="";
+  S.plans.forEach(function(p){
+    var eff=p.monthly>0?p.monthly:p.one;
+    var below=0;sim.demand.forEach(function(v){if(v<=eff)below++;});
+    arows+="<tr><td class='name'>"+p.name+"</td><td class='mono'>"+fmtInt(eff)+(p.monthly>0?" / mo":" one-time")+"</td><td class='mono'>"+ordinal(Math.max(1,Math.round(below/N*100)))+"</td></tr>";
+  });
+  $("allowRows").innerHTML=arows;
+  drawHist(S,sim,rec);
+  /* picker hypothetical */
+  var am={};am[S.pickerTier]=Math.round(rec);
+  var hypo=simulate(S,{allowMap:am}).tiers[S.pickerTier];
+  var cur=sim.tiers[S.pickerTier];
+  $("pickerTitle").textContent=S.plans[S.pickerTier].name+" at the "+ordinal(S.pct)+" percentile ("+fmtInt(rec)+" credits)";
+  $("pickerBody").innerHTML=
+    prow("Included credits",fmtInt(cur.monthly),fmtInt(hypo.monthly))+
+    prow("Mean serving cost",fmt$(cur.meanCost),fmt$(hypo.meanCost))+
+    prow("Extra revenue (overage / top-ups)",fmt$(cur.meanExtra),fmt$(hypo.meanExtra))+
+    prow("Gross margin",fmtPct(cur.margin),fmtPct(hypo.margin))+
+    prow("Margin for the p99 user",fmtPct(cur.m99),fmtPct(hypo.m99))+
+    prow("Breakage",cur.breakage==null?"—":fmtPct(cur.breakage),hypo.breakage==null?"—":fmtPct(hypo.breakage))+
+    prow("Users fully covered by the allowance",fmtPct(cur.covered),fmtPct(hypo.covered))+
+    '<p class="src" style="margin-top:10px">Moving '+S.plans[S.pickerTier].name+' to the '+ordinal(S.pct)+' percentile '+(hypo.margin>=cur.margin?"raises":"costs")+" "+fmtPct(Math.abs(hypo.margin-cur.margin))+" of margin and changes breakage to "+(hypo.breakage==null?"—":fmtPct(hypo.breakage))+". Whether that trade is worth it depends on how much of the plan price is really payment for the website rather than for AI — the model charges all AI cost against the full plan price, which flatters every margin on this page.</p>";
+  function prow(k,a,b){return '<div class="decomp-row"><span>'+k+'</span><span class="src" style="text-align:right">now <span class="mono" style="color:var(--ink2)">'+a+'</span></span><span class="mono" style="text-align:right;font-weight:600">'+b+'</span></div>';}
+  /* decomposition */
+  var base=portfolioProfit(S);
+  var pRate=portfolioProfit(S,{frontMult:1+S.sFront,stdMult:1+S.sStd});
+  var pMix=portfolioProfit(S,{routing:clamp(S.routing+S.sRoute,0,1)});
+  var pVol=portfolioProfit(S,{scale:1+S.sGrowth});
+  var pAll=portfolioProfit(S,{frontMult:1+S.sFront,stdMult:1+S.sStd,routing:clamp(S.routing+S.sRoute,0,1),scale:1+S.sGrowth});
+  var eRate=pRate-base,eMix=pMix-base,eVol=pVol-base,eAll=pAll-base,eInt=eAll-eRate-eMix-eVol;
+  $("decompBase").textContent="Portfolio AI profit per user per month: "+fmt$(base)+" now, "+fmt$(base+eAll)+" under the scenario — a change of "+(eAll>=0?"+":"")+fmt$(eAll)+".";
+  var parts=[["Rate effect — provider prices",eRate],["Mix effect — routing share",eMix],["Volume effect — usage growth",eVol],["Interaction — shocks combined",eInt],["Total change",eAll]];
+  var maxAbs=Math.max(0.5,Math.abs(eRate),Math.abs(eMix),Math.abs(eVol),Math.abs(eInt),Math.abs(eAll));
+  $("decompBody").innerHTML=parts.map(function(pt){
+    var w=clamp(Math.abs(pt[1])/maxAbs*100,pt[1]===0?0:3,100);
+    var col=pt[1]<0?"var(--bad)":"var(--good)";
+    return '<div class="decomp-row"><span>'+pt[0]+'</span><span class="dbar"><i style="left:0;width:'+w+'%;background:'+col+'"></i></span><span class="mono" style="text-align:right">'+(pt[1]>=0?"+":"−")+fmt$(Math.abs(pt[1])).slice(0)+'</span></div>';
+  }).join("");
+  /* memo */
+  var build=S.tasks[0],buildCost=D.taskCosts[0];
+  var wasteShare=S.abandoned*(build.mix/100)*0; /* reported qualitatively; cost already sunk in full */
+  var breachNames=sim.tiers.filter(function(t){return t.margin<S.floor||t.m99<S.floor;}).map(function(t){return t.plan.name;});
+  var memo=
+   "<p><strong>Allowance.</strong> I would set included credits at the "+ordinal(S.pct)+" percentile of monthly credit demand, which is "+fmtInt(rec)+" credits at the current usage shape. Squarespace's published allowances sit far lower — Core's 20 credits land near the "+ordinal(Math.max(1,Math.round(rankOf(sim.demand,20))))+" percentile of demand in this model — so the published structure is best read as a sampler that pushes engaged users toward overage, top-ups, or an upgrade, not as an allowance meant to cover a typical month. Pricing the allowance at the "+ordinal(S.pct)+" percentile is the version of the decision where most users never think about credits at all, and the memo records that this version "+(hypo.margin>=S.floor?"still clears":"does not clear")+" the "+Math.round(S.floor*100)+"% margin floor on "+S.plans[S.pickerTier].name+".</p>"+
+   "<p><strong>The frontier action.</strong> A site build is priced at "+build.credits+" credits. At the current routing mix of "+Math.round(S.routing*100)+"% frontier, a build costs "+fmt$(buildCost,3)+" to serve, while "+build.credits+" credits on Core carry an implied value of "+fmt$(build.credits*coreImplied)+" — so the build is the best deal in the catalogue by design, because the build is the moment the customer decides the product is worth paying for. The small tasks carry the margin: a copy draft costs "+fmt$(D.taskCosts[2],3)+" to serve and is priced at "+S.tasks[2].credits+" credit.</p>"+
+   "<p><strong>Abandoned builds.</strong> The model charges the full serving cost for every build, including the "+Math.round(S.abandoned*100)+"% assumed to be abandoned after generation. Abandonment is treated as sunk cost rather than refunded, which is the costing assumption that justifies a build costing "+build.credits+" credits instead of a handful: the price has to survive the builds nobody keeps.</p>"+
+   "<p><strong>Rollover.</strong> Rollover is currently "+(S.rollover?"on, with banked credits capped at one month of allowance":"off, matching Squarespace's published position that monthly credits do not roll over")+". For a website builder this is the call I would argue hardest about, because building is episodic — a user generates heavily in one month and then publishes for three. "+(S.rollover?"Letting credits bank across that gap costs breakage and buys goodwill exactly where churn risk lives.":"Letting credits expire across that gap converts an episodic user's quiet months into a reason to downgrade, and the breakage it protects is worth less than the retention it risks.")+"</p>"+
+   "<p><strong>Shortfall and guardrails.</strong> When credits run out, the current setting is "+(S.mode==="cap"?"a hard cap, so heavy users cost no more than their allowance and the margin floor is protected by construction":S.mode==="overage"?"overage billing at "+S.ovMult.toFixed(1)+"× the implied per-credit price, so the tail pays for itself":"top-up packs at "+fmt$(S.topup)+" per credit, with half of any shortfall assumed bought and half forgone")+". Under these settings, "+(breachNames.length?("the tiers breaching the "+Math.round(S.floor*100)+"% guardrail are "+breachNames.join(", ")+", and the breach lives in the tail — the p99 user, not the average one — which is where a cap or an overage price earns its place."):("every tier clears the "+Math.round(S.floor*100)+"% guardrail, including at the p99 user, so the current shape has headroom to give allowance away before it needs a harder cap."))+"</p>";
+  $("memoBody").innerHTML=memo;
+  $("memoBody").dataset.plain=memo.replace(/<[^>]+>/g,"").replace(/\s+\n/g,"\n");
+}
+function rankOf(sorted,v){var c=0;for(var i=0;i<sorted.length;i++){if(sorted[i]<=v)c++;else break;}return Math.round(c/sorted.length*100);}
+/* ---------- events ---------- */
+var timer=null;
+document.addEventListener("input",function(e){
+  if(e.target&&e.target.id==="pickerTier")return;
+  clearTimeout(timer);timer=setTimeout(update,110);
+});
+document.addEventListener("change",function(e){
+  if(e.target&&(e.target.id==="rollover"||e.target.id==="pickerTier")){clearTimeout(timer);timer=setTimeout(update,30);}
+});
+$("shortfallSeg").addEventListener("click",function(e){
+  var b=e.target.closest("button");if(!b)return;
+  shortfallMode=b.dataset.mode;
+  Array.prototype.forEach.call($("shortfallSeg").querySelectorAll("button"),function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
+  update();
+});
+$("copyMemo").addEventListener("click",function(){
+  var text=$("memoBody").dataset.plain||$("memoBody").innerText;
+  function done(){$("copyStatus").textContent="Memo copied.";setTimeout(function(){$("copyStatus").textContent="";},2500);}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done,function(){fallback();});}else fallback();
+  function fallback(){var ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done();}catch(err){$("copyStatus").textContent="Copy failed — select the memo text manually.";}document.body.removeChild(ta);}
+});
+$("resetBtn").addEventListener("click",function(){location.reload();});
+update();
+})();
+</script>
+</body>
+</html>
