@@ -559,7 +559,7 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
     </table>
   </div>
   <p class="src" id="simStatus">Fixed seed: same settings, same figures. Breakage = expired ÷ available credits.</p>
-  <p class="src">Published overage incidence on comparable allowance plans runs near 20% (Grubb and Osborne, 2015). This model's higher wall rate follows from allowances sitting near the 24th percentile of its own demand shape; it is a property of the allowance, not a behavioral forecast.</p>
+  <p class="src">Published overage incidence on comparable allowance plans runs near 20% (Grubb and Osborne, 2015). This model's higher wall rate follows from allowances sitting low in its own demand shape, with Core's 20 credits at the 24th percentile; it is a property of the allowance, not a behavioral forecast.</p>
 </section>
 
 <!-- ============ 5. ALLOWANCE PICKER ============ -->
@@ -690,7 +690,7 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
     <h3 style="margin-top:14px">Wall splits: pay, upgrade, downgrade, churn, stay</h3>
     <p class="hint">Run the shortfall policy as an experiment before it is policy. Give a cohort of accounts a soft wall (a warning at 80% of allowance, a hard stop at 100%, with a one-click top-up and a one-click upgrade shown side by side), hold a matched control group on the current policy, and record which of the five responses each wall user takes within 30 days. The five observed shares replace the §03 assumptions one for one, including the upgrade share, which has no published value anywhere. Guardrail: the wall cohort's departure rate is judged against the control group's, not against the 4.2% book-level baseline, because a wall-exposed cohort and an all-cause book rate have different denominators; the 4.2% figure is used only as a reasonableness bound on the blended book after the shares are adopted. Cell rule: five shares across four tiers is twenty cells, and a share is adopted only for cells with at least 500 wall users; smaller cells keep the assumption and say so. Decision this informs: every §03 slider, and whether the reconciliation cap in Methodology §08 still binds at observed rates.</p>
     <h3 style="margin-top:14px">Take-up and serving cost</h3>
-    <p class="hint">Take-up is observed in the same experiment: the share of wall users who buy, and the share of the shortfall they buy, are two different numbers and the model keeps them separate (§09). Serving cost per action is reconciled monthly against provider invoices at the task level, which is also the check on the per-task routing shares in §02: if invoiced frontier tokens diverge from the modeled shares, the shares move, not the invoice. Decision this informs: the top-up price in §03 and the routing default in §01.</p>
+    <p class="hint">Take-up is observed in the same experiment: the share of wall users who buy, and the share of the shortfall they buy, are two different numbers and the model keeps them separate (Methodology §08). Serving cost per action is reconciled monthly against provider invoices at the task level, which is also the check on the per-task routing shares in §02: if invoiced frontier tokens diverge from the modeled shares, the shares move, not the invoice. Decision this informs: the top-up price in §03 and the routing default in §01.</p>
   </div>
 </section>
 
@@ -841,7 +841,7 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
       <h4>Price response</h4>
       <p>Each plan's share shifts by its relative price change raised to the elasticity (default −0.1), derived from Netflix's January 2022 increase (Antenna: churn 3.0% in the increase month, up 0.95 pts from a 2.0% 2021 average). Spotify's 2023 increase produced no detectable change (bound: 0 to −0.1); Netflix 2011 gives about −0.07. All are $10–$20 consumer products with near-zero switching costs, so −0.1 reads as an upper bound for a product hosting a business's site and domain. About a third of the response leaves the product entirely; the rest switches plans. That split is a modeling choice with no published source.</p>
       <h4>The wall</h4>
-      <p>The wall-hit share comes from the simulation itself; Grubb and Osborne (2015), about 20% of users on $35–$55 cellular plans incurred overages, is the published check. Wall users split five ways in this layer: pay (where a paid policy exists), upgrade one plan, downgrade one plan, churn, or stay, and the five shares always sum to the wall population; under a hard cap there is nothing to buy, so the pay share is zero and those users stay. Basic's covered share is 0% by construction, since it carries no monthly allowance, so its month-six exits are arithmetic rather than evidence, and inbound downgrades and upgrades refill it in the ending mix. Squarespace's base bills mostly annually, so for annual subscribers read month-six movement as renewal risk at month twelve, not mid-term cancellation. Wall churn defaults to 13% under a hard cap: ChartMogul's 4.2% baseline monthly churn at $25–$100, times a conservative 3× stand-in for Lambrecht and Skiera's 4.4–11.4× range for too-small plans. Wall downgrade defaults to 8%, from Chargebee's 2025 downgrade-to-cancel ratio (14% downgraded, 22% cancelled). The upgrade share defaults to 15% and, like paid take-up, has no published value; it is an assumption, exposed as a slider with the same status. Paid policies scale the responses down (churn 40%/55%, downgrades 50%/60%, upgrades 70% for overage/top-ups): modeling assumptions with no published source. Basic downgraders count as churn.</p>
+      <p>The wall-hit share comes from the simulation itself; Grubb and Osborne (2015), about 20% of users on $35–$55 cellular plans incurred overages, is the published check. Wall users split five ways in this layer: pay (where a paid policy exists), upgrade one plan, downgrade one plan, churn, or stay, and the five shares always sum to the wall population; under a hard cap there is nothing to buy, so the pay share is zero and those users stay. Basic's covered share is 0% by construction, since it carries no monthly allowance, so its month-six exits are arithmetic rather than evidence, and inbound downgrades refill it in the ending mix. Squarespace's base bills mostly annually, so for annual subscribers read month-six movement as renewal risk at month twelve, not mid-term cancellation. Wall churn defaults to 13% under a hard cap: ChartMogul's 4.2% baseline monthly churn at $25–$100, times a conservative 3× stand-in for Lambrecht and Skiera's 4.4–11.4× range for too-small plans. Wall downgrade defaults to 8%, from Chargebee's 2025 downgrade-to-cancel ratio (14% downgraded, 22% cancelled). The upgrade share defaults to 15% and, like paid take-up, has no published value; it is an assumption, exposed as a slider with the same status. Paid policies scale the responses down (churn 40%/55%, downgrades 50%/60%, upgrades 70% for overage/top-ups): modeling assumptions with no published source. Basic downgraders count as churn.</p>
       <p><strong>Reconciliation.</strong> The cap is tested on a raw total: price-response departures plus every wall user's churn share, with Basic's downgrades counted inside that total because the page counts them as churn. When the raw total exceeds twice the 4.2% all-cause baseline (8.4% of the starting population, 3,360 users at the default population), the wall churn share scales down so the test total meets the cap, and the behavior card reports the scale factor. One consequence is stated plainly: Basic's downgrades are counted in the test total but are not themselves scaled, so realized churn lands above the cap figure (3,550 users, 8.9%, at defaults against the 3,360 cap). The cap is therefore a cap on the test total, not a guarantee on realized churn, and the difference is the unscaled Basic downgrade flow. Downgraders are not re-tested against the lower plan's wall (see Limits); nothing in this layer re-tests anyone. The cap is a discipline rule, not an estimate: it stops the behavior layer from implying a departure rate the baseline evidence cannot support, at the cost of muting the wall response exactly where allowances bite hardest. Before this rebuild the wall alone produced about 11% monthly departures at defaults with no reconciliation at all.</p>
       <h4>Paid take-up</h4>
       <p>Take-up, the share of wall users who pay, defaults to 20%, an assumption inside a 10–25% sensitivity range; no published value exists for any SaaS product. Zero under a hard cap. It is a different quantity from the share of a shortfall bought inside the simulation (half, under the top-up policy; §05), and the two should not be read as one number. The behavior layer restates overage/top-up revenue at this rate; serving cost per remaining user is not restated (see Limits).</p>
@@ -1209,13 +1209,13 @@ function simulate(S,ov){
       var servedFrac=c.cost>0&&D.costPerCredit>0?c.cost/(quantile(order,q)*D.costPerCredit):0;
       var served=Math.min(servedFrac,1)*quantile(order,q);
       var tc=served*D.tailCostPerCredit;
-      return {cost:tc,rev:c.rev,margin:c.rev>0?(c.rev-tc)/c.rev:1};
+      return {cost:tc,rev:c.rev,margin:c.rev>0?(c.rev-tc)/c.rev:(tc>0?-1:1)};
     }
     var t50=tailCost(c50,0.5),t90=tailCost(c90,0.9),t99=tailCost(c99,0.99);
     var meanCost=sumCost/N,meanExtra=sumExtra/N,meanRev=plan.price+meanExtra;
-    function umargin(c){return c.rev>0?(c.rev-c.cost)/c.rev:1;}
+    function umargin(c){return c.rev>0?(c.rev-c.cost)/c.rev:(c.cost>0?-1:1);}
     tiers.push({plan:plan,monthly:monthly,implied:implied,meanCost:meanCost,meanExtra:meanExtra,meanRev:meanRev,
-      margin:meanRev>0?(meanRev-meanCost)/meanRev:1,
+      margin:meanRev>0?(meanRev-meanCost)/meanRev:(meanCost>0?-1:1),
       cost50:c50.cost,cost90:c90.cost,cost99:c99.cost,m50:umargin(c50),m90:umargin(c90),m99:umargin(c99),
       tcost50:t50.cost,tcost90:t90.cost,tcost99:t99.cost,tm50:t50.margin,tm90:t90.margin,tm99:t99.margin,
       breakage:sumAvail>0?sumExpired/sumAvail:null,covered:covered/N,meanDemand:sumDem/N});
@@ -1224,7 +1224,8 @@ function simulate(S,ov){
 }
 function mixWeights(S){
   var w=(S&&S.mixW&&S.mixW.length===4)?S.mixW:[25,25,25,25];
-  var sum=w.reduce(function(a,v){return a+Math.max(0,v);},0)||1;
+  var sum=w.reduce(function(a,v){return a+Math.max(0,v);},0);
+  if(!(sum>0))return [0.25,0.25,0.25,0.25];
   return w.map(function(v){return Math.max(0,v)/sum;});
 }
 function portfolioProfit(S,ov){
@@ -1233,7 +1234,7 @@ function portfolioProfit(S,ov){
 function portfolioMarginOf(S,sim){
   var w=mixWeights(S);var rev=0,prof=0;
   sim.tiers.forEach(function(t,i){rev+=w[i]*t.meanRev;prof+=w[i]*(t.meanRev-t.meanCost);});
-  return rev>0?prof/rev:1;
+  return rev>0?prof/rev:(Math.abs(prof)>1e-12?-1:1);
 }
 /* ---------- buyer behavior layer ---------- */
 var WALL_MULT={cap:{churn:1,down:1,up:1},overage:{churn:0.4,down:0.5,up:0.7},topup:{churn:0.55,down:0.6,up:0.7}};
@@ -1308,9 +1309,9 @@ function computeBehavior(S,sim){
     downCount:downCount,upCount:upCount,takers:takers,wallUsers:wallUsers,
     split:split,effSplit:effSplit,reconScale:reconScale,capTotal:capTotal,
     adjRevTotal:adjRevTotal,adjCostTotal:adjCostTotal,
-    adjMargin:adjRevTotal>0?(adjRevTotal-adjCostTotal)/adjRevTotal:1,
+    adjMargin:adjRevTotal>0?(adjRevTotal-adjCostTotal)/adjRevTotal:(adjCostTotal>0?-1:1),
     adjRevPerStart:adjRevTotal/START_TOTAL,
-    staticMargin:staticRevTotal>0?(staticRevTotal-staticCostTotal)/staticRevTotal:1,
+    staticMargin:staticRevTotal>0?(staticRevTotal-staticCostTotal)/staticRevTotal:(staticCostTotal>0?-1:1),
     staticRevPerUser:portRev,staticCostPerUser:portCost,
     takeFactor:takeFactor
   };
