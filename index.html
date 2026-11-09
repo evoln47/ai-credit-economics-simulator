@@ -120,7 +120,7 @@ input[type=range]:focus-visible{outline:2px solid var(--accent);outline-offset:4
 /* ---------- outputs ---------- */
 .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:16px 0}
 @media(max-width:860px){.kpis{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:420px){.kpis{grid-template-columns:1fr}}
+@media(max-width:560px){.kpi{padding:13px 14px}.kpi .v{font-size:21px}.kpi .s{font-size:12px}}
 .kpi{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;box-shadow:var(--shadow)}
 .kpi .v{font-family:"IBM Plex Mono",monospace;font-size:25px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
 .kpi .k{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-top:4px}
@@ -202,6 +202,10 @@ tr.current-row td.name{color:var(--accent-deep)}
 @media (prefers-color-scheme: dark){tr.current-row td.name{color:var(--accent)}}
 .loadbtn{appearance:none;border:1px solid var(--line2);background:var(--card);color:var(--ink);border-radius:6px;padding:5px 11px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:6px}
 .loadbtn:hover{border-color:var(--accent);color:var(--accent-deep)}
+.cmp-table tr.rec-row td{text-align:left;padding:2px 10px 12px 14px;border-left:3px solid var(--accent)}
+.cmp-table table tr.rec-row td::before{content:"Recommended action";display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-right:8px}
+.cmp-table tr.rec-current td{background:var(--accent-soft)}
+.scen-rec{font-size:12.5px;line-height:1.5;color:var(--ink2)}
 .cellmix{min-width:150px}
 .cellmix .mixbar{height:13px}
 .cellmix .mixnums{font-size:11.5px;color:var(--muted);margin-top:5px;text-align:left;line-height:1.5}
@@ -291,10 +295,18 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
 .resultbar button{margin-left:auto;appearance:none;border:1px solid var(--banner-accent);background:transparent;color:#fff;border-radius:7px;padding:8px 14px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;min-height:38px}
 /* ---------- small screens ---------- */
 @media (max-width:700px){
-  body{overflow-x:clip}
-  .wrap{padding:0 14px 56px}
+  html,body{overflow-x:clip}
+  .wrap{padding:0 14px 120px}
   .masthead{padding-top:26px}
-  .toc{position:static;margin:22px -14px 0;padding:8px 14px}
+  .toc{position:static;margin:22px -14px 0;padding:8px 14px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .toc::-webkit-scrollbar{display:none}
+  .toc a{padding:9px 10px}
+  .toc .spacer{min-width:14px}
+  .loadbtn{min-height:40px;padding:8px 13px}
+  .fold-btn{min-height:40px}
+  .switch{width:52px;height:40px;margin-top:0}
+  .switch .tr{top:7px;height:26px}
+  .switch input:checked + .tr::after{left:29px}
   section{scroll-margin-top:16px}
   input[type=number],input[type=text],select{font-size:16px}
   .seg button{min-height:44px}
@@ -317,6 +329,8 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
   table.stack tr td:last-child{border-bottom:none}
   .big-table{overflow-x:visible}
   .big-table table.stack{min-width:0}
+  table.stack td{flex-wrap:wrap;row-gap:4px;padding-left:6px;padding-right:6px}
+  table.stack td::before{flex:0 1 auto}
 }
 @media (pointer:coarse){
   input[type=range]{height:32px}
@@ -362,8 +376,9 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
     <option value="routing">All-standard routing</option>
     <option value="hardcap">Hard cap, tight allowances</option>
     <option value="topup">Cheap top-up packs</option>
-    <option value="overage">Overage billing at 3×</option>
+    <option value="overage">Overage billing at 1×</option>
     <option value="generous">Generous allowances, higher prices</option>
+    <option value="freebuild">Builds unmetered</option>
     <option value="custom">Custom</option>
   </select>
   <p class="scen-desc" id="scenDesc">Published plans as they stand: hard cap, no rollover, 70% margin floor.</p>
@@ -715,7 +730,7 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
   <div class="masthead">
     <p class="kicker">Scenario Comparison</p>
     <div class="doc-title">Scenario comparison</div>
-    <p class="lede">The eight presets side by side, ranked by adjusted revenue per starting user. They are deliberately far apart: tripled usage, a 120% frontier price shock, all-standard routing, halved and tenfold allowances, $0.25 top-ups to 3&times; overage.</p>
+    <p class="lede">The nine presets side by side, ranked by adjusted revenue per starting user. They are deliberately far apart: tripled usage, a 120% frontier price shock, all-standard routing, halved and fifteen-fold allowances, $0.50 top-ups, overage at the implied rate, and site builds priced at zero credits.</p>
   </div>
 <nav class="toc" aria-label="Views">
   <a class="viewtab" href="#simulator" data-view="sim" aria-pressed="false">Simulator</a>
@@ -725,7 +740,7 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
 
 <section id="sec-h-compare" aria-labeledby="h-compare">
   <div class="sec-head"><span class="sec-num">01</span><h2 id="h-compare">Scenario comparison</h2></div>
-  <p class="sec-sub">Lead metric: adjusted revenue per starting user. Rows are ranked by it, highest first. Same starting population for every preset: 10,000 users per plan, month 6. Portfolio margin is the guardrail check, not the ranking, and it is computed on equal user counts in this view; the Simulator §04 guardrail uses the §06 mix weights, so the two portfolio margins differ when the weights are uneven. The Portfolio floor column tests the portfolio margin only. The per-tier and p99 test lives in Simulator §04, and the two can disagree: a portfolio average can clear a floor that its tail fails. Behavior columns use the simulator's §03 settings: change them there and every row re-runs. Deltas vs Baseline; shaded cell = best in column; Load opens a preset in the simulator.</p>
+  <p class="sec-sub">Lead metric: adjusted revenue per starting user. Rows are ranked by it, highest first. Same starting population for every preset: 10,000 users per plan, month 6. Portfolio margin is the guardrail check, not the ranking, and it is computed on equal user counts in this view; the Simulator §04 guardrail uses the §06 mix weights, so the two portfolio margins differ when the weights are uneven. The Portfolio floor column tests the portfolio margin only. The per-tier and p99 test lives in Simulator §04, and the two can disagree: a portfolio average can clear a floor that its tail fails. Behavior columns use the simulator's §03 settings: change them there and every row re-runs. Deltas vs Baseline; shaded cell = best in column; Load opens a preset in the simulator. Each row is followed by the recommended course of action under that preset.</p>
   <p class="src" id="cmpSens"></p>
   <div class="kpis" id="cmpInsights"></div>
   <div class="card big-table cmp-table" style="padding:6px 14px">
@@ -1345,6 +1360,10 @@ function presetState(key,S){
     else if(id==="rStdIn")st.stdIn=v;
     else if(id==="rStdOut")st.stdOut=v;
     else if(id==="rImg")st.img=v;
+    else if(id.indexOf("task_credits_")===0)st.tasks[parseInt(id.slice(13),10)].credits=v;
+    else if(id.indexOf("task_tokens_")===0)st.tasks[parseInt(id.slice(12),10)].tokens=v;
+    else if(id.indexOf("task_mix_")===0)st.tasks[parseInt(id.slice(9),10)].mix=v;
+    else if(id.indexOf("task_front_")===0)st.tasks[parseInt(id.slice(11),10)].front=v;
     else if(id==="ovMult")st.ovMult=v;
     else if(id==="floor")st.floor=v/100;
     else if(id==="topupPrice")st.topup=v;
@@ -1611,14 +1630,14 @@ function renderComparison(S,sim,beh){
     var entry=presetSim(key,S);
     var bS={};Object.keys(entry.state).forEach(function(k){bS[k]=entry.state[k];});
     bS.bElasticity=S.bElasticity;bS.bWallChurn=S.bWallChurn;bS.bWallDown=S.bWallDown;bS.bTakeUp=S.bTakeUp;bS.bWallUpgrade=S.bWallUpgrade;
-    return {key:key,name:SCEN[key].name,mode:entry.state.mode,b:computeBehavior(bS,entry.sim)};
+    return {key:key,name:SCEN[key].name,rec:SCEN[key].rec||"",mode:entry.state.mode,b:computeBehavior(bS,entry.sim)};
   });
   var base=rowsData.filter(function(r){return r.key==="baseline";})[0].b;
   var curKey=$("scenarioSel").value;
   if(SCEN[curKey]){
     rowsData.forEach(function(r){if(r.key===curKey)r.current=true;});
   }else{
-    rowsData.push({key:null,name:"Current: Custom settings",mode:S.mode,b:beh,current:true});
+    rowsData.push({key:null,name:"Current: Custom settings",rec:"No preset covers custom settings. The decisions memo in the Simulator view scores the setup exactly as loaded.",mode:S.mode,b:beh,current:true});
   }
   rowsData.sort(function(a,b){return b.b.adjRevPerStart-a.b.adjRevPerStart;});
   function best(fn,cmp){var v=rowsData.map(fn);return cmp.apply(null,v);}
@@ -1646,7 +1665,8 @@ function renderComparison(S,sim,beh){
      "<td"+tdCls(b.totalChurn,bestChurn,false)+" data-label='Churn'>"+fmtInt(b.totalChurn)+"</td>"+
      "<td"+tdCls(b.downCount,bestDown,false)+" data-label='Downgrades'>"+fmtInt(b.downCount)+"</td>"+
      "<td"+tdCls(b.upCount,bestUp,false)+" data-label='Upgrades'>"+fmtInt(b.upCount)+"</td>"+
-     "<td class='cellmix' data-label='Ending mix'>"+mixBar(b.endUsers)+'<div class="mixnums">'+mixNums(b.endUsers)+"</div></td></tr>";
+     "<td class='cellmix' data-label='Ending mix'>"+mixBar(b.endUsers)+'<div class="mixnums">'+mixNums(b.endUsers)+"</div></td></tr>"+
+     "<tr class='rec-row"+(r.current?" rec-current":"")+"'><td colspan='12' data-label='Recommended action'><span class='scen-rec'>"+(r.rec||"")+"</span></td></tr>";
   });
   var ci=$("cmpInsights");
   if(ci){
@@ -1743,14 +1763,15 @@ function applyBase(){
   setVal("mixBasic",25);setVal("mixCore",25);setVal("mixPlus",25);setVal("mixAdv",25);
 }
 var SCEN={
-  baseline:{name:"Baseline",desc:"Published plans as they stand: hard cap, no rollover, 70% margin floor."},
-  surge:{name:"Power-user surge",desc:"Usage more than triples (median 70, p90 700, p99 4,500 actions), 60% frontier routing.",inputs:{uMedian:70,uP90:700,uP99:4500,routing:60}},
-  frontier:{name:"Frontier price shock",desc:"Frontier prices +120% ($6.60 / $33.00 per 1M), 60% of text routed to it.",inputs:{rFrontIn:6.6,rFrontOut:33,routing:60}},
-  routing:{name:"All-standard routing",desc:"All text on the standard model, standard rates halved ($0.15 / $0.75 per 1M). The catalogue's cost floor.",inputs:{routing:0,rStdIn:0.15,rStdOut:0.75}},
-  hardcap:{name:"Hard cap, tight allowances",desc:"Allowances halved (Core 10, Plus 20, Advanced 60), no rollover, floor at 85%.",inputs:{floor:85},mode:"cap",rollover:false,planMonthly:[null,10,20,60]},
-  topup:{name:"Cheap top-up packs",desc:"Top-ups at $0.25 a credit, rollover on, floor at 50%.",inputs:{topupPrice:0.25,floor:50},mode:"topup",rollover:true},
-  overage:{name:"Overage billing at 3\u00d7",desc:"Excess billed at 3× the implied per-credit price. Rollover on, floor at 65%.",inputs:{ovMult:3,floor:65},mode:"overage",rollover:true},
-  generous:{name:"Generous allowances, higher prices",desc:"Allowances ~10× (Core 200, Plus 400, Advanced 1,000), prices up (Core $39, Plus $69, Advanced $139), rollover on.",planMonthly:[null,200,400,1000],planPrice:[null,39,69,139],rollover:true}
+  baseline:{name:"Baseline",desc:"Published plans as they stand: hard cap, no rollover, 70% margin floor.",rec:"Set allowances at the 75th percentile of demand (250 credits at the current usage shape), keep the site build priced as the on-ramp, and turn rollover on. Most users then finish a build cycle without meeting the wall, and the shortfall policy only has to govern the heavy tail."},
+  surge:{name:"Power-user surge",desc:"Usage more than triples (median 70, p90 700, p99 4,500 actions), 60% frontier routing.",inputs:{uMedian:70,uP90:700,uP99:4500,routing:60},rec:"Add a paid shortfall path before the surge lands, so the 86% of users who reach the wall can buy through it. Under the hard cap that demand goes unserved, and the wall split leans toward churn and downgrades."},
+  frontier:{name:"Frontier price shock",desc:"Frontier prices +120% ($6.60 / $33.00 per 1M), 60% of text routed to it.",inputs:{rFrontIn:6.6,rFrontOut:33,routing:60},rec:"Absorb the shock at current prices and hold any pass-through in reserve. Portfolio margin falls to 97.2% and stays far above the 70% floor, so work the routing mix instead: move share toward the standard model wherever the quality gap is acceptable."},
+  routing:{name:"All-standard routing",desc:"All text on the standard model, standard rates halved ($0.15 / $0.75 per 1M). The catalogue's cost floor.",inputs:{routing:0,rStdIn:0.15,rStdOut:0.75},rec:"Make standard routing the default for drafting and scanning tasks, and keep the frontier model on site builds, where output quality is the product. The saving runs about $0.33 per user per month against the baseline, and it costs 2.7 points on the quality index (88.0 against 90.7)."},
+  hardcap:{name:"Hard cap, tight allowances",desc:"Allowances halved (Core 10, Plus 20, Advanced 60), no rollover, floor at 85%.",inputs:{floor:85},mode:"cap",rollover:false,planMonthly:[null,10,20,60],rec:"Leave the allowances alone and work the wall instead, starting with the upgrade offer shown at the moment a user hits the cap. With 79% of users reaching the wall, that offer matters more than another allowance cut, and the 85% floor never binds in this row because the cap truncates serving cost first."},
+  topup:{name:"Cheap top-up packs",desc:"Top-ups at $0.50 a credit, rollover on, floor at 50%.",inputs:{topupPrice:0.5,floor:50},mode:"topup",rollover:true,rec:"Adopt top-up packs as the default shortfall policy at $0.50 a credit and keep rollover on. The wall becomes a checkout: adjusted revenue reaches $79.15 per starting user and churn falls to 5.9%, at a cost of about three points of adjusted margin against the baseline."},
+  overage:{name:"Overage billing at 1\u00d7",desc:"Excess billed at the implied per-credit price, with no penalty multiplier. Rollover on, floor at 65%.",inputs:{ovMult:1,floor:65},mode:"overage",rollover:true,rec:"Pilot overage at the implied rate on Advanced first, with a monthly cap per account, and treat the $120.82 as a ceiling until take-up is measured. This row bills every credit of shortfall, so its realized revenue rests on the §03 take-up assumption more than on any price in the table."},
+  generous:{name:"Generous allowances, higher prices",desc:"Allowances ~15× (Core 300, Plus 600, Advanced 1,500), prices up (Core $39, Plus $69, Advanced $139), rollover on.",planMonthly:[null,300,600,1500],planPrice:[null,39,69,139],rollover:true,rec:"Keep the generous allowances on Core and Plus, and attach a shortfall policy to Advanced. Advanced holds the set's only floor breach, at its p99 user (68.5% against the 70% floor), while the lower tiers produce the lowest wall share in the table at 31.1%."},
+  freebuild:{name:"Builds unmetered",desc:"Site builds priced at 0 credits, so builds never draw from the allowance. Every other task price and plan setting matches the baseline: hard cap, no rollover, 70% margin floor.",inputs:{task_credits_0:0},rec:"Keep site builds priced at zero credits and let the meter and the shortfall policy govern the small tasks. The wall share falls to 63.1%, and the guardrail to watch is p99 serving cost: builds leave the credit denominator, cost per credit rises, and the Advanced tail margin thins to 86.0% while tier means stay near 99%."}
 };
 function applyScenario(key){
   var sc=SCEN[key];if(!sc)return;
