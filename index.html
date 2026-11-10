@@ -379,6 +379,8 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
     <option value="overage">Overage billing at 1×</option>
     <option value="generous">Generous allowances, higher prices</option>
     <option value="freebuild">Builds unmetered</option>
+    <option value="filedmix">Filed mix (55/30/10/5)</option>
+    <option value="meteredtoday">Metered today (AI Visibility + Image Studio only)</option>
     <option value="custom">Custom</option>
   </select>
   <p class="scen-desc" id="scenDesc">Published plans as they stand: hard cap, no rollover, 70% margin floor.</p>
@@ -1352,6 +1354,7 @@ function presetState(key,S){
   if(sc.planPrice)sc.planPrice.forEach(function(v,i){if(v!=null)st.plans[i].price=v;});
   if(sc.mode)st.mode=sc.mode;
   if(sc.rollover!=null)st.rollover=sc.rollover;
+  if(sc.mixW)st.mixW=sc.mixW.slice();
   if(sc.inputs)Object.keys(sc.inputs).forEach(function(id){
     var v=sc.inputs[id];
     if(id==="routing")st.routing=v/100;
@@ -1771,7 +1774,9 @@ var SCEN={
   topup:{name:"Cheap top-up packs",desc:"Top-ups at $0.50 a credit, rollover on, floor at 50%.",inputs:{topupPrice:0.5,floor:50},mode:"topup",rollover:true,rec:"Adopt top-up packs as the default shortfall policy at $0.50 a credit and keep rollover on. The wall becomes a checkout: adjusted revenue reaches $79.15 per starting user and churn falls to 5.9%, at a cost of about three points of adjusted margin against the baseline."},
   overage:{name:"Overage billing at 1\u00d7",desc:"Excess billed at the implied per-credit price, with no penalty multiplier. Rollover on, floor at 65%.",inputs:{ovMult:1,floor:65},mode:"overage",rollover:true,rec:"Pilot overage at the implied rate on Advanced first, with a monthly cap per account, and treat the $120.82 as a ceiling until take-up is measured. This row bills every credit of shortfall, so its realized revenue rests on the §03 take-up assumption more than on any price in the table."},
   generous:{name:"Generous allowances, higher prices",desc:"Allowances ~15× (Core 300, Plus 600, Advanced 1,500), prices up (Core $39, Plus $69, Advanced $139), rollover on.",planMonthly:[null,300,600,1500],planPrice:[null,39,69,139],rollover:true,rec:"Keep the generous allowances on Core and Plus, and attach a shortfall policy to Advanced. Advanced holds the set's only floor breach, at its p99 user (68.5% against the 70% floor), while the lower tiers produce the lowest wall share in the table at 31.1%."},
-  freebuild:{name:"Builds unmetered",desc:"Site builds priced at 0 credits, so builds never draw from the allowance. Every other task price and plan setting matches the baseline: hard cap, no rollover, 70% margin floor.",inputs:{task_credits_0:0},rec:"Keep site builds priced at zero credits and let the meter and the shortfall policy govern the small tasks. The wall share falls to 63.1%, and the guardrail to watch is p99 serving cost: builds leave the credit denominator, cost per credit rises, and the Advanced tail margin thins to 86.0% while tier means stay near 99%."}
+  freebuild:{name:"Builds unmetered",desc:"Site builds priced at 0 credits, so builds never draw from the allowance. Every other task price and plan setting matches the baseline: hard cap, no rollover, 70% margin floor.",inputs:{task_credits_0:0},rec:"Keep site builds priced at zero credits and let the meter and the shortfall policy govern the small tasks. The wall share falls to 63.1%, and the guardrail to watch is p99 serving cost: builds leave the credit denominator, cost per credit rises, and the Advanced tail margin thins to 86.0% while tier means stay near 99%."},
+  filedmix:{name:"Filed mix",desc:"Baseline settings with the portfolio mix set to the filed shape: Basic 55, Core 30, Plus 10, Advanced 5. Squarespace's fiscal 2023 filing put Presence at 69.6% of revenue and Commerce at 30.4%, and Commerce subscribers sit below 30.4% of the base because those plans cost more.",mixW:[55,30,10,5],rec:"Use this mix whenever a figure stands for Squarespace's book. Static revenue per user falls from $49.00 on equal weights to $29.00, because 85% of the base sits on Basic and Core. Mean serving cost falls from $0.43 to $0.17 per user under the same weighting, and the mix-weighted portfolio margin rises from 99.1% to 99.4%. Per-tier margins and the 69.4% wall share hold at their baseline values, and adjusted revenue per starting user stays at $47.22, because the behavior layer starts every scenario from equal counts."},
+  meteredtoday:{name:"Metered today",desc:"Only the two surfaces Squarespace charges credits for today draw on the allowance: image generation standing in for Image Studio, and the SEO scan standing in for an AI Visibility run. Site builds, page regenerations, and copy drafts are priced at zero credits, matching the current product, where builds, Clarkson edits, and text tools are unmetered.",inputs:{task_credits_0:0,task_credits_1:0,task_credits_2:0},rec:"Read this row as the product as it ships today. Median credit demand falls from 74 credits to 19, and Core's 20 credits cover the median user: coverage on Core rises from 24% to 52%, the wall share falls from 69.4% to 49.3%, and Basic accounts for about half of the wall users who remain. Adjusted revenue holds at $47.49 because plans and prices are untouched. The exposure moves to serving cost, which rises from $0.43 to $1.06 per user as unmetered demand gets served in full, and the Advanced p99 user on the tail mix drops to a 64.2% margin while tier means stay near 98%. Watch serving cost on the build and text surfaces here; the meter cannot see them."}
 };
 function applyScenario(key){
   var sc=SCEN[key];if(!sc)return;
@@ -1782,6 +1787,7 @@ function applyScenario(key){
   if(sc.planPrice)sc.planPrice.forEach(function(v,i){if(v!=null)setVal("plan_price_"+i,v);});
   if(sc.mode)setSeg(sc.mode);
   if(sc.rollover!=null)$("rollover").checked=sc.rollover;
+  if(sc.mixW){setVal("mixBasic",sc.mixW[0]);setVal("mixCore",sc.mixW[1]);setVal("mixPlus",sc.mixW[2]);setVal("mixAdv",sc.mixW[3]);}
   Array.prototype.forEach.call(document.querySelectorAll('input[type=range]'),function(el){el.dispatchEvent(new Event("input"));});
   update();
   $("scenarioSel").value=key;
