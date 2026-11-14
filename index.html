@@ -70,7 +70,7 @@ h2{font-size:21px;font-weight:700}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 @media(max-width:860px){.grid2,.grid3{grid-template-columns:1fr}}
 .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px;box-shadow:var(--shadow)}
-.card h3{font-size:15.5px;font-weight:700;margin-bottom:4px}
+.card h3,.card h2{font-size:15.5px;font-weight:700;margin-bottom:4px}
 .card .hint{font-size:12.5px;color:var(--muted);margin:0 0 12px;line-height:1.5}
 /* ---------- tables & inputs ---------- */
 table{width:100%;border-collapse:collapse;font-size:13.5px}
@@ -219,7 +219,7 @@ tr.current-row td.name{color:var(--accent-deep)}
 @media (prefers-color-scheme: dark){.ev-tag.math{color:var(--accent)}}
 .ev-block{margin-top:16px}
 .ev-block:first-of-type{margin-top:4px}
-.ev-block h4{font-size:13px;font-weight:700;margin:0 0 4px;color:var(--ink)}
+.ev-block h4,.ev-block h3{font-size:13px;font-weight:700;margin:0 0 4px;color:var(--ink)}
 .ev-block p{font-size:13.5px;color:var(--ink2);line-height:1.6;margin:0 0 10px}
 .ev-block p strong{color:var(--ink)}
 .ev-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
@@ -251,7 +251,7 @@ tr.current-row td.name{color:var(--accent-deep)}
 .doc-card p{color:var(--ink2);font-size:14.5px;line-height:1.65;margin:0 0 12px;max-width:820px}
 .doc-card p:last-child{margin-bottom:0}
 .doc-card p strong{color:var(--ink)}
-.doc-card h4{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:700;margin:18px 0 6px}
+.doc-card h4,.doc-card h3{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:700;margin:18px 0 6px}
 .doc-card h4:first-child{margin-top:0}
 .doc-card ul{margin:0;padding-left:18px;color:var(--ink2);font-size:14.5px;line-height:1.6}
 .doc-card li{margin-bottom:8px}
@@ -259,7 +259,7 @@ tr.current-row td.name{color:var(--accent-deep)}
 /* ---------- scenario presets ---------- */
 .scenario{margin:18px 0 0;padding:18px 20px}
 .scen-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
-.scenario h3{font-size:15.5px;font-weight:700}
+.scenario h3,.scenario h2{font-size:15.5px;font-weight:700}
 #scenarioSel{width:100%;min-height:48px;padding:10px 12px;font-size:15px}
 .scen-desc{font-size:13.5px;color:var(--ink2);line-height:1.55;margin:10px 0 0}
 /* ---------- streamlined navigation ---------- */
@@ -279,6 +279,15 @@ tr.current-row td.name{color:var(--accent-deep)}
 .fold-btn{margin-left:auto;appearance:none;border:1px solid var(--line2);background:var(--card);color:var(--ink);border-radius:999px;padding:7px 14px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;min-height:36px}
 .fold-btn:hover{border-color:var(--accent);color:var(--accent-deep)}
 section.fold:not(.fold-open) .fold-body{display:none}
+@media print{
+  /* print reads as a document: folded sections open, wide tables fit the page */
+  section.fold .fold-body{display:block !important}
+  .fold-btn,#resultbar,.toc,.viewtabs{display:none !important}
+  .big-table,.ev-scroll{overflow:visible !important;padding-left:0;padding-right:0}
+  table{font-size:9.5px}
+  th,td{padding:4px 5px}
+  section,.card{break-inside:avoid-page}
+}
 section.fold .sec-head{cursor:pointer}
 section.fold{margin-top:26px}
 section.fold .sec-sub{margin-bottom:0}
@@ -294,6 +303,11 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
 .resultbar .rb-v{font-family:"IBM Plex Mono",monospace;font-weight:700;color:var(--banner-accent)}
 .resultbar button{margin-left:auto;appearance:none;border:1px solid var(--banner-accent);background:transparent;color:#fff;border-radius:7px;padding:8px 14px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;min-height:38px}
 /* ---------- small screens ---------- */
+@media (max-width:1180px){
+  /* the sticky table of contents wraps to two rows in this range, so anchor
+     jumps need the taller scroll margin to land below it */
+  section{scroll-margin-top:104px}
+}
 @media (max-width:700px){
   html,body{overflow-x:clip}
   .wrap{padding:0 14px 120px}
@@ -312,7 +326,8 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
   .seg button{min-height:44px}
   .btn{min-height:44px}
   #pickerTier{min-height:44px;width:100%}
-  #rolloverState{display:none}
+  #topHistCard{display:none}
+  #rolloverState{left:auto;right:0;top:44px}
   .card{padding:16px}
   .scenario{padding:16px}
   .finding{padding:18px}
@@ -346,18 +361,19 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
 <header class="masthead">
   <p class="kicker">AI Pricing · Working Model</p>
   <h1>AI Credit Economics Simulator</h1>
-  <p class="lede">Squarespace sells AI as plan credits. This model asks what those credits cost to serve, and which allowance and shortfall rules keep that cost inside a target margin when the median user needs about three and a half times the Core allowance. <strong>10,000 users per plan</strong>, month 6 reported.</p>
+  <p class="lede">Squarespace sells AI as plan credits. This model asks what those credits cost to serve, and which allowance and shortfall rules keep that cost inside a target margin when, at the baseline, the median user needs about 3.7 times the Core allowance. <strong>10,000 users per plan</strong>, month 6 reported.</p>
   <div class="stamp">
-    <span>Plans · Squarespace, Oct 2026</span>
+    <span>Plans · Squarespace, index-grade Oct 2026</span>
     <span>Rates · Public list prices, Nov 2026</span>
     <span>Behavior · Published evidence, Nov 2026</span>
     <span>Monte Carlo · Fixed seed</span>
+    <span>Scope · Five modeled surfaces, two metered today</span>
   </div>
   <p class="src">A working model by Evan Volness · November 2026 · Built from published plans, public list prices, and the published evidence in Methodology §09.</p>
   <div class="finding" id="finding"><p>Running the model…</p></div>
   <div class="recstrip" id="recStrip" aria-label="Recommendation"></div>
-  <div class="card" style="margin-top:16px">
-    <h3>Monthly credit demand, and where the allowances sit</h3>
+  <div class="card" id="topHistCard" style="margin-top:16px">
+    <h2>Monthly credit demand, and where the allowances sit</h2>
     <p class="hint">The §02 distribution, up front, drawn from the same data and driven by the same §02 sliders. The full-size chart lives in §02.</p>
     <div id="histChartTop" role="img" aria-label="Histogram of simulated monthly credit demand with plan allowance markers"></div>
   </div>
@@ -365,10 +381,10 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
 <div class="steps" aria-label="How to use this simulator">
   <button type="button" class="step" data-goto="#scenarios"><span class="n">1</span><span><strong>Pick a scenario</strong><span>Start from a preset below. That alone gives you a complete answer.</span></span></button>
   <button type="button" class="step" data-goto="#sec-h-margins"><span class="n">2</span><span><strong>Read the result</strong><span>Jump straight to tier margins and the headline numbers.</span></span></button>
-  <button type="button" class="step" data-goto="#sec-h-plans"><span class="n">3</span><span><strong>Fine-tune, if you want</strong><span>Open any setting group to change prices, usage, or policy.</span></span></button>
+  <button type="button" class="step" data-goto="#sec-h-plans" data-openall="1"><span class="n">3</span><span><strong>Fine-tune, if you want</strong><span>Open any setting group to change prices, usage, or policy.</span></span></button>
 </div>
 <div class="card scenario" id="scenarios">
-  <div class="scen-top"><h3>Scenario presets</h3><span class="flag ok" id="scenState">Baseline</span></div>
+  <div class="scen-top"><h2>Scenario presets</h2><span class="flag ok" id="scenState">Baseline</span></div>
   <select id="scenarioSel" aria-label="Scenario preset">
     <option value="baseline" selected>Baseline: published plans</option>
     <option value="surge">Power-user surge</option>
@@ -379,33 +395,35 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
     <option value="overage">Overage billing at 1×</option>
     <option value="generous">Generous allowances, higher prices</option>
     <option value="freebuild">Builds unmetered</option>
-    <option value="filedmix">Filed mix (55/30/10/5)</option>
+    <option value="filedmix">Presence-heavy mix (55/30/10/5)</option>
     <option value="meteredtoday">Metered today (AI Visibility + Image Studio only)</option>
     <option value="custom">Custom</option>
   </select>
-  <p class="scen-desc" id="scenDesc">Published plans as they stand: hard cap, no rollover, 70% margin floor.</p>
+  <p class="scen-desc" id="scenDesc">Published plan prices and allowances, with all five modeled tasks priced in credits: hard cap, no rollover, 70% margin floor. The product live today meters only two of the five surfaces; the Metered today preset holds that case.</p>
+  <p class="src" style="margin-top:6px">Loading a preset resets the allowance picker, the decomposition shocks, and the mix weights to their defaults. The §03 behavior settings stay as they are set.</p>
 </div>
 <nav class="toc" aria-label="Views and key sections">
   <a class="viewtab" href="#simulator" data-view="sim" aria-pressed="true">Simulator</a>
   <a class="viewtab" href="#comparison" data-view="compare" aria-pressed="false">Comparison</a>
   <a class="viewtab" href="#methodology" data-view="method" aria-pressed="false">Methodology</a>
   <span class="spacer"></span>
+  <a class="seclink" href="#scenarios">Scenarios</a>
   <a class="seclink" href="#sec-h-plans">Settings</a>
   <a class="seclink" href="#sec-h-margins">Results</a>
   <a class="seclink" href="#sec-h-memo">Memo</a>
 </nav>
 <div class="group-label" id="setup-start">Settings <small>Folded by default. Open only what you want to change.</small></div>
-<div class="setup-bar"><span class="hint2">Most people only need the scenario picker above.</span><button type="button" id="openAllBtn">Show all settings</button><button type="button" id="closeAllBtn">Hide all settings</button></div>
+<div class="setup-bar"><span class="hint2">Most people only need the scenario picker above.</span><button type="button" id="openAllBtn">Show all settings</button><button type="button" id="closeAllBtn">Hide all settings</button><button type="button" id="resetBtn">Reset all defaults</button></div>
 
 
 <!-- ============ 1. PLANS & RATE CARD ============ -->
-<section id="sec-h-plans" class="fold" aria-labeledby="h-plans">
+<section id="sec-h-plans" class="fold" aria-labelledby="h-plans">
   <div class="sec-head"><span class="sec-num">01</span><h2 id="h-plans">Plans and rate card</h2></div>
-  <p class="sec-sub">Monthly equivalents at annual billing. Basic credits are one-time only: none remain by month 6.</p>
+  <p class="sec-sub">Monthly equivalents at annual billing. At the published ladder Basic credits are one-time only, so none remain by month 6.</p>
   <div class="grid2">
     <div class="card">
       <h3>Plans</h3>
-      <p class="hint">Squarespace pricing page, October 2026.</p>
+      <p class="hint">Squarespace published tiers, October 2026 compilations; Methodology §09 records how the ladder was checked.</p>
       <table class="stack" aria-label="Plan inputs">
         <thead><tr><th>Plan</th><th>Price $/mo</th><th>Credits / mo</th><th>One-time</th><th>Implied $/credit</th></tr></thead>
         <tbody id="planRows"></tbody>
@@ -419,12 +437,12 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
         <thead><tr><th>Model</th><th>Input $/1M</th><th>Output $/1M</th><th>Blended $/1M</th></tr></thead>
         <tbody>
           <tr><td class="name" data-label="Model">Frontier <span class="src">(Sonnet class)</span></td>
-            <td data-label="Input $/1M"><input type="number" id="rFrontIn" value="3" step="0.1" min="0"></td>
-            <td data-label="Output $/1M"><input type="number" id="rFrontOut" value="15" step="0.5" min="0"></td>
+            <td data-label="Input $/1M"><input type="number" id="rFrontIn" value="3" step="0.1" min="0" aria-label="Frontier input rate per million tokens in dollars"></td>
+            <td data-label="Output $/1M"><input type="number" id="rFrontOut" value="15" step="0.5" min="0" aria-label="Frontier output rate per million tokens in dollars"></td>
             <td class="mono" data-label="Blended $/1M" id="rFrontBlend">—</td></tr>
           <tr><td class="name" data-label="Model">Standard <span class="src">(mini / Haiku class)</span></td>
-            <td data-label="Input $/1M"><input type="number" id="rStdIn" value="0.30" step="0.05" min="0"></td>
-            <td data-label="Output $/1M"><input type="number" id="rStdOut" value="1.50" step="0.1" min="0"></td>
+            <td data-label="Input $/1M"><input type="number" id="rStdIn" value="0.30" step="0.05" min="0" aria-label="Standard input rate per million tokens in dollars"></td>
+            <td data-label="Output $/1M"><input type="number" id="rStdOut" value="1.50" step="0.1" min="0" aria-label="Standard output rate per million tokens in dollars"></td>
             <td class="mono" data-label="Blended $/1M" id="rStdBlend">—</td></tr>
           <tr><td class="name" data-label="Model">Image generation</td>
             <td colspan="2" class="src" data-label="Basis" style="text-align:right">flat per image</td>
@@ -434,7 +452,7 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
       <div class="ctl">
         <label for="routing">Routing scale: per-task frontier shares scaled against the 30% anchor <output id="routingOut">30%</output></label>
         <input type="range" id="routing" min="0" max="100" step="1" value="30">
-        <p class="note">This slider scales every task's own frontier share (the Frontier % column in §02) together: at 30% the task shares apply as entered, and the mix-weighted frontier share of actions at the defaults is 18%. Effective rate (realized, from the task costs): <span class="mono" id="effBlend">—</span> / 1M tokens. Frontier costs <span class="mono" id="frontRatio">10.0×</span> standard at the current rates: routing is the cheapest cost lever among the ones modeled here, at list prices.</p>
+        <p class="note">This slider scales every task's own frontier share (the Frontier % column in §02) together: at 30% the task shares apply as entered, and the mix-weighted frontier share of actions at the defaults is 18%. At the current setting that share is <span class="mono" id="routeShareLive">—</span>. Effective rate (realized, from the task costs): <span class="mono" id="effBlend">—</span> / 1M tokens. Frontier costs <span class="mono" id="frontRatio">10.0×</span> standard at the current rates: routing is the cheapest cost lever among the ones modeled here, at list prices.</p>
       </div>
       <div class="ctl">
         <label for="qStd">Standard-model quality score <output id="qStdOut">85</output></label>
@@ -446,19 +464,19 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
 </section>
 
 <!-- ============ 2. TASKS & USAGE ============ -->
-<section id="sec-h-tasks" class="fold" aria-labeledby="h-tasks">
+<section id="sec-h-tasks" class="fold" aria-labelledby="h-tasks">
   <div class="sec-head"><span class="sec-num">02</span><h2 id="h-tasks">Tasks and usage</h2></div>
-  <p class="sec-sub">Credit price is a decision, not a cost. At the current task table, a build uses <span class="mono" id="buildTokRatio">60×</span> a draft's tokens but costs <span class="mono" id="buildCrRatio">25×</span> the credits: drafts carry the margin.</p>
+  <p class="sec-sub">Credit price is a decision, not a cost. At the current task table, a build uses <span class="mono" id="buildTokRatio">60×</span> a draft's tokens but costs <span class="mono" id="buildCrRatio">25×</span> the credits: <span id="buildMarginNote">drafts are where the margin sits.</span></p>
   <div class="grid2">
     <div class="card">
       <h3>Task table</h3>
-      <p class="hint">Mix = share of monthly actions, renormalized to 100%. Frontier % = the share of that task's text tokens routed to the frontier model; the §01 routing slider scales every task's share together, so task-level differences survive a global shift.</p>
+      <p class="hint">Mix = share of monthly actions, renormalized to 100%; if every mix is set to zero the model falls back to equal weights. Frontier % = the share of that task's text tokens routed to the frontier model; the §01 routing slider scales every task's share together, so task-level differences survive a global shift.</p>
       <table class="stack" aria-label="Task inputs">
         <thead><tr><th>Task</th><th>Tokens</th><th>Credits</th><th>Mix %</th><th>Frontier %</th><th>Cost each</th><th>Value at Core $/cr</th></tr></thead>
         <tbody id="taskRows"></tbody>
       </table>
       <p class="src" style="margin-top:10px">Mix average: <span class="mono" id="avgLine">—</span>. <span id="qualityLine"></span></p>
-      <p class="note">Builds are charged in full whether kept or abandoned. Abandonment changes who got value, not what the build cost to serve, so it carries no slider.</p>
+      <p class="note">Builds are charged in full whether kept or abandoned. Abandonment changes who got value, not what the build cost to serve, so it has no slider.</p>
     </div>
     <div class="card">
       <h3>Usage distribution</h3>
@@ -475,27 +493,28 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
         <label for="uP99">p99 actions / month <output id="uP99Out">1,500</output></label>
         <input type="range" id="uP99" min="200" max="5000" step="25" value="1500">
         <p class="note" id="fitNote">—</p>
+        <p class="note" style="margin-top:8px"><span class="ev-tag assump">No published value</span> The three anchors (median 20, p90 200, p99 1,500 actions a month) are analyst assumptions with no published source, and almost every headline figure moves with them. §08 sets out the measurement plan that would replace them with observed values.</p>
       </div>
       <div class="ctl">
         <label for="tailMix">Tail task mix: site-build share for the heaviest users <output id="tailMixOut">30%</output></label>
         <input type="range" id="tailMix" min="5" max="80" step="1" value="30">
-        <p class="note"><span class="ev-tag assump">No published value</span> Percentile guardrail users (p50, p90, p99) are costed on a mix tilted toward site builds, because heavy users build more than they draft. At 30%, serving the p99 user's full demand would cost <span class="mono" id="tailCostLine">—</span>. The portfolio simulation still runs every user on the average mix; this control prices the guardrail rows only.</p>
+        <p class="note"><span class="ev-tag assump">No published value</span> Percentile guardrail users (p50, p90, p99) are costed on a mix tilted toward site builds, because heavy users build more than they draft. At <span id="tailMixPct">30%</span>, serving the p99 user's full demand would cost <span class="mono" id="tailCostLine">—</span> The portfolio simulation still runs every user on the average mix; this control prices the guardrail rows only.</p>
       </div>
       <div id="histChart" role="img" aria-label="Histogram of simulated monthly credit demand with plan allowance markers"></div>
-      <p class="src">Monthly credit demand (log scale). Markers: plan allowances and the picker pick. Most users sit right of the Basic, Core, and Plus markers. Advanced's 120 credits cover about 61% of users, so about 39% still sit to its right, and the picker marker leaves 25% of users to its right by construction. That gap is the pricing problem.</p>
+      <p class="src" id="histCaption">Monthly credit demand (log scale). Markers: plan allowances and the picker pick.</p>
     </div>
   </div>
 </section>
 
 <!-- ============ 3. POLICIES ============ -->
-<section id="sec-h-policy" class="fold" aria-labeledby="h-policy">
+<section id="sec-h-policy" class="fold" aria-labelledby="h-policy">
   <div class="sec-head"><span class="sec-num">03</span><h2 id="h-policy">Policy levers</h2></div>
   <p class="sec-sub">The pricing team's choices. Wix = hard cap, no top-ups. Framer = top-ups, published burn rates.</p>
   <div class="grid2">
     <div class="card">
       <div class="toggle-row">
-        <div><div class="t">Credit rollover</div><div class="d">Unused credits carry over, capped at one month. Off = Squarespace today.</div></div>
-        <label class="switch"><input type="checkbox" id="rollover"><span class="tr"></span><span class="src" style="position:absolute;left:54px;top:4px" id="rolloverState">Off</span></label>
+        <div><div class="t">Credit rollover</div><div class="d">Unused credits roll into the next month, capped at one month. Off = Squarespace today.</div></div>
+        <label class="switch"><input type="checkbox" id="rollover" aria-label="Credit rollover"><span class="tr"></span><span class="src" style="position:absolute;left:54px;top:4px" id="rolloverState">Off</span></label>
       </div>
       <div class="ctl" style="margin-top:16px">
         <label for="floor">Margin floor <output id="floorOut">70%</output></label>
@@ -514,14 +533,15 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
       <div class="ctl" id="ovMultCtl">
         <label for="ovMult">Overage multiple of the implied $/credit <output id="ovMultOut">1.5×</output></label>
         <input type="range" id="ovMult" min="0.5" max="3" step="0.1" value="1.5">
-        <p class="note">Overage only. Basic uses the top-up price (no implied rate).</p>
+        <p class="note">Overage only. When Basic has no monthly allowance, as at the published defaults, its base rate is the top-up price and the multiple applies to it. A Basic plan given a monthly allowance uses its own implied rate instead.</p>
       </div>
       <div class="ctl" id="topupCtl">
         <label for="topupPrice">Top-up price, $ per credit <output id="topupOut">$1.00</output></label>
         <input type="range" id="topupPrice" min="0.1" max="2.5" step="0.05" value="1">
-        <p class="note">Top-ups only. Half the shortfall is bought, half forgone. In Overage mode this price still sets Basic's overage rate, since Basic has no implied rate.</p>
+        <p class="note">Top-ups only. Half the shortfall is bought, half forgone. In Overage mode this price still sets Basic's overage base rate when Basic has no monthly allowance; the overage multiple then applies.</p>
       </div>
       <p class="src" id="ovNote"></p>
+      <p class="src" style="margin-top:6px">Under the paid policies the wall responses scale down from the hard-cap rates set by the sliders above: churn to 40% under overage and 55% under top-ups, downgrades to 50% and 60%, upgrades to 70% under both. <span class="ev-tag assump">No published value</span></p>
     </div>
   </div>
   <div class="card" style="margin-top:16px">
@@ -531,7 +551,7 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
       <div class="ctl">
         <label for="bElasticity">Price elasticity <output id="bElasticityOut">-0.1</output></label>
         <input type="range" id="bElasticity" min="-2" max="0" step="0.1" value="-0.1">
-        <p class="note">−0.1: a plan priced 10% above the ladder average loses about 1% of share; a uniform 10% rise costs the total about 0.35% after the damper. See Methodology §08.</p>
+        <p class="note">−0.1: a plan priced 10% above the ladder average loses about 1% of share; a uniform 10% rise costs the total about 0.35% after the damper. Share is measured against the published baseline prices in §01. See Methodology §08.</p>
       </div>
       <div class="ctl">
         <label for="bTakeUp">Paid take-up at the wall <output id="bTakeUpOut">20%</output></label>
@@ -560,11 +580,11 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
 
 <!-- ============ 4. TIER MARGIN TABLE ============ -->
 <div class="group-label">Results <small>The answer, without changing anything.</small></div>
-<section id="sec-h-margins" aria-labeledby="h-margins">
+<section id="sec-h-margins" aria-labelledby="h-margins">
   <div class="sec-head"><span class="sec-num">04</span><h2 id="h-margins">Tier margins, month six</h2></div>
-  <p class="sec-sub">Per user per month, led by adjusted revenue per starting user. All margins here are list-price margins: provider rates are public list prices, with no negotiated rates, prompt caching, or batch discounts. Hard cap: heavy users cost no more than their allowance. Overage: full demand is served and billed.</p>
+  <p class="sec-sub">Per user per month, led by adjusted revenue per starting user. All margins here are list-price margins: provider rates are public list prices, with no negotiated rates, prompt caching, or batch discounts. Hard cap: heavy users cost no more than their allowance. Overage: full demand is served and billed. Margins count AI serving cost alone against the full plan price; the cost of the website product itself is not on the cost side.</p>
   <div class="kpis" id="kpis"></div>
-  <p class="src">Static view: the tier table below holds the population at 10,000 users per plan. The behavior card is the adjusted view, after movement. Portfolio figures weight the four plans by the §06 mix weights, equal by default; Squarespace's filed mix concentrates in the lower plan families (Methodology §09), so read the portfolio margin as a policy comparison, not a forecast of the actual book. Percentile users in the table are costed at the average task mix, with a tail-mix margin beside each p99 figure: heavy users skew toward builds, so the average-mix tail cost is a floor. The guardrail flags run on the average-mix figures; the tail-mix margin is shown for judgment, and at defaults the two sit within a point of each other.</p>
+  <p class="src">Static view: the tier table below holds the population at 10,000 users per plan. The behavior card is the adjusted view, after movement. The static portfolio figures weight the four plans by the §06 mix weights, equal by default. The behavior card is the adjusted view, and its figures start every scenario from equal user counts, so adjusted revenue does not move when the §06 weights change. Squarespace's revenue concentrates in the lower plan families (Methodology §09), so read the portfolio margin as a policy comparison, not a forecast of the actual book. Percentile users in the table are costed at the average task mix, with a tail-mix margin beside each p99 figure: heavy users skew toward builds, so the average-mix tail cost is a floor. The guardrail flags run on the average-mix figures; the tail-mix margin is shown for judgment, and at defaults the two sit within a point of each other.</p>
   <div class="card beh-summary" id="behSummary"></div>
   <div class="card big-table" style="padding:6px 14px">
     <table class="stack" aria-label="Tier margin results">
@@ -576,14 +596,14 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
     </table>
   </div>
   <p class="src" id="simStatus">Fixed seed: same settings, same figures. Breakage = expired ÷ available credits.</p>
-  <p class="src">Published overage incidence on comparable allowance plans runs near 20% (Grubb and Osborne, 2015). This model's higher wall rate follows from allowances sitting low in its own demand shape, with Core's 20 credits at the 24th percentile; it is a property of the allowance, not a behavioral forecast.</p>
+  <p class="src">Published overage incidence on comparable allowance plans runs near 20% (Grubb and Osborne, 2015). This model's higher wall rate follows from allowances sitting low in its own demand shape (at the defaults, Core's 20 credits sit at the 24th percentile); it is a property of the allowance, not a behavioral forecast.</p>
 </section>
 
 <!-- ============ 5. ALLOWANCE PICKER ============ -->
 <div class="group-label">Go deeper <small>One tool at a time. The picker is unfolded: it is the allowance decision itself.</small></div>
-<section id="sec-h-picker" aria-labeledby="h-picker">
+<section id="sec-h-picker" aria-labelledby="h-picker">
   <div class="sec-head"><span class="sec-num">05</span><h2 id="h-picker">Allowance picker</h2></div>
-  <p class="sec-sub">Set credits at a percentile of demand. My landing zone is the 70th to 80th percentile: high enough that the median engaged user finishes a build cycle without thinking about credits, low enough that the heavy tail still meets a price.</p>
+  <p class="sec-sub">Set credits at a percentile of demand. My landing zone is the 70th to 80th percentile of the §02 demand distribution: high enough that the median user in that distribution can run several full site builds in a month at the §02 credit prices without thinking about credits, low enough that the heavy tail still meets a price. The range is analyst judgment; no published value sets it.</p>
   <div class="grid2">
     <div class="card">
       <div class="ctl">
@@ -592,7 +612,7 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
         <p class="note">That is <strong class="mono" id="pctCredits">—</strong> at the current shape. Ladder: <span class="mono" id="pctLadder">—</span>.</p>
       </div>
       <div class="ctl">
-        <label for="pickerTier">Apply it to this plan</label>
+        <label for="pickerTier">Preview it on this plan</label>
         <select id="pickerTier">
           <option value="0">Basic</option>
           <option value="1" selected>Core</option>
@@ -615,9 +635,9 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
 </section>
 
 <!-- ============ 6. DECOMPOSITION ============ -->
-<section id="sec-h-decomp" class="fold" aria-labeledby="h-decomp">
-  <div class="sec-head"><span class="sec-num">06</span><h2 id="h-decomp">Profit decomposition</h2></div>
-  <p class="sec-sub">Splits a shock's effect on portfolio profit in dollars per user into volume, mix, and rate, read in that order. (Margin points live in §04.) Portfolio figures use the mix weights set in this section, equal by default; the leftover after the three single effects is the interaction residual. The shock sliders in this section change nothing in §§01–03; they measure a shock against the setup above.</p>
+<section id="sec-h-decomp" class="fold" aria-labelledby="h-decomp">
+  <div class="sec-head"><span class="sec-num">06</span><h2 id="h-decomp">Revenue-minus-cost decomposition</h2></div>
+  <p class="sec-sub">Splits a shock's effect on portfolio revenue minus AI cost, in dollars per user into volume, mix, and rate, read in that order. (Margin points live in §04.) Portfolio figures use the mix weights set in this section, equal by default; the leftover after the three single effects is the interaction residual. The shock sliders in this section change nothing in §§01–03; they measure a shock against the setup above.</p>
   <div class="grid2">
     <div class="card">
       <h3>Shock against current settings</h3>
@@ -640,7 +660,7 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
       <div class="ctl">
         <label for="effRate">Effective-rate discount on provider prices <output id="effRateOut">0%</output></label>
         <input type="range" id="effRate" min="0" max="60" step="1" value="0">
-        <p class="note">Stands in for negotiated rates, prompt caching, and batch discounts, none of which the list-price model otherwise includes. It scales every provider rate in this decomposition only; §§01–05 stay on list prices.</p>
+        <p class="note">Stands in for negotiated rates, prompt caching, and batch discounts, none of which the list-price model otherwise includes. It scales the frontier and standard text rates in this decomposition only; the flat per-image rate stays at list, and §§01–05 stay on list prices.</p>
       </div>
       <div class="ctl">
         <label>Portfolio mix weights, share of users per plan</label>
@@ -650,7 +670,7 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
           <label class="src">Plus <input type="number" class="sm" id="mixPlus" value="25" step="1" min="0" max="100"></label>
           <label class="src">Advanced <input type="number" class="sm" id="mixAdv" value="25" step="1" min="0" max="100"></label>
         </div>
-        <p class="note">Renormalized to 100%. Equal weights are the default and match the rest of the page. These weights drive this decomposition and the §04 guardrail margin; the §03 behavior layer keeps its own price-driven starting mix.</p>
+        <p class="note">Renormalized to 100%; if every weight is set to zero the model falls back to equal weights. Equal weights are the default and match the rest of the page. These weights drive this decomposition and the §04 guardrail margin; the §03 behavior layer keeps its own price-driven starting mix.</p>
       </div>
     </div>
     <div class="card">
@@ -663,7 +683,7 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
 </section>
 
 <!-- ============ 7. BENCHMARKS ============ -->
-<section id="sec-h-bench" class="fold" aria-labeledby="h-bench">
+<section id="sec-h-bench" class="fold" aria-labelledby="h-bench">
   <div class="sec-head"><span class="sec-num">07</span><h2 id="h-bench">Competitor packaging</h2></div>
   <p class="sec-sub">Three alternatives, from public pages checked Oct–Nov 2026: what burns credits, what happens at zero, whether you can buy more.</p>
   <div class="grid3">
@@ -673,7 +693,8 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
       <ul>
         <li>AI landing page: about <strong>300 credits</strong>, burn rate published.</li>
         <li>Model choice is a multiplier: <strong>0.9× / 1× / 1.8×</strong>. Routing sits with the user.</li>
-        <li>Squarespace's 25-credit build hides the same choice in one blended rate.</li>
+        <li>The model's build price hides the same choice in one blended rate.</li>
+        <li>At zero: more credits are sold as <strong>top-ups</strong>. No published price per credit.</li>
       </ul>
     </div>
     <div class="card bench">
@@ -682,7 +703,7 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
       <ul>
         <li>Site generation is <strong>unmetered</strong>; credits apply only to agentic tools.</li>
         <li><strong>No rollover, no top-ups.</strong> More capacity means upgrading.</li>
-        <li>Here: the hard cap with top-ups off. Heavy users become upgrade leads.</li>
+        <li>Here: the hard cap from §03, with no top-up or overage path. Heavy users become upgrade leads.</li>
       </ul>
     </div>
     <div class="card bench">
@@ -690,7 +711,7 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
       <p class="src">Pooled workspace credits, cheap refills</p>
       <ul>
         <li>Credits are <strong>pooled at the workspace</strong>, not per site.</li>
-        <li>Refills: <strong>2,000 credits for $20</strong>, 1¢ per credit, well under any implied rate in §01.</li>
+        <li>Refills: <strong>2,000 credits for $20</strong>, 1¢ per credit.</li>
         <li>Credit counts don't compare across vendors. Cost per credit does.</li>
       </ul>
     </div>
@@ -698,26 +719,25 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
 </section>
 
 <!-- ============ 8. MEMO ============ -->
-<section id="sec-h-measure" aria-labeledby="h-measure">
+<section id="sec-h-measure" aria-labelledby="h-measure">
   <div class="sec-head"><span class="sec-num">08</span><h2 id="h-measure">Measuring the demand inputs</h2></div>
   <p class="sec-sub">The model's weakest inputs are the demand shape (20 / 200 / 1,500 actions a month) and the wall splits. Both are measurable before launch, and this is the plan I would run.</p>
   <div class="card">
     <h3>Demand shape: median, p90, p99 actions per user per month</h3>
-    <p class="hint">Instrument every AI surface, not only the free one: Blueprint measures site builds well and the other four tasks badly, so builds are the calibration task and the task mix comes from the paid surfaces' event logs. Log four events per account: generation started, generation completed, credits that would have been charged under the §02 task table, and plan tier. Run the logging for a full quarter, not four weeks: building is episodic, so a short window censors exactly the heavy-then-idle users the tail describes, and monthly per-account counts need complete months or an explicit censoring adjustment for accounts observed partway through. Read the median, p90, and p99 of monthly actions per active account instead of assuming a lognormal, and test the lognormal fit against the observed tail. Sample-size rule: report a percentile only for tier cells with at least 1,000 active accounts, and treat the p99 from a cell that size as resting on roughly ten accounts above the line, which makes it a range rather than a point; the picker acts on the range's lower end. Decision this informs: the allowance percentile in §05, which today rests on an assumed shape.</p>
+    <p class="hint">Instrument every AI surface, not only the free one: A surface that is never logged cannot be priced, so the logging covers all five tasks: builds are the calibration task because the onboarding surface is the one a launch instruments first, and the task mix comes from the paid surfaces' event logs. Log four events per account: generation started, generation completed, credits that would have been charged under the §02 task table, and plan tier. Run the logging for a full quarter, not four weeks: building is episodic, so a short window censors exactly the heavy-then-idle users the tail describes, and monthly per-account counts need complete months or an explicit censoring adjustment for accounts observed partway through. Read the median, p90, and p99 of monthly actions per active account instead of assuming a lognormal, and test the lognormal fit against the observed tail. Sample-size rule: report a percentile only for tier cells with at least 1,000 active accounts, and treat the p99 from a cell that size as resting on roughly ten accounts above the line, which makes it a range rather than a point; the picker acts on the range's lower end. Decision this informs: the allowance percentile in §05, which today rests on an assumed shape.</p>
     <h3 style="margin-top:14px">Wall splits: pay, upgrade, downgrade, churn, stay</h3>
-    <p class="hint">Run the shortfall policy as an experiment before it is policy. Give a cohort of accounts a soft wall (a warning at 80% of allowance, a hard stop at 100%, with a one-click top-up and a one-click upgrade shown side by side), hold a matched control group on the current policy, and record which of the five responses each wall user takes within 30 days. The five observed shares replace the §03 assumptions one for one, including the upgrade share, which has no published value anywhere. Guardrail: the wall cohort's departure rate is judged against the control group's, not against the 4.2% book-level baseline, because a wall-exposed cohort and an all-cause book rate have different denominators; the 4.2% figure is used only as a reasonableness bound on the blended book after the shares are adopted. Cell rule: five shares across four tiers is twenty cells, and a share is adopted only for cells with at least 500 wall users; smaller cells keep the assumption and say so. Decision this informs: every §03 slider, and whether the reconciliation cap in Methodology §08 still binds at observed rates.</p>
+    <p class="hint">Run the shortfall policy as an experiment before it is policy. Give a cohort of accounts a soft wall (a warning at 80% of allowance, a hard stop at 100%, with a one-click top-up and a one-click upgrade shown side by side), hold a matched control group on the current policy, and record which of the five responses each wall user takes within 30 days. The five observed shares replace the §03 assumptions one for one for the wall design tested, including the upgrade share, which has no published value anywhere; the splits under the other shortfall policies keep the scaling assumptions in Methodology §08 until each policy runs in its own cell. Guardrail: the wall cohort's departure rate is judged against the control group's, not against the 4.2% book-level baseline, because a wall-exposed cohort and an all-cause book rate have different denominators; the 4.2% figure is used only as a reasonableness bound on the blended book after the shares are adopted. Cell rule: five shares across four tiers is twenty cells, and a share is adopted only for cells with at least 500 wall users; smaller cells keep the assumption and say so. Decision this informs: every §03 slider, and whether the reconciliation cap in Methodology §08 still binds at observed rates.</p>
     <h3 style="margin-top:14px">Take-up and serving cost</h3>
     <p class="hint">Take-up is observed in the same experiment: the share of wall users who buy, and the share of the shortfall they buy, are two different numbers and the model keeps them separate (Methodology §08). Serving cost per action is reconciled monthly against provider invoices at the task level, which is also the check on the per-task routing shares in §02: if invoiced frontier tokens diverge from the modeled shares, the shares move, not the invoice. Decision this informs: the top-up price in §03 and the routing default in §01.</p>
   </div>
 </section>
 
-<section id="sec-h-memo" aria-labeledby="h-memo">
+<section id="sec-h-memo" aria-labelledby="h-memo">
   <div class="sec-head"><span class="sec-num">09</span><h2 id="h-memo">Decisions memo</h2></div>
   <p class="sec-sub">The recommendation, in memo form, generated from the current settings.</p>
   <div class="memo" id="memoBody">—</div>
   <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
     <button class="btn" type="button" id="copyMemo">Copy the memo</button>
-    <button class="btn ghost" type="button" id="resetBtn">Reset all defaults</button>
     <span class="status" id="copyStatus" role="status"></span>
   </div>
 </section>
@@ -732,7 +752,7 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
   <div class="masthead">
     <p class="kicker">Scenario Comparison</p>
     <div class="doc-title">Scenario comparison</div>
-    <p class="lede">The eleven presets side by side, ranked by adjusted revenue per starting user. They are deliberately far apart: tripled usage, a 120% frontier price shock, all-standard routing, halved and fifteen-fold allowances, $0.50 top-ups, overage at the implied rate, site builds priced at zero credits, a plan mix weighted to the filed book, and a meter limited to the two surfaces Squarespace charges for today.</p>
+    <p class="lede">The eleven presets side by side, ranked by adjusted revenue per starting user. They are deliberately far apart: usage up more than threefold, a 120% frontier price shock, all-standard routing, halved allowances and allowances up to fifteen-fold, $0.50 top-ups, overage at the implied rate, site builds priced at zero credits, a plan mix weighted to the entry tiers, and a meter limited to the two surfaces Squarespace charges for today.</p>
   </div>
 <nav class="toc" aria-label="Views">
   <a class="viewtab" href="#simulator" data-view="sim" aria-pressed="false">Simulator</a>
@@ -740,7 +760,7 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
   <a class="viewtab" href="#methodology" data-view="method" aria-pressed="false">Methodology</a>
 </nav>
 
-<section id="sec-h-compare" aria-labeledby="h-compare">
+<section id="sec-h-compare" aria-labelledby="h-compare">
   <div class="sec-head"><span class="sec-num">01</span><h2 id="h-compare">Scenario comparison</h2></div>
   <p class="sec-sub">Lead metric: adjusted revenue per starting user. Rows are ranked by it, highest first. Same starting population for every preset: 10,000 users per plan, month 6. Portfolio margin is the guardrail check, not the ranking, and it is computed on equal user counts in this view; the Simulator §04 guardrail uses the §06 mix weights, so the two portfolio margins differ when the weights are uneven. The Portfolio floor column tests the portfolio margin only. The per-tier and p99 test lives in Simulator §04, and the two can disagree: a portfolio average can clear a floor that its tail fails. Behavior columns use the simulator's §03 settings: change them there and every row re-runs. Deltas vs Baseline; shaded cell = best in column; Load opens a preset in the simulator. Each row is followed by the recommended course of action under that preset.</p>
   <p class="src" id="cmpSens"></p>
@@ -748,7 +768,7 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
   <div class="card big-table cmp-table" style="padding:6px 14px">
     <table class="stack" aria-label="Scenario comparison">
       <thead><tr>
-        <th>Scenario</th><th>Policy</th><th class="lead">Adj. revenue / starting user</th><th>Adj. margin</th><th>Mean cost / user</th><th>Portfolio margin (guardrail)</th><th>Portfolio floor</th><th>Users remaining</th><th>Churn</th><th>Downgrades</th><th>Upgrades</th><th>Ending mix</th>
+        <th>Scenario</th><th>Policy</th><th class="lead">Adj. revenue / starting user</th><th>Adj. margin</th><th>Mean cost / user</th><th>Portfolio margin, equal counts (guardrail)</th><th>Portfolio floor</th><th>Users remaining</th><th>Churn</th><th>Downgrades</th><th>Upgrades</th><th>Ending mix</th>
       </tr></thead>
       <tbody id="cmpRows"></tbody>
     </table>
@@ -756,16 +776,16 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
   <p class="src" id="cmpNote">Adjusted figures account for movement: leavers take their revenue and cost; downgraders count at the lower plan. Take-up (the share of wall users who pay, §03) scales overage/top-up revenue. Wall users split five ways (pay, upgrade, downgrade, churn, stay), and total departures are reconciled against the 4.2% baseline churn (Methodology §08). Wall rates here run above the published incidence near 20% (Grubb and Osborne, 2015), because the allowances sit low in this model's demand shape.</p>
 </section>
 
-<section aria-labeledby="h-cmp-read">
+<section aria-labelledby="h-cmp-read">
   <div class="sec-head"><span class="sec-num">02</span><h2 id="h-cmp-read">How to read this table</h2></div>
   <div class="card doc-card">
-    <h4>Lead metric first</h4>
+    <h3>Lead metric first</h3>
     <p>Read adjusted revenue per starting user first: it is the ranking. It divides by the 40,000 users each scenario starts with, so churn and downgrades reduce it directly. Check portfolio margin next as the guardrail, then mean cost to see which lever did the work.</p>
-    <h4>Static against adjusted</h4>
-    <p>Static columns hold the population fixed; adjusted columns let it move: churn at the wall, downgrades, paid take-up. Overage revenue is an upper bound in both: it bills the full shortfall before upgrade or churn.</p>
-    <h4>Deltas and shading</h4>
+    <h3>Static against adjusted</h3>
+    <p>Static columns hold the population fixed; adjusted columns let it move: churn at the wall, downgrades, paid take-up. Paid-mode revenue in the static columns is stated before take-up: overage bills the full shortfall, and top-up packs assume half of every shortfall is bought. The adjusted columns restate that revenue at the §03 take-up rate and count it on the ending population, so a user who upgrades or churns contributes no overage revenue at the tier they left.</p>
+    <h3>Deltas and shading</h3>
     <p>Deltas are vs Baseline. Shaded cell = best in column. Rows are sorted by the lead metric, highest first. The highlighted row is the setup loaded in the simulator; a Custom setup joins as its own row once a control moves.</p>
-    <h4>Where the settings live</h4>
+    <h3>Where the settings live</h3>
     <p>Presets are chosen in the simulator. Behavior rates: simulator §03; evidence: Methodology §08–§09.</p>
     <p style="margin-top:14px"><button class="btn backToSim" type="button">Back to the simulator</button></p>
   </div>
@@ -784,30 +804,30 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
     <p class="lede">How the simulator works, where the defaults come from, and where it stops being useful. If this page and the code disagree, the code is right.</p>
   </div>
 
-  <section aria-labeledby="m-what">
+  <section aria-labelledby="m-what">
     <div class="sec-head"><span class="sec-num">01</span><h2 id="m-what">What the model does</h2></div>
     <div class="card doc-card">
       <p>One question: what does it cost to serve AI usage sold as plan credits, and which allowance and shortfall rules keep that cost inside a target margin? A pricing model, not a forecast: no data from Squarespace's actual business.</p>
     </div>
   </section>
 
-  <section aria-labeledby="m-inputs">
+  <section aria-labelledby="m-inputs">
     <div class="sec-head"><span class="sec-num">02</span><h2 id="m-inputs">Inputs and defaults</h2></div>
     <div class="card doc-card">
-      <h4>Plans</h4>
-      <p>Squarespace's published tiers at annual billing, checked October 2026. Basic is $19 a month with 10 credits granted once and no monthly refill. Core is $29 with 20 credits a month. Plus is $49 with 40 a month. Advanced is $99 with 120 a month. Prices in the model are monthly equivalents.</p>
-      <h4>Provider rate card</h4>
-      <p>Public list prices per 1M tokens, November 2026. The frontier model (Sonnet class) is $3 input and $15 output. The standard model (mini and Haiku class) is $0.30 input and $1.50 output. Image generation is a flat $0.04 per image. A blended text rate assumes 60% input tokens and 40% output tokens. The effective rate shown in §01 is the model's realized text rate: total text serving cost divided by total text tokens across the task mix, computed from the per-task costs rather than from a single blend. The §01 routing slider scales every task's share together, so at the 30% default the shares in the task table apply as entered. Image generation is flat per image and is excluded from that rate. A quality index reports the mix-weighted output quality next to cost: frontier output scores 100 and the standard model scores 85 by default, an assumption with no published benchmark behind it.</p>
-      <h4>Tasks</h4>
-      <p>Five tasks carry demand: site build, page regeneration, copy draft, image generation, and SEO scan. Each has a token count, a credit price, a share of monthly actions, and a frontier share. These are analyst estimates, not published figures, and they are the softest inputs in the model. The percentile guardrail users are also costed on a tail mix tilted toward site builds (30% build share by default, against 5% in the average mix); the tail-mix margin appears beside the p99 margin in §04 and as a row in the §05 picker, so the gap is visible where the guardrail is read.</p>
-      <h4>Competitor benchmarks</h4>
+      <h3>Plans</h3>
+      <p>Squarespace's published tiers at annual billing, from October 2026 pricing compilations. The review's direct check of Squarespace's own pricing page failed, so the ladder figures are index-grade, as §09 records. Basic is $19 a month with 10 credits granted once and no monthly refill. Core is $29 with 20 credits a month. Plus is $49 with 40 a month. Advanced is $99 with 120 a month. Prices in the model are monthly equivalents.</p>
+      <h3>Provider rate card</h3>
+      <p>Public list prices per 1M tokens, November 2026. The frontier model (Sonnet class) is $3 input and $15 output. The standard model (mini and Haiku class) is $0.30 input and $1.50 output. Image generation is a flat $0.04 per image. A blended text rate assumes 60% input tokens and 40% output tokens. The effective rate shown in §01 is the model's realized text rate: total text serving cost divided by total text tokens across the task mix, computed from the per-task costs rather than from a single blend. The §01 routing slider scales every task's share together, so at the 30% default the shares in the task table apply as entered. Image generation is flat per image and is excluded from that rate. The two classes are composites across providers' public pricing pages, not one vendor's card. A quality index reports the mix-weighted output quality next to cost: frontier output scores 100 and the standard model scores 85 by default, an assumption with no published benchmark behind it.</p>
+      <h3>Tasks</h3>
+      <p>Demand comes from five tasks: site build, page regeneration, copy draft, image generation, and SEO scan. Each has a token count, a credit price, a share of monthly actions, and a frontier share. These are analyst estimates, not published figures, and they are the softest inputs in the model. The percentile guardrail users are also costed on a tail mix tilted toward site builds (30% build share by default, against 5% in the average mix); the tail-mix margin appears beside the p99 margin in §04 and as a row in the §05 picker, so the gap is visible where the guardrail is read.</p>
+      <h3>Competitor benchmarks</h3>
       <p>The packaging notes come from Framer, Wix, and Webflow public pricing and help pages, checked in October and November 2026. They describe packaging only. They do not feed the simulation.</p>
-      <h4>Behavior evidence</h4>
+      <h3>Behavior evidence</h3>
       <p>From the published-record review in §09 (Nov 2026): Antenna/Netflix via TechCrunch, Spotify's Q3 2023 call, ChartMogul via GrowPanel, Recurly 2023, Chargebee 2025, Grubb and Osborne (2015), Lambrecht and Skiera (2006). §09 tags mark how each figure was checked; index-grade figures rest on search text or secondary reproductions.</p>
     </div>
   </section>
 
-  <section aria-labeledby="m-usage">
+  <section aria-labelledby="m-usage">
     <div class="sec-head"><span class="sec-num">03</span><h2 id="m-usage">Usage distribution</h2></div>
     <div class="card doc-card">
       <p>Monthly actions follow a lognormal. The median slider sets the centre exactly; the spread (sigma) is fitted to p90 and p99 by least squares on the log scale (z-scores 1.2816 and 2.3263). One lognormal rarely passes through all three points, so the simulator prints fitted and slider values side by side.</p>
@@ -815,74 +835,76 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
     </div>
   </section>
 
-  <section aria-labeledby="m-sim">
+  <section aria-labelledby="m-sim">
     <div class="sec-head"><span class="sec-num">04</span><h2 id="m-sim">Simulation design</h2></div>
     <div class="card doc-card">
-      <p>Monte Carlo, fixed seed: a mulberry32 generator (seed 20261106) produces one fixed array of 60,000 standard normal draws, 10,000 users across six months, and that same array is reused for every tier, preset, and scenario. This is common random numbers: because the draws are shared, differences between scenarios are policy effects rather than sampling noise, and identical settings give identical figures. Each user runs six months so rollover banks settle; all figures are month six. Median, p90, and p99 costs come from the simulated users nearest those percentiles.</p>
+      <p>Monte Carlo, fixed seed: a mulberry32 generator (seed 20261106) produces one fixed array of 60,000 standard normal draws, 10,000 users across six months, and that same array is reused for every tier, preset, and scenario. This is common random numbers: because the draws are shared, differences between scenarios are policy effects rather than sampling noise, and identical settings give identical figures. Each index position runs six months so rollover banks settle; all figures are month six. The six monthly draws for a position are independent, so a position has no persistent heavy or light type across months: rollover banks settle for a statistically typical user, and a product whose heavy users stay heavy month after month would bank less and meet the wall more steadily than this design shows. Median, p90, and p99 costs come from the simulated users nearest those percentiles.</p>
     </div>
   </section>
 
-  <section aria-labeledby="m-policy">
+  <section aria-labelledby="m-policy">
     <div class="sec-head"><span class="sec-num">05</span><h2 id="m-policy">Policy mechanics</h2></div>
     <div class="card doc-card">
-      <h4>Hard cap</h4>
+      <h3>Hard cap</h3>
       <p>Actions stop when the credit balance runs out. Unserved demand costs nothing and earns nothing.</p>
-      <h4>Overage billing</h4>
-      <p>Full demand is served. Credits beyond the balance are billed at the plan's implied rate (price divided by monthly credits) times the overage multiple. Basic has no implied rate, so its overage is priced at the top-up price.</p>
-      <h4>Top-up packs</h4>
+      <h3>Overage billing</h3>
+      <p>Full demand is served. Credits beyond the balance are billed at the plan's implied rate (price divided by monthly credits) times the overage multiple. A plan with no monthly credits has no implied rate, so its overage is priced at the top-up price times the overage multiple. Basic is that case at the published defaults.</p>
+      <h3>Top-up packs</h3>
       <p>Half of any shortfall is bought at the top-up price; half is forgone. The half is an assumption, and results are sensitive to it.</p>
-      <h4>Rollover and breakage</h4>
+      <h3>Rollover and breakage</h3>
       <p>Rollover banks unused credits up to one month of allowance; the rest expires. Basic's grant lands in month one only. Breakage = expired ÷ available credits in month six.</p>
+      <h3>One pool per user</h3>
+      <p>The simulation tracks one credit total and one cost total per user. When a shortfall binds, served cost scales down in proportion to the credit shortfall across every task, including any task priced at zero credits. A zero-credit task is therefore not served in full for a user past the allowance inside this model; its cost leaves in the same proportion. The presets that zero out a task's price (Builds unmetered, Metered today) inherit this simplification, and their serving-cost figures should be read with it in mind.</p>
     </div>
   </section>
 
-  <section aria-labeledby="m-margin">
+  <section aria-labelledby="m-margin">
     <div class="sec-head"><span class="sec-num">06</span><h2 id="m-margin">Margins and the picker</h2></div>
     <div class="card doc-card">
-      <p>Margin per user per month: (revenue − serving cost) ÷ revenue, revenue being price plus overage/top-up revenue. A tier breaches when its margin, or its p99 user's, falls below the floor. Portfolio figures use the §06 mix weights, equal user counts by default. The picker swaps one plan's allowance for a demand percentile, price and policy held.</p>
+      <p>Margin per user per month: (revenue − serving cost) ÷ revenue, revenue being price plus overage/top-up revenue. A tier breaches when its margin, or its p99 user's, falls below the floor. Portfolio figures use the §06 mix weights, equal user counts by default. The picker swaps one plan's allowance for a demand percentile, price and policy held. In overage mode the plan's current implied rate is held as well, so the comparison isolates the allowance instead of repricing overage through the allowance in the rate's denominator.</p>
     </div>
   </section>
 
-  <section aria-labeledby="m-decomp">
+  <section aria-labelledby="m-decomp">
     <div class="sec-head"><span class="sec-num">07</span><h2 id="m-decomp">Decomposition</h2></div>
     <div class="card doc-card">
-      <p>The bridge is read in a fixed order: volume first (action counts), then mix (the routing share between models at unchanged per-route prices), then rate (provider prices). Each effect is a single counterfactual measured against the same base, and all three are then applied together. Interaction is the residual left after the three single effects are subtracted from the total change. It exists because the shocks were measured separately and in that order, so it is a property of the decomposition rather than a separate driver to act on. Under a hard cap the volume effect is near zero by construction: cost is bounded by allowances.</p>
+      <p>The bridge is read in a fixed order: volume first (action counts), then mix (the routing share between models at unchanged per-route prices), then rate (provider prices). Each effect is a single counterfactual measured against the same base, and all three are then applied together. Interaction is the residual left after the three single effects are subtracted from the total change. It exists because the shocks were measured separately, so it is a property of the decomposition rather than a separate driver to act on. Under a hard cap the volume effect is near zero by construction: cost is bounded by allowances.</p>
     </div>
   </section>
 
-  <section aria-labeledby="m-behavior">
+  <section aria-labelledby="m-behavior">
     <div class="sec-head"><span class="sec-num">08</span><h2 id="m-behavior">Buyer behavior</h2></div>
     <div class="card doc-card">
       <p>The margin simulation holds the population fixed at 10,000 users per plan. The behavior layer lets it move, in month six only, and produces its own adjusted revenue and margin alongside the static figures: it does not feed back into §04.</p>
       <p>Defaults come from published evidence (§09, checked Nov 2026). No traceable SaaS price-elasticity coefficient exists from any named firm, and Squarespace publishes no wall-reaction rates, so the defaults combine the closest citable evidence: consumer price events, billing-platform churn levels, a survey downgrade ratio, and an academic finding on too-small plans. Paid take-up has no published value and stays an explicit assumption.</p>
-      <h4>Price response</h4>
-      <p>Each plan's share shifts by its relative price change raised to the elasticity (default −0.1), derived from Netflix's January 2022 increase (Antenna: churn 3.0% in the increase month, up 0.95 pts from a 2.0% 2021 average). Spotify's 2023 increase produced no detectable change (bound: 0 to −0.1); Netflix 2011 gives about −0.07. All are $10–$20 consumer products with near-zero switching costs, so −0.1 reads as an upper bound for a product hosting a business's site and domain. About a third of the response leaves the product entirely; the rest switches plans. That split is a modeling choice with no published source.</p>
-      <h4>The wall</h4>
-      <p>The wall-hit share comes from the simulation itself; Grubb and Osborne (2015), about 20% of users on $35–$55 cellular plans incurred overages, is the published check. Wall users split five ways in this layer: pay (where a paid policy exists), upgrade one plan, downgrade one plan, churn, or stay, and the five shares always sum to the wall population; under a hard cap there is nothing to buy, so the pay share is zero and those users stay. Basic's covered share is 0% by construction, since it carries no monthly allowance, so its month-six exits are arithmetic rather than evidence, and inbound downgrades refill it in the ending mix. Squarespace's base bills mostly annually, so for annual subscribers read month-six movement as renewal risk at month twelve, not mid-term cancellation. Wall churn defaults to 13% under a hard cap: ChartMogul's 4.2% baseline monthly churn at $25–$100, times a conservative 3× stand-in for Lambrecht and Skiera's 4.4–11.4× range for too-small plans. Wall downgrade defaults to 8%, from Chargebee's 2025 downgrade-to-cancel ratio (14% downgraded, 22% cancelled). The upgrade share defaults to 15% and, like paid take-up, has no published value; it is an assumption, exposed as a slider with the same status. Paid policies scale the responses down (churn 40%/55%, downgrades 50%/60%, upgrades 70% for overage/top-ups): modeling assumptions with no published source. Basic downgraders count as churn.</p>
-      <p><strong>Reconciliation.</strong> The cap is tested on a raw total: price-response departures plus every wall user's churn share, with Basic's downgrades counted inside that total because the page counts them as churn. When the raw total exceeds twice the 4.2% all-cause baseline (8.4% of the starting population, 3,360 users at the default population), the wall churn share scales down so the test total meets the cap, and the behavior card reports the scale factor. One consequence is stated plainly: Basic's downgrades are counted in the test total but are not themselves scaled, so realized churn lands above the cap figure (3,550 users, 8.9%, at defaults against the 3,360 cap). The cap is therefore a cap on the test total, not a guarantee on realized churn, and the difference is the unscaled Basic downgrade flow. Downgraders are not re-tested against the lower plan's wall (see Limits); nothing in this layer re-tests anyone. The cap is a discipline rule, not an estimate: it stops the behavior layer from implying a departure rate the baseline evidence cannot support, at the cost of muting the wall response exactly where allowances bite hardest. Before this rebuild the wall alone produced about 11% monthly departures at defaults with no reconciliation at all.</p>
-      <h4>Paid take-up</h4>
-      <p>Take-up, the share of wall users who pay, defaults to 20%, an assumption inside a 10–25% sensitivity range; no published value exists for any SaaS product. Zero under a hard cap. It is a different quantity from the share of a shortfall bought inside the simulation (half, under the top-up policy; §05), and the two should not be read as one number. The behavior layer restates overage/top-up revenue at this rate; serving cost per remaining user is not restated (see Limits).</p>
-      <h4>Upgrades at the wall</h4>
+      <h3>Price response</h3>
+      <p>Each plan's share shifts by its relative price change raised to the elasticity (default −0.1), derived from Netflix's January 2022 increase (Antenna: churn 3.0% in the increase month, up 0.95 pts from a 2.0% 2021 average). Spotify's 2023 increase produced no detectable change (bound: 0 to −0.1); Netflix 2011 gives about −0.07. All are $10–$20 consumer products with near-zero switching costs, so −0.1 reads as an upper bound for a product hosting a business's site and domain. Each plan's price enters as a ratio to its published baseline price in §01, and the total population response is damped by a 0.35 exponent on the average of those ratios; the rest of the response redistributes share between plans. The 0.35 damper is a modeling choice with no published source.</p>
+      <h3>The wall</h3>
+      <p>The wall-hit share comes from the simulation itself; Grubb and Osborne (2015), about 20% of users on $35–$55 cellular plans incurred overages, is the published check. Wall users split five ways in this layer: pay (where a paid policy exists), upgrade one plan, downgrade one plan, churn, or stay, and the five shares always sum to the wall population; under a hard cap there is nothing to buy, so the pay share is zero and those users stay. At the published defaults Basic's covered share is 0% by construction, since it has no monthly allowance there, so its month-six exits are arithmetic rather than evidence, and inbound downgrades refill it in the ending mix. Giving Basic a monthly allowance in the simulator changes that share. For annual subscribers, read month-six movement as renewal risk at month twelve, not mid-term cancellation. Wall churn defaults to 13% under a hard cap: ChartMogul's 4.2% baseline monthly churn at $25–$100, times a conservative 3× stand-in for Lambrecht and Skiera's 4.4–11.4× range for too-small plans. Wall downgrade defaults to 8%, from Chargebee's 2025 downgrade-to-cancel ratio (14% downgraded, 22% cancelled). The upgrade share defaults to 15% and, like paid take-up, has no published value; it is an assumption, exposed as a slider with the same status. Paid policies scale the responses down (churn 40%/55%, downgrades 50%/60%, upgrades 70% for overage/top-ups): modeling assumptions with no published source. Basic downgraders count as churn.</p>
+      <p><strong>Reconciliation.</strong> The cap is tested on a raw total: price-response departures plus every wall user's churn share, with Basic's downgrades counted inside that total because the page counts them as churn. When the raw total exceeds twice the 4.2% all-cause baseline (8.4% of the starting population, 3,360 users at the default population), the wall churn share scales down by a factor computed against that raw total, and the behavior card reports the scale factor. The share removed from churn moves into the stay share, so the five shares still sum to the wall population, and price departures enter the test floored at zero, so a net price inflow cannot enlarge the allowance. One consequence is stated plainly: Basic's downgrades are counted in the test total but are not themselves scaled, so realized churn lands above the cap figure (3,550 users, 8.9%, at defaults against the 3,360 cap). The cap is therefore a cap on the test total, not a guarantee on realized churn, and the difference is the unscaled Basic downgrade flow. Downgraders are not re-tested against the lower plan's wall (see Limits); nothing in this layer re-tests anyone. The cap is a discipline rule, not an estimate: it stops the behavior layer from implying a departure rate the baseline evidence cannot support, at the cost of muting the wall response exactly where allowances bite hardest. Before this rebuild the wall alone produced about 11% monthly departures at defaults with no reconciliation at all.</p>
+      <h3>Paid take-up</h3>
+      <p>Take-up, the share of wall users who pay, defaults to 20%, an assumption inside a 10–25% sensitivity range; no published value exists for any SaaS product. Zero under a hard cap. It is a different quantity from the share of a shortfall bought inside the simulation (half, under the top-up policy; §05), and the two should not be read as one number. The behavior layer restates overage and top-up revenue at this rate: overage revenue scales by the take-up share against full-shortfall billing, and top-up revenue scales by the take-up share at the policy's half-shortfall depth, the depth the simulation applies to every user. Serving cost per remaining user is not restated (see Limits).</p>
+      <h3>Upgrades at the wall</h3>
       <p>The upgrade share, the proportion of wall users who move up one plan instead of paying, leaving, or staying, defaults to 15% under a hard cap and 70% of that under the paid policies. Like take-up it has no published value for any SaaS product; it is an assumption, exposed as a slider in §03, and the five wall shares are normalized so they always sum to the wall population.</p>
-      <h4>Adjusted totals</h4>
+      <h3>Adjusted totals</h3>
       <p>Leavers take their revenue and cost; downgraders count at the lower plan's price and cost. Adjusted margin = (adjusted revenue − ending population's cost) ÷ adjusted revenue.</p>
     </div>
   </section>
 
-  <section aria-labeledby="m-evidence">
+  <section aria-labelledby="m-evidence">
   <div class="sec-head"><span class="sec-num">09</span><h2 id="m-evidence">Published evidence behind the behavior defaults</h2></div>
-  <p class="sec-sub">Checked Nov 2026. Headline gap: no traceable SaaS price-elasticity coefficient exists from any named firm, and no published pay/upgrade/reduce/churn split at a usage cap exists for any SaaS product. Defaults rest on the closest citable evidence. Tags: <span class="ev-tag live">Verified live</span> page fetched and read · <span class="ev-tag index">Index</span> search text or secondary reproduction · <span class="ev-tag assump">Assumption</span> no published value.</p>
+  <p class="sec-sub">Checked Nov 2026. Headline gap: no traceable SaaS price-elasticity coefficient exists from any named firm, and no published pay/upgrade/reduce/churn split at a usage cap exists for any SaaS product. Defaults rest on the closest citable evidence. Tags: <span class="ev-tag live">Verified live</span> page fetched and read · <span class="ev-tag index">Index</span> search text or secondary reproduction · <span class="ev-tag assump">Assumption</span> no published value · <span class="ev-tag math">Arithmetic</span> computed from the figures shown, not sourced.</p>
 
   <div class="card">
     <div class="ev-block">
-      <h4>Price increases with a measurable response</h4>
+      <h3>Price increases with a measurable response</h3>
       <p>The only price changes in the review from which an elasticity can be computed. All are $10–$20 entertainment products with near-zero switching costs, so they read as an upper bound for a website builder. None measures new-buyer response cleanly.</p>
       <div class="ev-scroll"><table aria-label="Price increase events">
         <thead><tr><th>Event</th><th>Price change</th><th>Response</th><th class="num">Implied elasticity</th><th>Source</th></tr></thead>
         <tbody>
           <tr><td class="name">Netflix US, July 2011</td><td>About +60% to keep streaming and DVD, roughly $10 to $15.98 a month</td><td>810,000 cancellations on a 24.6 million base, a 3.3% fall in the quarter. Management had forecast 600,000 losses.</td><td class="num">−0.07 realised; −0.05 expected</td><td>OpenStax, Principles of Microeconomics, Ch. 5 <span class="ev-tag live">Verified live</span><br><a href="https://publishing.lib.umn.edu/openmicro/05_elasticity.html" target="_blank" rel="noopener">publishing.lib.umn.edu</a></td></tr>
-          <tr><td class="name">Netflix US, January 2022</td><td>+$1–$2 a month on all tiers, roughly one tenth</td><td>Monthly churn rose 0.95 points in January to 3.0% and reached 3.3% by the end of March. First-quarter cancellations were 3.6 million against about 2.5 million in each prior quarter. Average monthly churn was 2.0% in 2021 and 3.5% by the third quarter of 2022, with Antenna attributing the persistence partly to intensifying competition rather than price alone.</td><td class="num">About −0.1 to −0.15</td><td>Antenna data via TechCrunch, 2022, and Antenna Q3 2022 report <span class="ev-tag live">Verified live</span><br><a href="https://techcrunch.com/2022/05/21/premium-streaming-subscriptions-continue-to-increase-despite-netflix-tribulations/" target="_blank" rel="noopener">techcrunch.com</a> · <a href="https://www.antenna.live/insights/antenna-q3-2022-svod-growth-report-as-the-world-churns" target="_blank" rel="noopener">antenna.live</a></td></tr>
-          <tr><td class="name">Spotify, July 2023</td><td>Individual Premium $9.99 to $10.99 (+10%). Family $15.99 to $16.99. Duo $12.99 to $14.99</td><td>The chief financial officer said on the Q3 2023 call that churn was right in line with expectations, with no adverse impact. Premium added 6 million net subscribers in the quarter to 226 million, about 2 million ahead of guidance.</td><td class="num">0 to −0.1</td><td>Spotify Q3 2023 earnings call via Music Business Worldwide <span class="ev-tag live">Verified live</span><br><a href="https://www.bigdrumbeat.com/spotifys-price-hike-didnt-hurt-subscriptions-and-3-other-things-we-learned-on-its-latest-earnings-call/" target="_blank" rel="noopener">bigdrumbeat.com</a></td></tr>
+          <tr><td class="name">Netflix US, January 2022</td><td>+$1–$2 a month on all tiers, roughly one tenth</td><td>Monthly churn rose 0.95 points in January to 3.0% and reached 3.3% by the end of March. First-quarter cancellations were 3.6 million against about 2.5 million in each prior quarter. Average monthly churn was 2.0% in 2021 and 3.5% by the third quarter of 2022, with Antenna attributing the persistence partly to intensifying competition rather than price alone.</td><td class="num">About −0.1 to −0.15 (−0.1 from January alone: a 0.95% base loss against a rise of about one tenth)</td><td>Antenna data via TechCrunch, 2022, and Antenna Q3 2022 report <span class="ev-tag live">Verified live</span><br><a href="https://techcrunch.com/2022/05/21/premium-streaming-subscriptions-continue-to-increase-despite-netflix-tribulations/" target="_blank" rel="noopener">techcrunch.com</a> · <a href="https://www.antenna.live/insights/antenna-q3-2022-svod-growth-report-as-the-world-churns" target="_blank" rel="noopener">antenna.live</a></td></tr>
+          <tr><td class="name">Spotify, July 2023</td><td>Individual Premium $9.99 to $10.99 (+10%). Family $15.99 to $16.99. Duo $12.99 to $14.99</td><td>The chief financial officer said on the Q3 2023 call that churn was right in line with expectations, with no adverse impact. Premium added 6 million net subscribers in the quarter to 226 million, about 2 million ahead of guidance.</td><td class="num">0 to −0.1</td><td>Spotify Q3 2023 earnings call via Music Business Worldwide <span class="ev-tag index">Index</span><br><a href="https://www.bigdrumbeat.com/spotifys-price-hike-didnt-hurt-subscriptions-and-3-other-things-we-learned-on-its-latest-earnings-call/" target="_blank" rel="noopener">bigdrumbeat.com</a></td></tr>
           <tr><td class="name">Superhuman, 2024</td><td>$30 to $40 a month (+33%), announced in August 2024 and effective in November, with three months of notice and a $30 Starter downgrade tier offered to existing users</td><td>Co-founder Gaurav Vohra told Schematic that churn ran 1–2 percentage points above normal for 60–90 days. A Schematic book summary describes the same event as 4% churn with a 28% overnight revenue lift, and whether that 4% is total or incremental churn is unclear, so that variant is treated as ambiguous.</td><td class="num">Not computed</td><td>Company-reported, single source, via secondary summaries <span class="ev-tag index">Index</span><br><a href="https://getlaunchlist.com/blog/how-to-price-a-saas-before-launch" target="_blank" rel="noopener">getlaunchlist.com</a> · <a href="https://www.productcompass.pm/p/pricing-architecture-four-pillars" target="_blank" rel="noopener">productcompass.pm</a></td></tr>
         </tbody>
       </table></div>
@@ -891,7 +913,7 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
     </div>
 
     <div class="ev-block">
-      <h4>Baseline churn by price point</h4>
+      <h3>Baseline churn by price point</h3>
       <p>ChartMogul platform data (Nov 2021–Jan 2022): the most applicable dataset here, since its revenue-per-account bands cover the $19–$99 range exactly. Via GrowPanel's reproduction; ChartMogul's help page corroborates the gradient.</p>
       <div aria-label="Median monthly customer churn by average revenue per account, ChartMogul">
         <div class="bar-row hl"><span>Under $25</span><span class="bar-track"><i style="width:100%"></i></span><span class="mono">6.1% / mo</span></div>
@@ -907,40 +929,40 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
     </div>
 
     <div class="ev-block">
-      <h4>What customers say they did after an increase</h4>
+      <h3>What customers say they did after an increase</h3>
       <p><strong>Chargebee Global Consumer Insights</strong> (2025, n=1,454): after an increase, <strong>58% accepted</strong>, <strong>22% cancelled some subscriptions</strong>, <strong>14% downgraded</strong>, 8% sought discounts, 8% reduced usage. Categories overlap across subscriptions, so these are not per-service churn rates. The transferable parameter is the downgrade-to-cancel ratio of ~0.6: it sets the §03 downgrade default. Source: <a href="https://www.chargebee.com/blog/how-to-raise-prices-without-losing-subscribers/" target="_blank" rel="noopener">Chargebee</a>. <span class="ev-tag live">Verified live</span></p>
       <p><strong>Zuora Subscription Economy Index 2025</strong> (Harris Poll, n=3,087): <strong>47% of 2024 cancellers cited a price hike</strong>: attribution among cancellers, not incidence. Source: <a href="https://www.zuora.com/resource/the-subscription-economy-index-thank-you/" target="_blank" rel="noopener">Zuora</a>. <span class="ev-tag live">Verified live</span></p>
       <p>Chargebee's 2025 monetization report (473 business leaders): <strong>70% raised prices</strong> in 2024: increases are routine; no churn outcome reported. Source: <a href="https://www.chargebee.com/blog/small-pricing-experiments-recurring-revenue/" target="_blank" rel="noopener">Chargebee</a>. <span class="ev-tag index">Index</span></p>
     </div>
 
     <div class="ev-block">
-      <h4>Tier mix and willingness to pay, from filings and price ladders</h4>
+      <h3>Tier mix and willingness to pay, from filings and price ladders</h3>
       <p>No builder publishes subscriber counts by tier, so tier-mix shift elasticities do not exist in the public record. The filings establish only where revenue concentrates.</p>
       <p><strong>Squarespace</strong> reported fiscal 2023 revenue in two plan families: Presence at <strong>$704.3 million, 69.6%</strong> of revenue, and Commerce at <strong>$308.0 million, 30.4%</strong>, with more than 4.6 million unique subscriptions and average revenue per unique subscription of <strong>$228.02 a year</strong>, up 9% year over year, or roughly $19 a month blended across all subscriptions including domain-only products. Because Commerce plans cost more, the Commerce share of subscribers sits below its 30.4% share of revenue. Source: Squarespace fiscal 2023 results, SEC filing, February 28, 2024. <a href="https://www.sec.gov/Archives/edgar/data/1496963/000149696324000007/sqsp-02282024x8kexhibit991.htm" target="_blank" rel="noopener">sec.gov</a> <span class="ev-tag live">Verified live</span></p>
       <p><strong>Wix</strong> reported about <strong>6.3 million premium subscriptions</strong> against 263 million registered users for fiscal 2023, which works out to a cumulative free-to-paid conversion of about 2.4%, a figure the review computed from the two reported numbers because Wix does not publish the rate. Creative Subscriptions revenue was $1.15 billion, 74% of the total, and Business Solutions was $409.7 million, 26%, including transaction revenue. Total revenue over premium subscriptions works out to about $248 a year, roughly $21 a month per premium subscription including transaction revenue. Source: Wix fiscal 2023 results, February 21, 2024. <a href="https://www.nasdaq.com/press-release/wix-reports-fourth-quarter-and-full-year-2023-results-2024-02-21" target="_blank" rel="noopener">nasdaq.com</a> <span class="ev-tag live">Verified live</span></p>
-      <p>Two consumer analogues bound the shape of a tier mix. After <strong>Netflix</strong> phased out its mid-priced ad-free Basic tier for new and rejoining members, its cheapest ads tier grew about 70% quarter over quarter for two consecutive quarters and took <strong>40% of all new sign-ups</strong> in ads markets, according to the Q4 2023 shareholder letter. That shift was engineered by removing a tier rather than by a pure price change. Source: <a href="https://www.sec.gov/Archives/edgar/data/1065280/000106528024000029/ex991_q423.htm" target="_blank" rel="noopener">sec.gov</a> <span class="ev-tag live">Verified live</span> At <strong>Spotify</strong> in Q3 2023, 226 million Premium subscribers against 574 million total monthly users means <strong>39% of users pay and 61% stay free</strong> after a decade of freemium operation.</p>
+      <p>Two consumer analogues bound the shape of a tier mix. After <strong>Netflix</strong> phased out its mid-priced ad-free Basic tier for new and rejoining members, its cheapest ads tier grew about 70% quarter over quarter for two consecutive quarters and took <strong>40% of all new sign-ups</strong> in ads markets, according to the Q4 2023 shareholder letter. That shift was engineered by removing a tier rather than by a pure price change. Source: <a href="https://www.sec.gov/Archives/edgar/data/1065280/000106528024000029/ex991_q423.htm" target="_blank" rel="noopener">sec.gov</a> <span class="ev-tag live">Verified live</span> At <strong>Spotify</strong> in Q3 2023, 226 million Premium subscribers against 574 million total monthly users means <strong>39% of users pay and 61% stay free</strong> after a decade of freemium operation (Q3 2023 earnings call via Music Business Worldwide <span class="ev-tag index">Index</span>).</p>
       <p>The category's current price ladders, taken from October 2026 checked-pricing compilations, clear the market inside the same band this simulator models: Squarespace at $19, $29, $49, and $99 a month billed annually and $25 to $139 billed monthly; Wix at $17, $29, $39, and $159; Shopify at $29, $79, and $299 with Plus from $2,300; and GoDaddy entry pricing at about $9.99. A live check of Squarespace's own pricing page was attempted during the review and the browser failed, so these ladder figures are index-grade. Sources: <a href="https://rankite.com/blog/best-web-building-software" target="_blank" rel="noopener">Rankite</a> and <a href="https://www.wix.com/blog/squarespace-alternatives" target="_blank" rel="noopener">Wix</a>. <span class="ev-tag index">Index</span></p>
       <p>Outside options bound willingness to pay from above. A do-it-yourself builder build runs $0 to $450 on Forbes Advisor's figures, a freelancer-built basic site runs about $6,760 all-in for year one on FreshBooks' breakdown, and most agency projects reviewed on Clutch cost under $10,000, all as compiled in Zarla's 2026 cost guide. A $19–$99 monthly plan, $228 to $1,188 a year, sits an order of magnitude below the freelancer and agency alternatives, which is consistent with the low price sensitivity observed inside this band, although no published study converts that relationship into a sensitivity coefficient. Source: <a href="https://www.zarla.com/guides/how-much-does-a-website-cost" target="_blank" rel="noopener">Zarla</a>. <span class="ev-tag index">Index</span></p>
       <p>On billing period, the modal annual discount across more than 1,000 SaaS businesses in Recurly's plan-structure study from January 2017 to July 2018 was 16.7%, or two months free, while Squarespace's own ladder embeds an annual discount of about 24% at Basic. Recurly's 2025 State of Subscriptions reports that annual plans generate 50–60% more revenue per user than monthly plans, with early monthly churn as the driver. Source: <a href="https://recurly.com/blog/pricing-subscription-strategies/" target="_blank" rel="noopener">Recurly</a>. <span class="ev-tag index">Index</span></p>
     </div>
 
     <div class="ev-block">
-      <h4>Allowance and overage behavior, from the academic record</h4>
+      <h3>Allowance and overage behavior, from the academic record</h3>
       <p>The strongest evidence comes from metered telecom and internet tariffs, not SaaS. Its direction: the risk sits with users on too-small plans, and it shows up as churn rather than willing overage payment.</p>
       <p><strong>Grubb and Osborne (2015)</strong>, in the American Economic Review, studied US cellular bills from 2002 to 2004 and found that about <strong>20% of users on $35–$55 monthly plans incurred overage fees of about $20 a month</strong>. Across the sample period, 19% of subscribers incurred an overage above $100, 8% above $200, and 3% above $300. Consumers were overconfident about how much their usage would vary, that overconfidence cost them $76 a year at 2002–04 prices, and users who received usage alerts reduced their usage significantly. The one-in-five incidence rate is the best published anchor for the share of allowance-plan users who hit a cap in a period. Sources: <a href="https://www.aeaweb.org/articles?id=10.1257/aer.20120283&page=129&per-page=21&from=j" target="_blank" rel="noopener">American Economic Association</a> and the <a href="http://www.utm.utoronto.ca/main-news/utm-professor-explores-impact-cellphone-bill-shock-warnings" target="_blank" rel="noopener">University of Toronto</a> summary. <span class="ev-tag live">Verified live</span></p>
       <p>An <strong>FCC consumer survey from 2010</strong> with 3,005 US adults found that <strong>17% of mobile users</strong>, about one in six or roughly 30 million people, had experienced a sudden bill increase that was not caused by a plan change, and <strong>84%</strong> of them said their carrier did not contact them as they approached or exceeded their allowance. More than a third of those users saw a jump of at least $50 and 23% saw at least $100. A GAO figure from 2009 cited in the same proceeding put unexpected charges at 34% of wireless subscribers. Source: <a href="https://docs.fcc.gov/public/attachments/DOC-298415A1.pdf" target="_blank" rel="noopener">FCC</a>. <span class="ev-tag live">Verified live</span></p>
-      <p><strong>Lambrecht and Skiera (2006)</strong>, in the Journal of Marketing Research, examined about 10,882 internet-access bills over five months and found that up to <strong>46.4% of customers showed flat-rate bias</strong>, choosing a tariff that was too large, against at most 5.8% who chose one that was too small. More than half of the flat-rate-biased group paid at least 100% more than the cheapest available tariff would have cost them. Customers on too-large plans did not churn more and carried 87–135% higher lifetime value, while customers on too-small plans, the group that hits caps and pays overages, <strong>churned at monthly rates 340–1,040% higher</strong> and carried slightly negative lifetime value. A related literature summary puts the share of flat-rate internet subscribers who would have saved money on pay-per-use at about 48%. Source: literature summary in the <a href="https://link.springer.com/article/10.1057/s41272-024-00508-3" target="_blank" rel="noopener">Journal of Revenue and Pricing Management</a>. <span class="ev-tag index">Index</span></p>
-      <p><strong>DellaVigna and Malmendier (2006)</strong>, in the American Economic Review, studied 7,752 US health-club members and found that members on flat monthly contracts above $70 attended 4.3 times a month and paid more than $17 per visit when a $10 per-visit pass existed, about 70% more per visit. <strong>80% of monthly members would have saved money paying per visit</strong>, and average forgone savings ran to about $600 per membership. Buyers over-buy allowance because they choose for their expected peak usage rather than their average usage. <span class="ev-tag index">Index</span></p>
+      <p><strong>Lambrecht and Skiera (2006)</strong>, in the Journal of Marketing Research, examined about 10,882 internet-access bills over five months and found that up to <strong>46.4% of customers showed flat-rate bias</strong>, choosing a tariff that was too large, against at most 5.8% who chose one that was too small. More than half of the flat-rate-biased group paid at least 100% more than the cheapest available tariff would have cost them. Customers on too-large plans did not churn more and held 87–135% higher lifetime value, while customers on too-small plans, the group that hits caps and pays overages, <strong>churned at monthly rates 340–1,040% higher</strong> and held slightly negative lifetime value. A related literature summary puts the share of flat-rate internet subscribers who would have saved money on pay-per-use at about 48%. Source: literature summary in the <a href="https://link.springer.com/article/10.1057/s41272-024-00508-3" target="_blank" rel="noopener">Journal of Revenue and Pricing Management</a>. <span class="ev-tag index">Index</span></p>
+      <p><strong>DellaVigna and Malmendier (2006)</strong>, in the American Economic Review, studied 7,752 US health-club members and found that members on flat monthly contracts above $70 attended 4.3 times a month and paid more than $17 per visit when a $10 per-visit pass existed, about 70% more per visit. <strong>80% of monthly members would have saved money paying per visit</strong>, and average forgone savings ran to about $600 per membership. Buyers over-buy allowance because they choose for their expected peak usage rather than their average usage. Source: literature summary in the Journal of Revenue and Pricing Management. <span class="ev-tag index">Index</span></p>
       <p>Two smaller findings complete the picture. Spotify Premium includes 15 hours a month of audiobooks with paid top-ups beyond that allowance, and management said on the Q3 2023 call that some users were already buying extra hours on the first day while describing the base as very small, with <strong>no take-up rate disclosed</strong>. In Chargebee's 2025 survey, 70% of consumers said they are open to usage-based pricing, which records an attitude rather than behavior at a cap. <span class="ev-tag index">Index</span></p>
     </div>
 
     <div class="ev-block">
-      <h4>The defaults this evidence supports</h4>
+      <h3>The defaults this evidence supports</h3>
       <div class="ev-scroll"><table aria-label="Evidence-based defaults adopted">
         <thead><tr><th>Parameter</th><th>Default adopted</th><th>In the model</th><th>Basis</th></tr></thead>
         <tbody>
-          <tr><td class="name">Baseline monthly logo churn, $25–$100 self-serve SaaS</td><td class="num">4.2% a month; 6.1% under $25; sensitivity range 2.8% to 6.1%</td><td>Derivation input only: it feeds the wall churn derivation, and the model applies no background churn.</td><td>ChartMogul platform data <span class="ev-tag index">Index</span>, corroborated in direction by Recurly's 3.8% for B2B software <span class="ev-tag live">Verified live</span>. Used to derive the wall churn default.</td></tr>
-          <tr><td class="name">Price elasticity</td><td class="num">−0.1</td><td>Live parameter: the §03 price elasticity slider.</td><td>The review's equivalent short-run churn elasticity from the Netflix January 2022 event, with Spotify 2023 as the lower bound. Consumer analogue, treated as an upper bound on sensitivity for this category.</td></tr>
+          <tr><td class="name">Baseline monthly logo churn, $25–$100 self-serve SaaS</td><td class="num">4.2% a month; 6.1% under $25; sensitivity range 2.8% to 6.1%</td><td>Derivation input: it feeds the wall churn derivation and sets the §08 reconciliation cap at twice its value. The model applies no background churn.</td><td>ChartMogul platform data <span class="ev-tag index">Index</span>, corroborated in direction by Recurly's 3.8% for B2B software <span class="ev-tag live">Verified live</span>. Used to derive the wall churn default.</td></tr>
+          <tr><td class="name">Price elasticity</td><td class="num">−0.1</td><td>Live parameter: the §03 price elasticity slider.</td><td>The review's equivalent short-run churn elasticity from the Netflix January 2022 event <span class="ev-tag live">Verified live</span>, with Spotify 2023 as the lower bound <span class="ev-tag index">Index</span>. Consumer analogue, treated as an upper bound on sensitivity for this category.</td></tr>
           <tr><td class="name">Added churn from a 10% increase</td><td class="num">+1.0 point of monthly churn for about three months, range 0 to +1.3 points</td><td>Evidence context only: no separate parameter in the model.</td><td>Antenna data on Netflix, +0.95 points in the increase month from a 2.0% baseline <span class="ev-tag live">Verified live</span>, with Spotify's undetectable change as the best case.</td></tr>
           <tr><td class="name">Added churn from a 25–35% increase with a downgrade path</td><td class="num">+1–2 points of monthly churn for 60–90 days</td><td>Evidence context only: no separate parameter in the model.</td><td>Superhuman 2024, company-reported to Schematic <span class="ev-tag index">Index</span>. Without a downgrade path this reads as a floor rather than a central estimate.</td></tr>
           <tr><td class="name">Downgrade at the wall</td><td class="num">8%, about 0.6 downgraders per canceller</td><td>Live parameter: the §03 wall downgrade slider.</td><td>Chargebee 2025 ratio of 14% downgraded to 22% cancelled <span class="ev-tag live">Verified live</span>, applied to the wall churn default. Stated behavior, used as a ratio only.</td></tr>
@@ -968,16 +990,17 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
   </div>
 </section>
 
-  <section aria-labeledby="m-assump">
+  <section aria-labelledby="m-assump">
     <div class="sec-head"><span class="sec-num">10</span><h2 id="m-assump">Assumptions</h2></div>
     <div class="card doc-card">
       <ul>
+        <li>The usage shape anchors (median 20, p90 200, p99 1,500 actions per user per month) are analyst assumptions with no published source.</li>
         <li>Task token counts, credit prices, and mix shares are estimates set by the analyst.</li>
         <li>Text tasks split 60% input tokens and 40% output tokens.</li>
         <li>An abandoned build costs the same as a kept build. No refund and no partial credit.</li>
         <li>Top-up buyers cover exactly half of any shortfall.</li>
         <li>In the margin simulation, users keep their plan, do not churn, and do not time usage to the billing cycle. Movement between plans is estimated separately, in the behavior layer.</li>
-        <li>Behavior defaults from published evidence where it exists (§09): elasticity −0.1, wall churn 13%, wall downgrades 8%. Paid take-up (20%), the paid-policy scalings, and the one-third exit share are analyst assumptions.</li>
+        <li>Behavior defaults from published evidence where it exists (§09): elasticity −0.1, wall churn 13%, wall downgrades 8%. Paid take-up (20%), the upgrade share (15%), the paid-policy scalings, and the 0.35 price-response damper are analyst assumptions.</li>
         <li>Users on all four plans share one usage distribution.</li>
         <li>Prices are list prices. No negotiated rates, prompt caching, or batch discounts.</li>
         <li>All AI cost is charged against the full plan price, including the part of the price that pays for the website itself.</li>
@@ -985,7 +1008,7 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
     </div>
   </section>
 
-  <section aria-labeledby="m-limits">
+  <section aria-labelledby="m-limits">
     <div class="sec-head"><span class="sec-num">11</span><h2 id="m-limits">Limits</h2></div>
     <div class="card doc-card">
       <ul>
@@ -994,14 +1017,15 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
         <li>Paid take-up has no published value, and no published cap-hit split exists. Answers depending on the take-up slider rest on an unsettled assumption.</li>
         <li>The equal 10,000-per-plan starting mix is a convention, not an observed mix: §09 filings show revenue concentrating in lower plan families.</li>
         <li>Movement happens once, in month six. Downgraders are not re-tested against the lower plan's wall, and nobody is won back.</li>
+        <li>Monthly draws are independent for each user index, so no user in the model stays heavy or light across months. Rollover banks and episodic-usage effects are therefore read on a statistically typical user rather than on a persistent heavy user.</li>
         <li>One elasticity serves all four plans; competitor pull-in is not modelled.</li>
-        <li>Take-up restates revenue only. Serving cost per remaining user is held at the simulated figure, so adjusted margins under the paid policies are approximate. The take-up assumption itself is large: at the baseline plan settings it moves adjusted revenue per starting user by $48.00 in top-up mode and $83.03 in overage mode across the 10% to 25% sensitivity range. The unrestated-cost asymmetry is the smaller effect inside that swing, because serving cost per user is an order of magnitude below plan prices in this model, but it is not quantified separately and the adjusted margins should be read as approximate for that reason.</li>
+        <li>Take-up restates revenue only. Serving cost per remaining user is held at the simulated figure, so adjusted margins under the paid policies are approximate. The take-up assumption itself is large: at the baseline plan settings it moves adjusted revenue per starting user by about $24 in top-up mode and about $83 in overage mode across the 10% to 25% sensitivity range. The unrestated-cost asymmetry is the smaller effect inside that swing, because serving cost per user is an order of magnitude below plan prices in this model, but it is not quantified separately and the adjusted margins should be read as approximate for that reason.</li>
         <li>One distribution serves all four tiers. Higher tiers attract heavier users in practice, so costs at the top are likely understated and costs at the bottom overstated.</li>
         <li>Mix averages hide variation. Users with the same action count are costed identically.</li>
         <li>There is no demand response. A larger allowance does not change usage in the model. In a product, it would.</li>
         <li>The inputs are snapshots. Plan prices and provider rates date from October and November 2026 and will drift.</li>
         <li>The margin simulation says nothing about willingness to pay, conversion, or churn; it covers cost and margin only. Movement is estimated separately in the behavior layer, on the evidence in §09, and inherits that evidence's limits.</li>
-        <li>The behavior layer's wall split is reconciled by construction: the raw test total (price departures plus wall churn, Basic downgrades counted) is capped at twice the 4.2% baseline churn, and wall churn scales down to fit when the raw responses exceed the cap. Realized departures run above the cap figure because Basic downgrades are counted in the test but not scaled. Read adjusted figures as bounded by that discipline rule, not as a forecast of actual departures.</li>
+        <li>The behavior layer's wall split is reconciled by construction: the raw test total (price departures plus wall churn, Basic downgrades counted) is capped at twice the 4.2% baseline churn, and wall churn scales down to fit when the raw responses exceed the cap. At the defaults, realized departures run above the cap figure because Basic downgrades are counted in the test but not scaled; under a net price inflow they can land below it, because price departures enter the test floored at zero. Read adjusted figures as bounded by that discipline rule, not as a forecast of actual departures.</li>
         <li>Upgraders are costed at the average cost of the tier they join, though they are the heaviest users of the tier they left. The upgrade flow's cost side is therefore understated and the adjusted margin flattered by an amount the model does not separately quantify.</li>
         <li>Image generation scores 100 on the quality index by construction: it is a flat per-image cost with no routing decision, so a fifth of the action mix sits at frontier quality in the index regardless of the routing settings.</li>
       </ul>
@@ -1009,29 +1033,29 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
     </div>
   </section>
 
-  <section aria-labeledby="m-sources">
+  <section aria-labelledby="m-sources">
     <div class="sec-head"><span class="sec-num">12</span><h2 id="m-sources">Evidence sources</h2></div>
     <div class="card doc-card">
-      <p>Sources for §09, addresses as recorded in Nov 2026. Index-grade sources were located via search or secondary reproductions, not read in full. KeyBanc figures carry no link: the citing address was not returned.</p>
+      <p>Sources for §09, addresses as recorded in Nov 2026. Index-grade sources were located via search or secondary reproductions, not read in full. KeyBanc figures have no link: the citing address was not returned.</p>
       <ol class="srclist" style="color:var(--ink2);font-size:13.5px">
         <li>Recurly, customer churn benchmarks, data from January to December 2023 across more than 1,200 sites. <a href="https://recurly.com/research/churn-rate-benchmarks/" target="_blank" rel="noopener">recurly.com/research/churn-rate-benchmarks</a></li>
         <li>Chargebee, The 58% Rule, Global Consumer Insights with 1,454 respondents, published October 8, 2025 and updated June 26, 2026. <a href="https://www.chargebee.com/blog/how-to-raise-prices-without-losing-subscribers/" target="_blank" rel="noopener">chargebee.com/blog/how-to-raise-prices-without-losing-subscribers</a></li>
         <li>Zuora, The Subscription Economy Index 2025, with a Harris Poll survey of 3,087 US adults. <a href="https://www.zuora.com/resource/the-subscription-economy-index-thank-you/" target="_blank" rel="noopener">zuora.com/resource/the-subscription-economy-index-thank-you</a></li>
         <li>Antenna, Q3 2022 SVOD Growth Report. <a href="https://www.antenna.live/insights/antenna-q3-2022-svod-growth-report-as-the-world-churns" target="_blank" rel="noopener">antenna.live/insights/antenna-q3-2022-svod-growth-report-as-the-world-churns</a></li>
         <li>TechCrunch, May 21, 2022, reporting Antenna data on Netflix. <a href="https://techcrunch.com/2022/05/21/premium-streaming-subscriptions-continue-to-increase-despite-netflix-tribulations/" target="_blank" rel="noopener">techcrunch.com/2022/05/21/premium-streaming-subscriptions-continue-to-increase-despite-netflix-tribulations</a></li>
-        <li>OpenStax through the University of Minnesota, Principles of Microeconomics, Chapter 5 on elasticity, carrying the 2011 Netflix case. <a href="https://publishing.lib.umn.edu/openmicro/05_elasticity.html" target="_blank" rel="noopener">publishing.lib.umn.edu/openmicro/05_elasticity</a></li>
+        <li>OpenStax through the University of Minnesota, Principles of Microeconomics, Chapter 5 on elasticity, with the 2011 Netflix case. <a href="https://publishing.lib.umn.edu/openmicro/05_elasticity.html" target="_blank" rel="noopener">publishing.lib.umn.edu/openmicro/05_elasticity</a></li>
         <li>Netflix, Q4 2023 shareholder letter, SEC Exhibit 99.1, January 23, 2024. <a href="https://www.sec.gov/Archives/edgar/data/1065280/000106528024000029/ex991_q423.htm" target="_blank" rel="noopener">sec.gov/Archives/edgar/data/1065280/000106528024000029/ex991_q423</a></li>
         <li>Squarespace, Q4 and fiscal 2023 results, SEC 8-K Exhibit 99.1, February 28, 2024. <a href="https://www.sec.gov/Archives/edgar/data/1496963/000149696324000007/sqsp-02282024x8kexhibit991.htm" target="_blank" rel="noopener">sec.gov/Archives/edgar/data/1496963/000149696324000007/sqsp-02282024x8kexhibit991</a></li>
         <li>Wix, Q4 and full year 2023 results, February 21, 2024, via Nasdaq. <a href="https://www.nasdaq.com/press-release/wix-reports-fourth-quarter-and-full-year-2023-results-2024-02-21" target="_blank" rel="noopener">nasdaq.com/press-release/wix-reports-fourth-quarter-and-full-year-2023-results-2024-02-21</a></li>
         <li>Music Business Worldwide coverage of Spotify's Q3 2023 earnings call, via bigdrumbeat.com. <a href="https://www.bigdrumbeat.com/spotifys-price-hike-didnt-hurt-subscriptions-and-3-other-things-we-learned-on-its-latest-earnings-call/" target="_blank" rel="noopener">bigdrumbeat.com/spotifys-price-hike-didnt-hurt-subscriptions-and-3-other-things-we-learned-on-its-latest-earnings-call</a></li>
         <li>Grubb and Osborne (2015), Cellular Service Demand, American Economic Review 105(1), pages 234–271, abstract page. <a href="https://www.aeaweb.org/articles?id=10.1257/aer.20120283&page=129&per-page=21&from=j" target="_blank" rel="noopener">aeaweb.org/articles?id=10.1257/aer.20120283</a></li>
-        <li>University of Toronto Mississauga summary of Grubb and Osborne, carrying the overage incidence of about 20% and fees of about $20 a month. <a href="http://www.utm.utoronto.ca/main-news/utm-professor-explores-impact-cellphone-bill-shock-warnings" target="_blank" rel="noopener">utm.utoronto.ca/main-news/utm-professor-explores-impact-cellphone-bill-shock-warnings</a></li>
+        <li>University of Toronto Mississauga summary of Grubb and Osborne, with the overage incidence of about 20% and fees of about $20 a month. <a href="http://www.utm.utoronto.ca/main-news/utm-professor-explores-impact-cellphone-bill-shock-warnings" target="_blank" rel="noopener">utm.utoronto.ca/main-news/utm-professor-explores-impact-cellphone-bill-shock-warnings</a></li>
         <li>FCC, May 26, 2010, survey release on mobile bill shock with 3,005 respondents. <a href="https://docs.fcc.gov/public/attachments/DOC-298415A1.pdf" target="_blank" rel="noopener">docs.fcc.gov/public/attachments/DOC-298415A1.pdf</a></li>
         <li>ChartMogul churn-by-revenue table as reproduced by GrowPanel, with ChartMogul's help page as corroboration. <a href="https://growpanel.io/academy/churn-rate/" target="_blank" rel="noopener">growpanel.io/academy/churn-rate</a> and <a href="https://help.chartmogul.com/article/203-chart-customer-churn-rate" target="_blank" rel="noopener">help.chartmogul.com/article/203-chart-customer-churn-rate</a></li>
-        <li>Lambrecht and Skiera (2006) findings as summarized in a Journal of Revenue and Pricing Management literature review, which also carries DellaVigna and Malmendier (2006). <a href="https://link.springer.com/article/10.1057/s41272-024-00508-3" target="_blank" rel="noopener">link.springer.com/article/10.1057/s41272-024-00508-3</a></li>
+        <li>Lambrecht and Skiera (2006) findings as summarized in a Journal of Revenue and Pricing Management literature review, which also covers DellaVigna and Malmendier (2006). <a href="https://link.springer.com/article/10.1057/s41272-024-00508-3" target="_blank" rel="noopener">link.springer.com/article/10.1057/s41272-024-00508-3</a></li>
         <li>Superhuman repricing accounts relaying the Schematic interview and book summary. <a href="https://getlaunchlist.com/blog/how-to-price-a-saas-before-launch" target="_blank" rel="noopener">getlaunchlist.com/blog/how-to-price-a-saas-before-launch</a> and <a href="https://www.productcompass.pm/p/pricing-architecture-four-pillars" target="_blank" rel="noopener">productcompass.pm/p/pricing-architecture-four-pillars</a></li>
         <li>Chargebee, 2025 State of Recurring Revenue and Monetization Report with 473 subscription-business leaders. <a href="https://www.chargebee.com/blog/small-pricing-experiments-recurring-revenue/" target="_blank" rel="noopener">chargebee.com/blog/small-pricing-experiments-recurring-revenue</a></li>
-        <li>Recurly, subscription pricing strategies, carrying the 2025 State of Subscriptions finding on annual against monthly plans. <a href="https://recurly.com/blog/pricing-subscription-strategies/" target="_blank" rel="noopener">recurly.com/blog/pricing-subscription-strategies</a></li>
+        <li>Recurly, subscription pricing strategies, with the 2025 State of Subscriptions finding on annual against monthly plans. <a href="https://recurly.com/blog/pricing-subscription-strategies/" target="_blank" rel="noopener">recurly.com/blog/pricing-subscription-strategies</a></li>
         <li>Price ladders from October 2026 compilations by Rankite and Wix, with Zarla's website cost guide for outside-option prices. <a href="https://rankite.com/blog/best-web-building-software" target="_blank" rel="noopener">rankite.com/blog/best-web-building-software</a>, <a href="https://www.wix.com/blog/squarespace-alternatives" target="_blank" rel="noopener">wix.com/blog/squarespace-alternatives</a>, and <a href="https://www.zarla.com/guides/how-much-does-a-website-cost" target="_blank" rel="noopener">zarla.com/guides/how-much-does-a-website-cost</a></li>
       </ol>
       <p style="margin-top:14px">Three sources were checked and rejected as untraceable: the Stripe 0.6 elasticity claim, the OpenView −0.5 to −1.5 range, and the ProfitWell/Paddle churn table. No primary publication exists for any of them.</p>
@@ -1134,7 +1158,9 @@ function derived(S,ov){
   var frontBlend=0.6*frontIn+0.4*frontOut, stdBlend=0.6*stdIn+0.4*stdOut;
   var eff=routing*frontBlend+(1-routing)*stdBlend;
   var mixSum=S.tasks.reduce(function(a,t){return a+t.mix;},0)||1;
-  /* per-task routing: each task carries its own frontier share; the global
+  var mixRaw=S.tasks.reduce(function(a,t){return a+t.mix;},0);
+  var mixW=S.tasks.map(function(t){return mixRaw>0?t.mix/mixRaw:1/S.tasks.length;});
+  /* per-task routing: each task has its own frontier share; the global
      routing setting scales all shares together (share x routing/0.30, capped
      at 100%), so at the 30% default the task shares apply as entered. */
   var taskCosts=S.tasks.map(function(t){
@@ -1149,22 +1175,22 @@ function derived(S,ov){
   var qStd=(S.qStd!=null?S.qStd:85);
   var quality=0;
   S.tasks.forEach(function(t,i){
-    var w=t.mix/mixSum;
+    var w=mixW[i];
     if(t.image){quality+=w*100;return;}
     var share=clamp(((t.front||0)/100)*(routing/0.30),0,1);
     quality+=w*(share*100+(1-share)*qStd);
   });
   var avgCredits=0,avgCost=0;
-  S.tasks.forEach(function(t,i){var w=t.mix/mixSum;avgCredits+=w*t.credits;avgCost+=w*taskCosts[i];});
+  S.tasks.forEach(function(t,i){var w=mixW[i];avgCredits+=w*t.credits;avgCost+=w*taskCosts[i];});
   /* tail mix: heavy users build more than they draft. The percentile guardrail
      users are costed on a mix where the site-build share is S.tailMix (default
      30%, against 5% in the average mix) and the other tasks scale down in
      proportion. Cost per credit under the tail mix prices those rows. */
   var tailShare=(S.tailMix!=null?S.tailMix:0.30);
-  var restSum=0;S.tasks.forEach(function(t,i){if(i>0)restSum+=t.mix;});
+  var restSum=0;S.tasks.forEach(function(t,i){if(i>0)restSum+=mixW[i];});
   var tailCostPerAction=0,tailCreditsPerAction=0;
   S.tasks.forEach(function(t,i){
-    var w=i===0?tailShare:(restSum>0?(1-tailShare)*(t.mix/restSum):0);
+    var w=i===0?tailShare:(restSum>0?(1-tailShare)*(mixW[i]/restSum):0);
     tailCreditsPerAction+=w*t.credits;tailCostPerAction+=w*taskCosts[i];
   });
   var tailCostPerCredit=tailCreditsPerAction>0?tailCostPerAction/tailCreditsPerAction:0;
@@ -1174,7 +1200,7 @@ function derived(S,ov){
      so all three sliders genuinely shape the simulated distribution */
   var z90=1.2816,z99=2.3263;
   var sigma=Math.max(0.05,(z90*(Math.log(p90)-mu)+z99*(Math.log(p99)-mu))/(z90*z90+z99*z99));
-  return {frontBlend:frontBlend,stdBlend:stdBlend,eff:eff,taskCosts:taskCosts,avgCredits:avgCredits,avgCost:avgCost,
+  return {frontBlend:frontBlend,stdBlend:stdBlend,eff:eff,taskCosts:taskCosts,avgCredits:avgCredits,avgCost:avgCost,mixW:mixW,
     costPerCredit:avgCredits>0?avgCost/avgCredits:0,tailCostPerCredit:tailCostPerCredit,tailCreditsPerAction:tailCreditsPerAction,mu:mu,sigma:sigma,quality:quality,
     fittedP90:Math.exp(mu+1.2816*sigma),fittedP99:Math.exp(mu+2.3263*sigma),routing:routing};
 }
@@ -1186,7 +1212,11 @@ function simulate(S,ov){
   var demand6=null;
   S.plans.forEach(function(plan,ti){
     var monthly=(allowMap&&allowMap[ti]!=null)?allowMap[ti]:plan.monthly;
-    var implied=monthly>0?plan.price/monthly:S.topup;
+    /* in the picker hypothetical the plan's current implied rate is held, so
+       an overage comparison isolates the allowance move instead of silently
+       repricing overage through the allowance in its denominator */
+    var impliedBase=ov.holdImplied?plan.monthly:monthly;
+    var implied=impliedBase>0?plan.price/impliedBase:S.topup;
     var sumCost=0,sumExtra=0,sumAvail=0,sumExpired=0,sumServed=0,sumDem=0,covered=0;
     var dArr=new Float32Array(N),cArr=new Float32Array(N),rArr=new Float32Array(N);
     for(var u=0;u<N;u++){
@@ -1216,7 +1246,12 @@ function simulate(S,ov){
     }
     var order=Array.prototype.slice.call(dArr).sort(function(a,b){return a-b;});
     if(ti===0)demand6=order;
-    function costAt(q){var target=quantile(order,q);var best=0,bd=Infinity;for(var u2=0;u2<N;u2+=7){var dd=Math.abs(dArr[u2]-target);if(dd<bd){bd=dd;best=u2;}}return {cost:cArr[best],rev:rArr[best]};}
+    /* when credit demand is flat (no task priced in credits) the nearest-user
+       lookup by demand is degenerate, so percentile users are picked by
+       served cost instead, which stays a real distribution in that state */
+    var flatDem=order[0]===order[N-1];
+    var orderC=flatDem?Array.prototype.slice.call(cArr).sort(function(a,b){return a-b;}):null;
+    function costAt(q){var key=flatDem?cArr:dArr;var target=quantile(flatDem?orderC:order,q);var best=0,bd=Infinity;for(var u2=0;u2<N;u2+=1){var dd=Math.abs(key[u2]-target);if(dd<bd){bd=dd;best=u2;}}return {cost:cArr[best],rev:rArr[best]};}
     var c50=costAt(0.5),c90=costAt(0.9),c99=costAt(0.99);
     /* tail-mix costing: the percentile user's cost re-priced at the tail cost
        per credit, scaled by the share of demand the policy actually serves.
@@ -1233,7 +1268,7 @@ function simulate(S,ov){
     function umargin(c){return c.rev>0?(c.rev-c.cost)/c.rev:(c.cost>0?-1:1);}
     tiers.push({plan:plan,monthly:monthly,implied:implied,meanCost:meanCost,meanExtra:meanExtra,meanRev:meanRev,
       margin:meanRev>0?(meanRev-meanCost)/meanRev:(meanCost>0?-1:1),
-      cost50:c50.cost,cost90:c90.cost,cost99:c99.cost,m50:umargin(c50),m90:umargin(c90),m99:umargin(c99),
+      cost50:c50.cost,cost90:c90.cost,cost99:c99.cost,rev90:c90.rev,rev99:c99.rev,m50:umargin(c50),m90:umargin(c90),m99:umargin(c99),
       tcost50:t50.cost,tcost90:t90.cost,tcost99:t99.cost,tm50:t50.margin,tm90:t90.margin,tm99:t99.margin,
       breakage:sumAvail>0?sumExpired/sumAvail:null,covered:covered/N,meanDemand:sumDem/N});
   });
@@ -1259,7 +1294,12 @@ var START_TOTAL=N*4;
 var BASELINE_CHURN=0.042;
 function computeBehavior(S,sim){
   var E=S.bElasticity, mult=WALL_MULT[S.mode]||WALL_MULT.cap;
-  var takeFactor=S.mode==="overage"?S.bTakeUp:(S.mode==="topup"?clamp(S.bTakeUp/0.5,0,1.5):1);
+  /* revenue restatement: payers are the take-up share of wall users. Under
+     overage the simulation bills the full shortfall, so extra revenue scales
+     by the take-up share. Under top-ups the simulation already applies the
+     policy depth (half of any shortfall bought) to every user, so extra
+     revenue also scales by the take-up share alone. */
+  var takeFactor=S.mode==="cap"?1:S.bTakeUp;
   /* price response: relative prices move share, average price moves the total */
   var ratios=S.plans.map(function(p,i){var b=PLANS0[i].price;return b>0&&p.price>0?p.price/b:1;});
   var avgRatio=ratios.reduce(function(a,r){return a+r;},0)/ratios.length;
@@ -1319,6 +1359,11 @@ function computeBehavior(S,sim){
   endUsers.forEach(function(u,i){adjRevTotal+=u*adjRevTier[i];adjCostTotal+=u*adjCostTier[i];});
   var staticRevTotal=0,staticCostTotal=0;
   sim.tiers.forEach(function(t){staticRevTotal+=N*t.meanRev;staticCostTotal+=N*t.meanCost;});
+  /* no-movement comparator on the adjusted basis: the after-price population
+     at the restated tier revenues, so the delta against the adjusted figures
+     measures movement alone and not the take-up restatement */
+  var staticAdjRevTotal=0,staticAdjCostTotal=0;
+  sim.tiers.forEach(function(t,i){staticAdjRevTotal+=afterPrice[i]*adjRevTier[i];staticAdjCostTotal+=afterPrice[i]*adjCostTier[i];});
   var portRev=staticRevTotal/START_TOTAL, portCost=staticCostTotal/START_TOTAL;
   return {
     afterPrice:afterPrice,endUsers:endUsers,endTotal:endTotal,
@@ -1330,11 +1375,13 @@ function computeBehavior(S,sim){
     adjRevPerStart:adjRevTotal/START_TOTAL,
     staticMargin:staticRevTotal>0?(staticRevTotal-staticCostTotal)/staticRevTotal:(staticCostTotal>0?-1:1),
     staticRevPerUser:portRev,staticCostPerUser:portCost,
+    staticAdjRevPerStart:staticAdjRevTotal/START_TOTAL,
+    staticAdjMargin:staticAdjRevTotal>0?(staticAdjRevTotal-staticAdjCostTotal)/staticAdjRevTotal:(staticAdjCostTotal>0?-1:1),
     takeFactor:takeFactor
   };
 }
 /* preset states, built from the published baseline plus each preset's changes.
-   Behavior settings carry over from the current controls. */
+   Behavior settings are taken from the current controls. */
 function baseState(S){
   return {
     plans:PLANS0.map(function(p){return {name:p.name,price:p.price,monthly:p.monthly,one:p.one};}),
@@ -1402,7 +1449,7 @@ function drawHist(S,sim,recommended,target){
   s+='<text x="'+(W/2)+'" y="'+(H-1)+'" font-size="10" fill="var(--muted)" text-anchor="middle">credits demanded per user per month (log scale)</text>';
   var marks=[];
   S.plans.forEach(function(p){if(p.monthly>0)marks.push({v:p.monthly,label:p.name+" "+p.monthly,color:"var(--ink2)",dash:"4 3"});});
-  marks.push({v:10,label:"Basic 10 once",color:"var(--ink2)",dash:"4 3"});
+  if(S.plans[0].one>0)marks.push({v:S.plans[0].one,label:"Basic "+S.plans[0].one+" once",color:"var(--ink2)",dash:"4 3"});
   marks.push({v:recommended,label:ordinal(S.pct)+" pct "+fmtInt(recommended),color:"var(--accent)",dash:""});
   var seen=[];
   marks.forEach(function(mk,mi){
@@ -1438,55 +1485,64 @@ function update(){
   var bupEl=$("bWallUpgradeOut");if(bupEl)bupEl.textContent=Math.round((S.bWallUpgrade||0)*100)+"%";
   /* rate card blends */
   $("rFrontBlend").textContent=fmt$(D.frontBlend);$("rStdBlend").textContent=fmt$(D.stdBlend);
-  (function(){var mixSum=S.tasks.reduce(function(a,x){return a+x.mix;},0)||1;var tokW=0,costText=0;S.tasks.forEach(function(t,i){if(t.image)return;var w=t.mix/mixSum;tokW+=w*t.tokens;costText+=w*D.taskCosts[i];});$("effBlend").textContent=tokW>0?fmt$(costText/(tokW/1000),2):"—";})();
+  (function(){var mixRaw=S.tasks.reduce(function(a,x){return a+x.mix;},0);var tokW=0,costText=0;S.tasks.forEach(function(t,i){if(t.image)return;var w=mixRaw>0?t.mix/mixRaw:1/S.tasks.length;tokW+=w*t.tokens;costText+=w*D.taskCosts[i];});$("effBlend").textContent=tokW>0?fmt$(costText/(tokW/1000),2):"—";})();
+  (function(){var msr=S.tasks.reduce(function(a,x){return a+x.mix;},0);var sh=0;S.tasks.forEach(function(t){if(t.image)return;sh+=((msr>0?t.mix/msr:1/S.tasks.length))*clamp(((t.front||0)/100)*(S.routing/0.30),0,1);});var el=$("routeShareLive");if(el)el.textContent=Math.round(sh*100)+"%";})();
   $("frontRatio").textContent=D.stdBlend>0?(D.frontBlend/D.stdBlend).toFixed(1)+"×":"—";
-  function ratioStr(a,b){if(!(b>0))return "—";var r=a/b;return (Math.round(r*10)/10).toString().replace(/\.0$/,"")+"×";}
+  function ratioStr(a,b){if(!(b>0))return "—";var r=a/b;if(r>0&&r<0.0005)return "<0.001×";var v=r>=10?Math.round(r):r>=1?Math.round(r*10)/10:r>=0.01?Math.round(r*100)/100:Math.round(r*1000)/1000;return v.toString().replace(/\.0$/,"")+"×";}
   $("buildTokRatio").textContent=ratioStr(S.tasks[0].tokens,S.tasks[2].tokens);
   $("buildCrRatio").textContent=ratioStr(S.tasks[0].credits,S.tasks[2].credits);
+  (function(){var bmn=$("buildMarginNote");if(!bmn)return;if(!(S.tasks[0].credits>0)||!(S.tasks[2].credits>0)){bmn.textContent="per-credit margins do not compare in this state, because at least one of the two tasks is priced at zero credits.";return;}var bpc=D.taskCosts[0]/S.tasks[0].credits,dpc=D.taskCosts[2]/S.tasks[2].credits;if(Math.abs(bpc-dpc)<1e-12){bmn.textContent="the two tasks cost the same to serve per credit, so the margin per credit is the same for both.";}else if(bpc>dpc){bmn.textContent="drafts are where the margin sits, because a draft costs less to serve per credit.";}else{bmn.textContent="builds are where the margin sits at this credit price, because a build costs less to serve per credit.";}})();
   S.plans.forEach(function(p,i){$("plan_implied_"+i).textContent=p.monthly>0?fmt$(p.price/p.monthly):"—";});
-  var core=S.plans[1],coreImplied=core.monthly>0?core.price/core.monthly:0;
+  var core=S.plans[1],coreImplied=core.monthly>0?core.price/core.monthly:S.topup;
   S.tasks.forEach(function(t,i){
     $("task_cost_"+i).textContent=fmt$(D.taskCosts[i],3);
-    $("task_value_"+i).textContent=coreImplied?fmt$(t.credits*coreImplied):"—";
+    $("task_value_"+i).textContent=fmt$(t.credits*coreImplied);
   });
-  $("avgLine").textContent=fmtInt(D.avgCredits*100)/100+" credits and "+fmt$(D.avgCost,3)+" serving cost per action";
+  $("avgLine").textContent=(Math.round(D.avgCredits*100)/100).toLocaleString("en-US",{maximumFractionDigits:2})+" credits and "+fmt$(D.avgCost,3)+" serving cost per action";
   var qs=$("qStdOut");if(qs)qs.textContent=Math.round(S.qStd||85);
-  var fitMsg="Fit: σ "+D.sigma.toFixed(2)+". Fitted p90 "+fmtInt(D.fittedP90)+" (yours "+fmtInt(S.uP90)+"), fitted p99 "+fmtInt(D.fittedP99)+" (yours "+fmtInt(S.uP99)+"). The gap measures how lognormal your three points are.";
+  var fitMsg="Fit: σ "+D.sigma.toFixed(2)+". Fitted p90 "+fmtInt(D.fittedP90)+" (yours "+fmtInt(S.uP90)+"), fitted p99 "+fmtInt(D.fittedP99)+" (yours "+fmtInt(S.uP99)+"). The gap measures how lognormal your three points are."+((S.uP90<S.uMedian*1.05||S.uP99<Math.max(S.uP90,S.uMedian*1.05)*1.05)?" Anchors that break the ordering floor (each percentile at least 5% above the one before it) are raised before fitting.":"");
   $("fitNote").textContent=fitMsg;
   /* main simulation */
   var sim=simulate(S);lastSim=sim;
-  var ql=$("qualityLine");if(ql)ql.textContent="Quality index: "+D.quality.toFixed(1)+" of 100 (frontier output scores 100, standard scores "+Math.round(S.qStd||85)+"; a mix-weighted average, not a benchmark). Full-frontier routing would put cost per credit at "+fmt$(D.tailCreditsPerAction>0?(function(){var fc=0;S.tasks.forEach(function(t,i){fc+=(t.mix/((S.tasks.reduce(function(a,x){return a+x.mix;},0)||1)))*(t.image?S.img:(t.tokens/1000)*D.frontBlend);});return fc/D.avgCredits;})():0,3)+", against "+fmt$(D.costPerCredit,3)+" now.";
+  var ql=$("qualityLine");if(ql)ql.textContent="Quality index: "+D.quality.toFixed(1)+" of 100 (frontier output scores 100, standard scores "+Math.round(S.qStd||85)+"; a mix-weighted average, not a benchmark). Full-frontier routing would put cost per credit at "+(D.avgCredits>0?fmt$((function(){var fc=0;S.tasks.forEach(function(t,i){fc+=D.mixW[i]*(t.image?S.img:(t.tokens/1000)*D.frontBlend);});return fc/D.avgCredits;})(),3):"—")+", against "+(D.avgCredits>0?fmt$(D.costPerCredit,3):"—")+" now.";
   var tm=$("tailMixOut");if(tm)tm.textContent=Math.round((S.tailMix!=null?S.tailMix:0.30)*100)+"%";
-  var tc=$("tailCostLine");if(tc)tc.textContent="about "+fmt$(quantile(sim.demand,0.99)*D.tailCostPerCredit)+" if the p99 user's full demand were served on the tail mix, against "+fmt$(quantile(sim.demand,0.99)*D.costPerCredit)+" on the average mix. Under the current policy the served share is smaller, and the tail-mix margins in §04 and §05 price exactly what is served";
+  var tpct=$("tailMixPct");if(tpct)tpct.textContent=Math.round((S.tailMix!=null?S.tailMix:0.30)*100)+"%";
+  var tc=$("tailCostLine");if(tc)tc.textContent=D.avgCredits===0?("With no task priced in credits, per-credit and tail-mix figures do not apply. The p99 user's full demand costs "+fmt$(sim.tiers[0].cost99)+" to serve at the average mix."):("about "+fmt$(quantile(sim.demand,0.99)*D.tailCostPerCredit)+" if the p99 user's full demand were served on the tail mix, against "+fmt$(quantile(sim.demand,0.99)*D.costPerCredit)+" on the average mix. "+(S.mode==="overage"?"Overage billing serves the full demand, and the tail-mix margins in §04 and §05 price that full tail.":((function(){var p99d=quantile(sim.demand,0.99);return S.plans.every(function(pl){return pl.monthly>=p99d;});})()?"Under the current policy every plan's allowance covers the p99 user's full demand, so the tail-mix margins in §04 and §05 price the full tail.":"Under the current policy the served share is smaller, and the tail-mix margins in §04 and §05 price exactly what is served.")));
   /* finding banner */
   var medD=quantile(sim.demand,0.5),p99D=quantile(sim.demand,0.99);
   var medCostFull=medD*D.costPerCredit,p99CostFull=p99D*D.costPerCredit;
+  /* with no task priced in credits the per-credit ratios are undefined; the
+     full-demand costs then come from the simulated percentile costs, which
+     are action-based and stay meaningful in that state */
+  if(D.avgCredits===0){medCostFull=sim.tiers[0].cost50;p99CostFull=sim.tiers[0].cost99;}
   var covering=S.plans.filter(function(p){return p.monthly>=medD;}).map(function(p){return p.name;});
-  $("finding").innerHTML="<p><strong>The headline:</strong> the median user demands <strong>"+fmtInt(medD)+" credits a month</strong>, "+fmt$(medCostFull)+" to serve in full. "+(covering.length?("Only "+covering.join(", ")+" covers that from its allowance."):("No plan covers that from its allowance, Advanced included."))+" Serving the p99 user's full demand costs <strong>"+fmt$(p99CostFull)+"</strong>, roughly half the Advanced plan's "+fmt$(S.plans[3].price,0)+" price, for a user whose demand the plan does not come close to covering.</p><p style='margin-top:8px;font-size:12.5px;opacity:.85'>"+fmtInt(medD)+" is the median of the seeded draws the simulation reports; the fitted curve's median is "+fmtInt(Math.exp(D.mu)*D.avgCredits)+" credits.</p>";
+  var coverVerb=covering.length===1?"covers":"cover";
+  $("finding").innerHTML="<p><strong>The headline:</strong> the median user demands <strong>"+fmtInt(medD)+" credits a month"+(D.avgCredits>0&&S.tasks.some(function(t){return t.credits===0;})?" on the priced tasks":"")+"</strong>, "+fmt$(medCostFull)+" to serve in full"+(D.avgCredits>0&&S.tasks.some(function(t){return t.credits===0;})?" across all tasks":"")+". "+(medD===0?("At zero credit demand, no allowance binds."):covering.length?("Only "+covering.join(", ")+" "+coverVerb+" that from "+(covering.length===1?"its allowance":"their allowances")+"."):("No plan covers that from its allowance, Advanced included."))+" Serving the p99 user's full demand costs <strong>"+fmt$(p99CostFull)+"</strong>"+(S.plans[3].price>0?(", about "+Math.round(p99CostFull/S.plans[3].price*100)+"% of the Advanced plan's "+fmt$(S.plans[3].price,0)+" price"):"")+(p99D>S.plans[3].monthly&&S.plans[3].monthly<p99D*0.5?", for a user whose demand the plan does not come close to covering":"")+".</p><p style='margin-top:8px;font-size:12.5px;opacity:.85'>"+fmtInt(medD)+" is the median of the seeded draws the simulation reports; the fitted curve's median is "+fmtInt(Math.exp(D.mu)*D.avgCredits)+" credits.</p>";
   /* KPIs: lead with adjusted revenue per starting user */
   var behEarly=computeBehavior(S,sim);
   var breaches=[];
-  sim.tiers.forEach(function(t){if(t.margin<S.floor||t.m99<S.floor)breaches.push(t.plan.name);});
+  sim.tiers.forEach(function(t){if((t.meanRev>0&&t.margin<S.floor)||(t.rev99>0&&t.m99<S.floor))breaches.push(t.plan.name);});
+  var undefNames=[];sim.tiers.forEach(function(t){if(!(t.meanRev>0))undefNames.push(t.plan.name);});
   var portMargin=portfolioMarginOf(S,sim);
-  var mw=mixWeights(S),portCost=0;sim.tiers.forEach(function(t,i){portCost+=mw[i]*t.meanCost;});
+  var mw=mixWeights(S),portCost=0,portRevW=0;sim.tiers.forEach(function(t,i){portCost+=mw[i]*t.meanCost;portRevW+=mw[i]*t.meanRev;});
   var equalMix=mw.every(function(v){return Math.abs(v-0.25)<1e-9;});
   $("kpis").innerHTML=
-    kpi(fmt$(behEarly.adjRevPerStart),"Adj. revenue / starting user","Lead metric: after movement. "+fmtInt(behEarly.endTotal)+" of "+fmtInt(START_TOTAL)+" users remaining; static "+fmt$(behEarly.staticRevPerUser),true)+
-    kpi(fmtPct(portMargin),"Portfolio margin (guardrail)",(equalMix?"Equal user counts per plan":"Mix-weighted per the §06 weights")+", current policy")+
+    kpi(fmt$(behEarly.adjRevPerStart),"Adj. revenue / starting user","Lead metric: after movement. "+fmtInt(behEarly.endTotal)+" of "+fmtInt(START_TOTAL)+" users remaining; static "+fmt$(behEarly.staticRevPerUser)+(S.mode!=="cap"?" (an upper bound, before take-up)":""),true)+
+    kpi(portRevW>0?fmtPct(portMargin):"—","Portfolio margin (guardrail)","AI cost only, against the full plan price. "+(equalMix?"Equal user counts per plan":"Mix-weighted per the §06 weights")+", current policy")+
     kpi(fmt$(portCost),"Mean AI cost per user / mo","Month six, policy applied. Median demand "+fmtInt(medD)+" cr, "+fmt$(medCostFull)+" to serve in full")+
-    kpi(breaches.length?breaches.join(", "):"None","Tiers breaching the guardrail","Floor set at "+Math.round(S.floor*100)+"% in panel 3");
+    kpi(breaches.length?breaches.join(", "):"None","Tiers breaching the guardrail","Floor set at "+Math.round(S.floor*100)+"% in section 03");
   function kpi(v,k,s,lead){return '<div class="kpi'+(lead?" lead-kpi":"")+'"><div class="v">'+v+'</div><div class="k">'+k+'</div><div class="s">'+s+'</div></div>';}
   /* recommendation strip, same state as the memo */
   var recStrip=quantile(sim.demand,S.pct/100);
-  var policyLine=S.mode==="cap"?"Shortfall: hard cap. Actions stop at the balance.":(S.mode==="overage"?("Shortfall: overage billing at "+S.ovMult.toFixed(1)+"× the implied per-credit price."):("Shortfall: top-up packs at "+fmt$(S.topup)+" per credit, half the shortfall bought."));
-  var hypoStrip=simulate(S,{allowMap:(function(){var m={};m[S.pickerTier]=Math.round(recStrip);return m;})()}).tiers[S.pickerTier];
+  var policyLine=S.mode==="cap"?"Shortfall: hard cap. Actions stop at the balance.":(S.mode==="overage"?("Shortfall: overage billing at "+S.ovMult.toFixed(1)+"× the implied per-credit price"+(S.plans[0].monthly>0?".":" (the top-up price for Basic, which has no monthly allowance in this state).")):("Shortfall: top-up packs at "+fmt$(S.topup)+" per credit, half the shortfall bought."));
+  var hypoStrip=simulate(S,{allowMap:(function(){var m={};m[S.pickerTier]=Math.round(recStrip);return m;})(),holdImplied:true}).tiers[S.pickerTier];
   var pickerName=S.plans[S.pickerTier].name;
-  var stripHypo=" At the recommended allowance, "+pickerName+" runs at "+fmtPct(hypoStrip.margin)+" margin"+(hypoStrip.m99<S.floor?(", and its p99 user does not clear the floor ("+fmtPct(hypoStrip.m99)+"): the tail is where the shortfall policy earns its place."):(", p99 user included ("+fmtPct(hypoStrip.m99)+")."));
-  $("recStrip").innerHTML="<p><strong>The recommendation.</strong> Set included credits at the "+ordinal(S.pct)+" percentile of demand: "+fmtInt(recStrip)+" credits at the current usage shape. "+policyLine+" Guardrail at the current settings: "+(breaches.length?("breached by "+breaches.join(", ")):"every tier clears the "+Math.round(S.floor*100)+"% floor")+"."+stripHypo+" The full reasoning is the decisions memo, §09.</p>";
+  var stripHypo=hypoStrip.meanRev>0?(" At the recommended allowance, "+pickerName+" runs at "+fmtPct(hypoStrip.margin)+" margin"+(hypoStrip.rev99>0?(hypoStrip.m99<S.floor?(", and its p99 user does not clear the floor ("+fmtPct(hypoStrip.m99)+"): the tail is where the shortfall policy earns its place."):(", p99 user included ("+fmtPct(hypoStrip.m99)+")."))+(D.avgCredits>0?(" On the tail mix, its p99 user runs at "+fmtPct(hypoStrip.tm99)+", which "+(hypoStrip.tm99<S.floor?"does not clear":"clears")+" the floor."):""):".")):(" At the recommended allowance, "+pickerName+"'s margin is undefined at a $0 price.");
+  $("recStrip").innerHTML="<p><strong>The recommendation.</strong> Set included credits for "+pickerName+" at the "+ordinal(S.pct)+" percentile of demand: "+fmtInt(recStrip)+" credits, against "+fmtInt(S.plans[S.pickerTier].monthly)+" a month now, at the current usage shape. "+policyLine+" Guardrail at the current settings: "+(breaches.length?("breached by "+breaches.join(", ")):undefNames.length?("no tier with a defined margin breaches the "+Math.round(S.floor*100)+"% floor"):("every tier clears the "+Math.round(S.floor*100)+"% floor"))+(undefNames.length?(". "+undefNames.join(", ")+(undefNames.length>1?" have undefined margins":" has an undefined margin")+" at a $0 price and neither clear nor breach"):"")+". Portfolio margin at the current settings is "+(portRevW>0?fmtPct(portMargin):"—")+", and "+fmtPct(behEarly.wallUsers/START_TOTAL,0)+" of users reach the wall under the current allowances."+stripHypo+" The full reasoning is the decisions memo, §09.</p>";
   var ovNoteEl=$("ovNote");
   if(ovNoteEl){
-    var adv=S.plans[3],advImplied=adv.monthly>0?adv.price/adv.monthly:0;
-    ovNoteEl.textContent="Overage is priced off each plan's own implied rate, so at current settings an overage credit runs "+fmt$(coreImplied*S.ovMult)+" on Core and "+fmt$(advImplied*S.ovMult)+" on Advanced. A production design would set overage per tier on purpose, not inherit it from the volume discount.";
+    var adv=S.plans[3],advImplied=adv.monthly>0?adv.price/adv.monthly:S.topup;
+    ovNoteEl.textContent="Overage runs at each plan's implied rate times the multiple, with the top-up price standing in for any plan that has no monthly credits, so at current settings an overage credit runs "+fmt$(coreImplied*S.ovMult)+" on Core and "+fmt$(advImplied*S.ovMult)+" on Advanced. A production design would set overage per tier on purpose, not inherit it from the volume discount.";
   }
   var oc=$("ovMultCtl"),tc=$("topupCtl");
   if(oc){oc.style.opacity=S.mode==="overage"?"1":"0.55";var oi=$("ovMult");if(oi)oi.disabled=S.mode!=="overage";}
@@ -1496,14 +1552,15 @@ function update(){
   /* tier table */
   var rows="";
   sim.tiers.forEach(function(t){
-    var breach=t.margin<S.floor||t.m99<S.floor, watch=!breach&&t.m90<S.floor;
-    var flag=breach?'<span class="flag breach">Breach</span>':(watch?'<span class="flag watch">Watch: p90</span>':'<span class="flag ok">Within floor</span>');
-    var flagNote=breach?(t.m99<S.floor?" p99 user at "+fmtPct(t.m99):" overall at "+fmtPct(t.margin)):"";
+    var breach=(t.meanRev>0&&t.margin<S.floor)||(t.rev99>0&&t.m99<S.floor), watch=!breach&&t.rev90>0&&t.m90<S.floor, tailWatch=!breach&&!watch&&t.rev99>0&&D.avgCredits>0&&t.tm99<S.floor;
+    var flag=breach?'<span class="flag breach">Breach</span>':(watch?'<span class="flag watch">Watch: p90</span>':(tailWatch?'<span class="flag watch">Watch: tail mix</span>':(!(t.meanRev>0)?'<span class="flag watch">Undefined</span>':'<span class="flag ok">Within floor</span>')));
+    var flagNote=breach?(!(t.meanRev>0)?" margin undefined at a $0 price":(t.rev99>0&&t.m99<S.floor)?" p99 user at "+fmtPct(t.m99):" overall at "+fmtPct(t.margin)):(tailWatch?" p99 user at "+fmtPct(t.tm99):(watch?" p90 user at "+fmtPct(t.m90):(!(t.meanRev>0)?" margin undefined at a $0 price":"")));
+    if(t.monthly===0){var grantTxt=t.plan.one>0?"the one-time grant is spent":"there is no one-time grant";var noteTxt=S.mode==="cap"?(t.meanCost===0?("No monthly allowance in month six: "+grantTxt+", so no AI cost is served."):("No monthly allowance in month six: "+grantTxt+". Nothing in this state draws on the allowance, so demand is served in full.")):S.mode==="overage"?(D.avgCredits===0?("No monthly allowance in month six: "+grantTxt+", and no shortfall arises in this state, because no task is priced in credits."):("No monthly allowance in month six: "+grantTxt+", and the shortfall is billed in full.")):(D.avgCredits===0?("No monthly allowance in month six: "+grantTxt+", and no shortfall arises in this state, because no task is priced in credits."):("No monthly allowance in month six: "+grantTxt+", and the shortfall is partly bought at the top-up price."));flagNote=(flagNote?flagNote+" ":"")+noteTxt;}
     rows+="<tr><td class='name' data-label='Plan'>"+t.plan.name+"</td><td class='mono' data-label='Price'>"+fmt$(t.plan.price,0)+"</td><td class='mono' data-label='Included cr'>"+(t.monthly>0?fmtInt(t.monthly):(t.plan.one>0?fmtInt(t.plan.one)+" once":"0"))+"</td>"+
      "<td class='mono' data-label='Cost @ median user'>"+fmt$(t.cost50)+"</td><td class='mono' data-label='Cost @ p90'>"+fmt$(t.cost90)+"</td><td class='mono' data-label='Cost @ p99'>"+fmt$(t.cost99)+"</td>"+
      "<td class='mono' data-label='Mean cost'>"+fmt$(t.meanCost)+"</td><td class='mono' data-label='Extra rev'>"+fmt$(t.meanExtra)+"</td>"+
-     "<td data-label='Gross margin'><div style='display:flex;align-items:center;gap:8px;justify-content:flex-end'><span class='mono'>"+fmtPct(t.margin)+"</span><span class='mbar'><i style='width:"+clamp(t.margin*100,0,100)+"%' class='"+(t.margin<S.floor?"low":(t.margin<S.floor+0.1?"mid":""))+"'></i></span></div></td>"+
-     "<td class='mono "+(t.m99<S.floor?"neg":"")+"' data-label='Margin @ p99 user'>"+fmtPct(t.m99)+"<div class='src'>tail mix: "+fmtPct(t.tm99)+"</div></td>"+
+     "<td data-label='Gross margin'><div style='display:flex;align-items:center;gap:8px;justify-content:flex-end'><span class='mono'>"+(t.meanRev>0?fmtPct(t.margin):"—")+"</span><span class='mbar'><i style='width:"+(t.meanRev>0?clamp(t.margin*100,0,100):0)+"%' class='"+(t.meanRev>0?(t.margin<S.floor?"low":(t.margin<S.floor+0.1?"mid":"")):"")+"'></i></span></div></td>"+
+     "<td class='mono "+((t.rev99>0&&t.m99<S.floor)?"neg":"")+"' data-label='Margin @ p99 user'>"+(t.rev99>0?fmtPct(t.m99):"—")+"<div class='src'>tail mix: "+(D.avgCredits>0&&t.rev99>0?fmtPct(t.tm99):"—")+"</div></td>"+
      "<td class='mono' data-label='Breakage'>"+(t.breakage==null?"—":fmtPct(t.breakage))+"</td>"+
      "<td class='mono' data-label='Hit the wall'>"+fmtPct(1-t.covered)+"</td>"+
      "<td data-label='Guardrail'>"+flag+"<div class='src'>"+flagNote+"</div></td></tr>";
@@ -1521,26 +1578,40 @@ function update(){
   S.plans.forEach(function(p){
     var eff=p.monthly>0?p.monthly:p.one;
     var below=0;sim.demand.forEach(function(v){if(v<=eff)below++;});
-    arows+="<tr><td class='name' data-label='Plan'>"+p.name+"</td><td class='mono' data-label='Current allowance'>"+fmtInt(eff)+(p.monthly>0?" / mo":" one-time")+"</td><td class='mono' data-label='Percentile of demand'>"+ordinal(Math.max(1,Math.round(below/N*100)))+"</td></tr>";
+    /* a one-time grant has no month-six percentile: none of it remains by
+       month six, so the cell says so instead of printing a month-one figure */
+    var pctCell=p.monthly>0?ordinal(Math.max(1,Math.round(below/N*100))):"— in month six";
+    arows+="<tr><td class='name' data-label='Plan'>"+p.name+"</td><td class='mono' data-label='Current allowance'>"+fmtInt(eff)+(p.monthly>0?" / mo":(p.one>0?" one-time":""))+"</td><td class='mono' data-label='Percentile of demand'>"+pctCell+"</td></tr>";
   });
   $("allowRows").innerHTML=arows;
   drawHist(S,sim,rec);
   drawHist(S,sim,rec,"histChartTop");
+  /* the §02 caption recomputes from the same demand array, so its percentages
+     stay true when the usage sliders or the picker percentile move */
+  (function(){
+    var advP=S.plans[3],advAllow=advP.monthly,advBelow=0;
+    sim.demand.forEach(function(v){if(v<=advAllow)advBelow++;});
+    var advPct=Math.round(advBelow/N*100);
+    var pickRight=0;sim.demand.forEach(function(v){if(v>rec)pickRight++;});
+    var pickPct=Math.round(pickRight/N*100);
+    var hc=$("histCaption");
+    if(hc)hc.textContent="Monthly credit demand (log scale). Markers: plan allowances and the picker pick. Advanced's "+fmtInt(advAllow)+" monthly credits cover about "+advPct+"% of users, so about "+(100-advPct)+"% still sit to its right, and the picker marker leaves "+pickPct+"% of users to its right. "+(advPct>=100?"The top plan covers the full demand shape in this state.":"That gap is the pricing problem.");
+  })();
   /* picker hypothetical */
   var am={};am[S.pickerTier]=Math.round(rec);
-  var hypo=simulate(S,{allowMap:am}).tiers[S.pickerTier];
+  var hypo=simulate(S,{allowMap:am,holdImplied:true}).tiers[S.pickerTier];
   var cur=sim.tiers[S.pickerTier];
   $("pickerTitle").textContent=S.plans[S.pickerTier].name+" at the "+ordinal(S.pct)+" percentile ("+fmtInt(rec)+" credits)";
   $("pickerBody").innerHTML=
     prow("Included credits",fmtInt(cur.monthly),fmtInt(hypo.monthly))+
     prow("Mean serving cost",fmt$(cur.meanCost),fmt$(hypo.meanCost))+
     prow("Extra revenue (overage / top-ups)",fmt$(cur.meanExtra),fmt$(hypo.meanExtra))+
-    prow("Gross margin",fmtPct(cur.margin),fmtPct(hypo.margin))+
-    prow("Margin for the p99 user",fmtPct(cur.m99),fmtPct(hypo.m99))+
-    prow("Margin for the p99 user, tail mix",fmtPct(cur.tm99),fmtPct(hypo.tm99))+
+    prow("Gross margin",cur.meanRev>0?fmtPct(cur.margin):"—",hypo.meanRev>0?fmtPct(hypo.margin):"—")+
+    prow("Margin for the p99 user",cur.rev99>0?fmtPct(cur.m99):"—",hypo.rev99>0?fmtPct(hypo.m99):"—")+
+    prow("Margin for the p99 user, tail mix",D.avgCredits>0&&cur.rev99>0?fmtPct(cur.tm99):"—",D.avgCredits>0&&hypo.rev99>0?fmtPct(hypo.tm99):"—")+
     prow("Breakage",cur.breakage==null?"—":fmtPct(cur.breakage),hypo.breakage==null?"—":fmtPct(hypo.breakage))+
     prow("Users fully covered by the allowance",fmtPct(cur.covered),fmtPct(hypo.covered))+
-    '<p class="src" style="margin-top:10px">Moving '+S.plans[S.pickerTier].name+' to the '+ordinal(S.pct)+' percentile '+(hypo.margin>=cur.margin?"raises":"costs")+" "+fmtPct(Math.abs(hypo.margin-cur.margin))+" of margin and changes breakage to "+(hypo.breakage==null?"—":fmtPct(hypo.breakage))+".</p>";
+    '<p class="src" style="margin-top:10px">Moving '+S.plans[S.pickerTier].name+' to the '+ordinal(S.pct)+' percentile '+((cur.meanRev>0&&hypo.meanRev>0)?((function(){var d=hypo.margin-cur.margin;if(Math.abs(d)<0.0005)return "leaves its margin unchanged at "+fmtPct(cur.margin)+(hypo.breakage==null?(cur.breakage==null?", and breakage stays undefined at that allowance":", and breakage becomes undefined at that allowance, because the allowance leaves no available credits"):", and leaves breakage at "+fmtPct(hypo.breakage))+", with users fully covered at "+fmtPct(hypo.covered);return (d>0?"raises ":"costs ")+(Math.abs(d)*100).toFixed(1)+" points of margin"+(hypo.breakage==null?", and breakage becomes undefined at that allowance":", and changes breakage to "+fmtPct(hypo.breakage))+", with users fully covered moving from "+fmtPct(cur.covered)+" to "+fmtPct(hypo.covered);})()):("has an undefined margin at a $0 price, so the margin change does not apply. Breakage at that allowance is "+(hypo.breakage==null?"—":fmtPct(hypo.breakage))+", and users fully covered move from "+fmtPct(cur.covered)+" to "+fmtPct(hypo.covered)))+"."+(cur.rev99>0&&hypo.rev99>0&&D.avgCredits>0?" Tail-mix p99 margin moves from "+fmtPct(cur.tm99)+" to "+fmtPct(hypo.tm99)+".":"")+"</p>"+(S.mode!=="cap"?'<p class="src">Extra revenue is stated before the §03 paid take-up: '+(S.mode==="topup"?"in this layer every wall user buys half of the shortfall":"in this layer the full shortfall is billed")+', and the behavior layer restates it at the take-up rate.</p>':"");
   function prow(k,a,b){return '<div class="decomp-row"><span>'+k+'</span><span class="src" style="text-align:right">now <span class="mono" style="color:var(--ink2)">'+a+'</span></span><span class="mono" style="text-align:right;font-weight:600">'+b+'</span></div>';}
   /* decomposition */
   var effDisc=($("effRate")?num("effRate",0):0)/100;
@@ -1551,7 +1622,7 @@ function update(){
   var pAll=portfolioProfit(S,{frontMult:(1+S.sFront)*(1-effDisc),stdMult:(1+S.sStd)*(1-effDisc),routing:clamp(S.routing+S.sRoute,0,1),scale:1+S.sGrowth});
   var eRate=pRate-base,eMix=pMix-base,eVol=pVol-base,eAll=pAll-base,eInt=eAll-eRate-eMix-eVol;
   var erOut=$("effRateOut");if(erOut)erOut.textContent=Math.round(effDisc*100)+"%";
-  $("decompBase").textContent="Portfolio AI profit per user per month: "+fmt$(base)+" now, "+fmt$(base+eAll)+" under the scenario. Change: "+(eAll>=0?"+":"")+fmt$(eAll)+"."+(effDisc>0?(" The rate effect includes a "+Math.round(effDisc*100)+"% effective-rate discount on provider prices."):"")+(equalMix?"":" Portfolio figures use the mix weights set in this section.");
+  $("decompBase").textContent="Portfolio revenue minus AI cost per user per month: "+(base>=0?fmt$(base):"−"+fmt$(Math.abs(base)))+" now, "+((base+eAll)>=0?fmt$(base+eAll):"−"+fmt$(Math.abs(base+eAll)))+" under the scenario. Change: "+(eAll>=0?"+":"−")+fmt$(Math.abs(eAll))+"."+(effDisc>0?(" The rate effect includes a "+Math.round(effDisc*100)+"% effective-rate discount on the frontier and standard text rates."):"")+(equalMix?"":" Portfolio figures use the mix weights set in this section.");
   var parts=[["Volume: usage growth",eVol],["Mix: routing share",eMix],["Rate: provider prices",eRate],["Interaction (residual)",eInt],["Total change",eAll]];
   var maxAbs=Math.max(0.5,Math.abs(eRate),Math.abs(eMix),Math.abs(eVol),Math.abs(eInt),Math.abs(eAll));
   $("decompBody").innerHTML=parts.map(function(pt){
@@ -1561,16 +1632,16 @@ function update(){
   }).join("");
   /* memo */
   var build=S.tasks[0],buildCost=D.taskCosts[0];
-  var breachNames=sim.tiers.filter(function(t){return t.margin<S.floor||t.m99<S.floor;}).map(function(t){return t.plan.name;});
+  var breachNames=sim.tiers.filter(function(t){return (t.meanRev>0&&t.margin<S.floor)||(t.rev99>0&&t.m99<S.floor);}).map(function(t){return t.plan.name;});var memoUndef=sim.tiers.filter(function(t){return !(t.meanRev>0);}).map(function(t){return t.plan.name;});var memoUndef99=sim.tiers.filter(function(t){return t.meanRev>0&&!(t.rev99>0);}).map(function(t){return t.plan.name;});
   var memo=
-   "<p><strong>Allowance.</strong> Set included credits at the "+ordinal(S.pct)+" percentile of monthly demand: "+fmtInt(rec)+" credits at the current usage shape. Squarespace's published allowances sit far lower. In this model's demand shape, Core's 20 credits land near the "+ordinal(Math.max(1,Math.round(rankOf(sim.demand,20))))+" percentile, so the published plans behave like a sampler: they push engaged users toward overage, top-ups, or an upgrade. At "+fmtInt(rec)+" credits, most users never think about credits. On "+S.plans[S.pickerTier].name+", that allowance "+(hypo.margin>=S.floor?"clears":"does not clear")+" the "+Math.round(S.floor*100)+"% margin floor.</p>"+
-   "<p><strong>The site build.</strong> A build is priced at "+build.credits+" credits and costs "+fmt$(buildCost,3)+" to serve at the current routing mix of "+Math.round(S.routing*100)+"% frontier. On Core, "+build.credits+" credits carry an implied value of "+fmt$(build.credits*coreImplied)+", so the build is the best deal in the catalogue. That is deliberate. The build is where the customer decides the product is worth paying for. The margin sits in the small tasks: a copy draft costs "+fmt$(D.taskCosts[2],3)+" to serve and is priced at "+S.tasks[2].credits+" credit.</p>"+
-   "<p><strong>Abandoned builds.</strong> Builds are charged in full whether kept or abandoned, and nothing is refunded. That is what justifies pricing a build at "+build.credits+" credits instead of a handful: the price has to cover the builds nobody keeps, because the serving cost was spent either way.</p>"+
-   "<p><strong>Rollover.</strong> Rollover is "+(S.rollover?"on, with banked credits capped at one month of allowance":"off, matching Squarespace's published position")+". "+(function(){var Sr={};Object.keys(S).forEach(function(k){Sr[k]=S[k];});Sr.rollover=true;var onT=simulate(Sr).tiers[1],offT=sim.tiers[1];return "On Core, turning rollover on moves breakage from "+fmtPct(offT.breakage)+" to "+fmtPct(onT.breakage)+" and coverage up "+((onT.covered-offT.covered)*100).toFixed(1)+" points, so the numbers are nearly free either way.";})()+" Building is episodic, so a user who generates heavily for a month and then publishes for three is exactly the user expiry punishes. "+(S.rollover?"Banking credits across that gap costs that breakage and buys goodwill where churn risk is highest.":"Expiring credits across that gap gives an episodic user a reason to downgrade, to protect breakage worth less than the retention it risks.")+" This is the call I would argue hardest.</p>"+
-   "<p><strong>Shortfall and guardrails.</strong> When credits run out: "+(S.mode==="cap"?"actions stop at the balance, so heavy users cost no more than their allowance and the floor is protected by construction":S.mode==="overage"?"overage billing at "+S.ovMult.toFixed(1)+"× the implied per-credit price, so the tail pays for itself":"top-up packs at "+fmt$(S.topup)+" per credit, with half of any shortfall bought and half forgone")+". "+(breachNames.length?("The tiers breaching the "+Math.round(S.floor*100)+"% floor are "+breachNames.join(", ")+". The breach sits in the tail, at the p99 user, not the average. That is where a cap or an overage price earns its place."):("Every tier clears the "+Math.round(S.floor*100)+"% floor, p99 users included. There is headroom to give allowance away before a harder cap is needed."))+"</p>";
-  memo+="<p><strong>Buyer behavior.</strong> Adjusted revenue per starting user is "+fmt$(beh.adjRevPerStart)+" against "+fmt$(beh.staticRevPerUser)+" if nobody moved; adjusted margin is "+fmtPct(beh.adjMargin)+" against "+fmtPct(beh.staticMargin)+". Under the §03 settings, the starting 40,000 users end the month at "+fmtInt(beh.endTotal)+": churn takes "+fmtInt(beh.totalChurn)+", "+fmtInt(beh.downCount)+" drop one plan, and "+fmtInt(beh.upCount)+" move up one plan. The upgrade flow is the softest part of that figure: about two-fifths of upgraders come out of Basic, whose users are wall-exposed by construction because Basic carries no monthly allowance in month six, so read the upgrade count as an upper bound rather than a measured flow. Wall users split five ways (pay, upgrade, downgrade, churn, stay), and total departures are reconciled against the 4.2% baseline churn as described in Methodology §08. The Comparison view ranks every preset by this revenue figure. Defaults come from Methodology §09; paid take-up and the upgrade share have no published values and remain assumptions.</p>";
+   "<p><strong>Allowance.</strong> Set included credits at the "+ordinal(S.pct)+" percentile of monthly demand: "+fmtInt(rec)+" credits at the current usage shape. "+(function(){var pn=S.plans[S.pickerTier].name;if(S.plans[S.pickerTier].monthly===0){if(D.avgCredits===0){return "In this model's demand shape, credit demand is zero, so no allowance binds and every user finishes the month inside it. "+pn+" has no monthly allowance in month six, and none is needed in this state.";}return "In this model's demand shape, "+pn+" has no monthly allowance in month six, so no user finishes the month inside "+(pn==="Advanced"?"an ":"a ")+pn+" allowance in month six."+(S.plans[S.pickerTier].one>0?" Its one-time grant of "+fmtInt(S.plans[S.pickerTier].one)+(S.plans[S.pickerTier].one===1?" credit is":" credits is")+" spent in month one and does not change month six.":"");}var ca=S.plans[S.pickerTier].monthly;var rk=Math.max(1,Math.round(rankOf(sim.demand,ca)));return "In this model's demand shape, "+pn+"'s "+fmtInt(ca)+(ca===1?" credit":" credits")+" land near the "+ordinal(rk)+" percentile"+(rk<50?", so the plans behave like a sampler: they push engaged users toward overage, top-ups, or an upgrade.":", so "+(ca===PLANS0[S.pickerTier].monthly?("the published "+pn+" allowance"):(pn+"'s current allowance"))+" already covers the median user in this demand shape.");})()+" At "+fmtInt(rec)+" credits on "+S.plans[S.pickerTier].name+", "+fmtPct(hypo.covered,1)+" of users finish the month inside the allowance"+(S.rollover?", counting credits banked under rollover":"")+". On "+S.plans[S.pickerTier].name+", that allowance "+(!(hypo.meanRev>0)?("has an undefined margin at a $0 price, so the margin floor test does not apply to it."):((hypo.margin>=S.floor&&(hypo.rev99<=0||hypo.m99>=S.floor))?("clears the "+Math.round(S.floor*100)+"% margin floor on the tier average"+(hypo.rev99>0?" and on its p99 user":"")+"."):("does not clear the "+Math.round(S.floor*100)+"% margin floor on "+(hypo.margin<S.floor&&(hypo.rev99>0&&hypo.m99<S.floor)?"the tier average or its p99 user":hypo.margin<S.floor?"the tier average":"its p99 user")+".")))+(D.avgCredits>0&&hypo.rev99>0?(" On the tail mix, that allowance's p99 margin is "+fmtPct(hypo.tm99)+", which "+(hypo.tm99<S.floor?"does not clear":"clears")+" the floor."):"")+"</p>"+
+   "<p><strong>The site build.</strong> A build is priced at "+build.credits+(build.credits===1?" credit":" credits")+" and costs "+fmt$(buildCost,3)+" to serve, with "+(function(){var bs=clamp(((S.tasks[0].front||0)/100)*(S.routing/0.30),0,1);var msr=S.tasks.reduce(function(a,x){return a+x.mix;},0);var sh=0;S.tasks.forEach(function(t){if(t.image)return;sh+=((msr>0?t.mix/msr:1/S.tasks.length))*clamp(((t.front||0)/100)*(S.routing/0.30),0,1);});return "the build routed "+Math.round(bs*100)+"% to the frontier model ("+Math.round(sh*100)+"% mix-weighted across actions)";})()+". "+(build.credits>0?(coreImplied>0?("On Core, the build is priced at "+build.credits+(build.credits===1?" credit":" credits")+", a modelled price, not a published one (Methodology §02)."+(S.tasks[2].credits>0?(" Serving it costs about "+fmt$(buildCost/build.credits,3)+" per credit, against "+fmt$(D.taskCosts[2]/S.tasks[2].credits,3)+" per credit for a copy draft. "+(buildCost/build.credits>D.taskCosts[2]/S.tasks[2].credits?"A price set in proportion to serving cost would charge far more for the build; the uniform credit price subsidizes it.":buildCost/build.credits<D.taskCosts[2]/S.tasks[2].credits?"At this credit price, a price set in proportion to serving cost would charge less for the build; the uniform credit price subsidizes the small tasks instead.":"A price set in proportion to serving cost would charge the same per credit for the build as for a copy draft, so the uniform credit price subsidizes neither task on a per-credit basis.")):"")+" Whether the build is also where the customer decides the product is worth paying for is a belief, and the measurement plan is where that belief gets tested."):("On Core, the build's "+build.credits+" credits have an implied value of $0.00 at the current Core price, so the catalogue price signal is switched off in this state.")):("The build is unmetered in this scenario, so no credit price stands against its serving cost. Inside this model the served cost of a zero-credit task still scales with the credit balance, because the simulation tracks one pool per user (Methodology §05). The tasks priced in this state are: "+(function(){var pl=[];S.tasks.forEach(function(t,i){if(i>0&&t.credits>0)pl.push(t.name+" at "+t.credits+(t.credits===1?" credit":" credits"));});return pl.length?pl.join(", "):"none";})()+"."))+((build.credits>0&&S.tasks[2].credits>0&&coreImplied>0)?(buildCost/build.credits>D.taskCosts[2]/S.tasks[2].credits?(" The margin sits in the small tasks: a copy draft costs "+fmt$(D.taskCosts[2],3)+" to serve and is priced at "+S.tasks[2].credits+(S.tasks[2].credits===1?" credit, which costs less to serve per credit than the build.":" credits, which cost less to serve per credit than the build.")):buildCost/build.credits<D.taskCosts[2]/S.tasks[2].credits?(" The margin sits in the build at this credit price: a copy draft costs "+fmt$(D.taskCosts[2],3)+" to serve and is priced at "+S.tasks[2].credits+(S.tasks[2].credits===1?" credit, which costs more to serve per credit than the build.":" credits, which cost more to serve per credit than the build.")):(" The build and a copy draft cost the same to serve per credit in this state, so neither task holds the margin on a per-credit basis.")):"")+"</p>"+
+   "<p><strong>Abandoned builds.</strong> "+(build.credits>0?(buildCost>0?("Builds are charged in full whether kept or abandoned, and nothing is refunded. That is what justifies pricing a build at "+build.credits+" credits instead of a handful: the price has to cover the builds nobody keeps, because the serving cost was spent either way."):("Builds are charged in full whether kept or abandoned, and nothing is refunded. At the current provider rates a build costs nothing to serve, so an abandoned build costs nothing in this state and the credit price is not covering a serving cost here.")):(buildCost>0?("Builds are charged nothing in this scenario, whether kept or abandoned. Every abandoned build is a serving cost of "+fmt$(buildCost,3)+" with no price against it. The serving cost was spent either way, and in this scenario nothing recovers it."):("Builds are charged nothing in this scenario, whether kept or abandoned, and at the current provider rates an abandoned build costs nothing to serve, so abandonment is free in this state.")))+"</p>"+
+   "<p><strong>Rollover.</strong> Rollover is "+(S.rollover?"on, with banked credits capped at one month of allowance":"off, matching Squarespace's published position")+". "+(function(){var Sr={};Object.keys(S).forEach(function(k){Sr[k]=S[k];});Sr.rollover=!S.rollover;var alt=simulate(Sr);var onT=S.rollover?sim.tiers[S.pickerTier]:alt.tiers[S.pickerTier],offT=S.rollover?alt.tiers[S.pickerTier]:sim.tiers[S.pickerTier];function pmc(sm){var w=mixWeights(S);var s2=0;sm.tiers.forEach(function(t,i){s2+=w[i]*t.meanCost;});return s2;}var onC=S.rollover?pmc(sim):pmc(alt),offC=S.rollover?pmc(alt):pmc(sim);return (offT.breakage==null||onT.breakage==null?"On "+S.plans[S.pickerTier].name+", breakage is undefined in this state, because "+S.plans[S.pickerTier].name+" has no available credits in month six, so the breakage comparison does not apply. Coverage moves from "+fmtPct(offT.covered,1)+" with rollover off to "+fmtPct(onT.covered,1)+" with it on.":"On "+S.plans[S.pickerTier].name+", rollover moves breakage from "+fmtPct(offT.breakage)+" with it off to "+fmtPct(onT.breakage)+" with it on, and coverage from "+fmtPct(offT.covered,1)+" to "+fmtPct(onT.covered,1)+".")+(fmt$(offC)===fmt$(onC)?" Portfolio mean cost stays at "+fmt$(onC)+" per user across the same switch, because the switch changes no served usage in this state.":" Portfolio mean cost moves from "+fmt$(offC)+" to "+fmt$(onC)+" per user across the same switch.")+" The cost side of the policy is small and priced by the model; the retention side is the part the model does not measure.";})()+" Building is episodic, so a user who generates heavily for a month and then publishes for three is exactly the user expiry punishes. "+(S.rollover?"Banking credits across that gap costs that breakage and buys goodwill where churn risk is highest.":"Expiring credits across that gap gives an episodic user a reason to downgrade, to protect breakage worth less than the retention it risks.")+" This is the call I would argue hardest.</p>"+
+   "<p><strong>Shortfall and guardrails.</strong> When credits run out: "+(S.mode==="cap"?(D.avgCredits===0?"nothing is metered in this state, so no balance binds and serving cost runs to the full demand":"actions stop at the balance, so a heavy user's cost stops at the cost of serving their allowance"):S.mode==="overage"?"overage billing at "+S.ovMult.toFixed(1)+"× the implied per-credit price"+(S.plans[0].monthly>0?"":" (the top-up price for Basic, which has no monthly allowance in this state)")+", so the tail pays for itself":"top-up packs at "+fmt$(S.topup)+" per credit, with half of any shortfall bought and half forgone")+". "+(breachNames.length?("At the current allowances, the tiers breaching the "+Math.round(S.floor*100)+"% floor are "+breachNames.join(", ")+". "+(sim.tiers.some(function(t){return t.meanRev>0&&t.margin<S.floor;})?"At least one breach reaches a tier average, not only the tail.":"The breach sits in the tail, at the p99 user, not the average.")+(memoUndef.length?(" "+memoUndef.join(", ")+(memoUndef.length>1?" have undefined margins":" has an undefined margin")+" at a $0 price and neither clear nor breach."):"")+(memoUndef99.length?(" "+memoUndef99.join(", ")+(memoUndef99.length>1?" also have":" also has")+" an undefined p99 margin in this state."):"")+" That is where a cap or an overage price earns its place."):memoUndef.length?("At the current allowances, no tier with a defined margin breaches the "+Math.round(S.floor*100)+"% floor. "+memoUndef.join(", ")+(memoUndef.length>1?" have undefined margins":" has an undefined margin")+" at a $0 price and neither clear nor breach."+(memoUndef99.length?(" "+memoUndef99.join(", ")+(memoUndef99.length>1?" also have":" also has")+" an undefined p99 margin in this state."):"")+(memoUndef.length<4?" On the defined tiers there is headroom to give allowance away before a harder cap is needed.":"")):memoUndef99.length?("At the current allowances, every tier with a defined margin clears the "+Math.round(S.floor*100)+"% floor on its tier average. "+memoUndef99.join(", ")+(memoUndef99.length>1?" have":" has")+" an undefined p99 margin in this state, because the p99 user earns no revenue, so p99 clearance does not apply there. There is headroom to give allowance away before a harder cap is needed."):("At the current allowances, every tier clears the "+Math.round(S.floor*100)+"% floor, p99 users included. There is headroom to give allowance away before a harder cap is needed."))+"</p>";
+  memo+="<p><strong>Buyer behavior.</strong> Adjusted revenue per starting user is "+fmt$(beh.adjRevPerStart)+" against "+fmt$(beh.staticAdjRevPerStart)+" if nobody moved"+(S.mode!=="cap"?" (the comparator restated on the same take-up basis, so the gap measures movement alone)":"")+(beh.adjRevPerStart>0?("; adjusted margin is "+fmtPct(beh.adjMargin)+" against "+fmtPct(beh.staticAdjMargin)+"."):("; adjusted margin is undefined in this state, because revenue is zero."))+" Under the §03 settings, the starting 40,000 users end the month at "+fmtInt(beh.endTotal)+": "+(beh.totalChurn<0?("a net price inflow adds "+fmtInt(-beh.totalChurn)+" users after the wall's losses"):("churn takes "+fmtInt(beh.totalChurn)))+", "+fmtInt(beh.downCount)+" drop one plan, and "+fmtInt(beh.upCount)+" move up one plan. The upgrade flow is the softest part of that figure: "+(beh.upCount>=10?(fmtPct(beh.afterPrice[0]*(1-sim.tiers[0].covered)*beh.split.up/beh.upCount,0)+" of upgraders come out of Basic, "+(S.plans[0].monthly===0?"whose users are wall-exposed by construction because Basic has no monthly allowance in month six":"which in this state has a monthly allowance of "+fmtInt(S.plans[0].monthly)+" credits and a wall share of "+fmtPct(1-sim.tiers[0].covered))+", so read the upgrade count as an upper bound rather than a measured flow."):beh.upCount>0?("Fewer than ten upgraders move in expectation in this state, so the Basic share of that flow is not a stable figure to quote."):"There are no upgraders in this state, so the upgrade flow has no Basic share to report.")+" Wall users split five ways (pay, upgrade, downgrade, churn, stay), and total departures are reconciled against the 4.2% baseline churn as described in Methodology §08. The Comparison view ranks every preset by this revenue figure. Defaults come from Methodology §09; paid take-up and the upgrade share have no published values and remain assumptions.</p>";
   $("memoBody").innerHTML=memo;
-  $("memoBody").dataset.plain=memo.replace(/<[^>]+>/g,"").replace(/\s+\n/g,"\n");
+  $("memoBody").dataset.plain=memo.replace(/<\/p>/g,"\n\n").replace(/<br[^>]*>/g,"\n").replace(/<[^>]+>/g,"").replace(/[ \t]+\n/g,"\n").replace(/\n{3,}/g,"\n\n").trim();
 }
 /* ---------- behavior & comparison rendering ---------- */
 function mixBar(users){
@@ -1612,19 +1683,19 @@ function renderBehavior(S,sim,beh){
   var churnNote=beh.priceChurn>=0?("Price changes account for "+fmtInt(beh.priceChurn)+" of the departures and the wall for "+fmtInt(beh.churnWall)+"."):("Prices pull in a net "+fmtInt(-beh.priceChurn)+" users, and the wall costs "+fmtInt(beh.churnWall)+".");
   $("behSummary").innerHTML=
     "<h3>Adjusted view: buyer behavior after movement, month six</h3>"+
-    '<p class="hint">Movement under the §03 settings (evidence: Methodology §08–§09). The tier table excludes movement; the adjusted figures here include it.</p>'+
-    '<p class="beh-lead">Adjusted revenue per starting user: <span class="mono">'+fmt$(beh.adjRevPerStart)+'</span> against '+fmt$(beh.staticRevPerUser)+' with no movement'+moneyChip(beh.adjRevPerStart-beh.staticRevPerUser)+'. Adjusted margin: <span class="mono" style="font-size:14px">'+fmtPct(beh.adjMargin)+'</span> against '+fmtPct(beh.staticMargin)+ptsChip(beh.adjMargin-beh.staticMargin)+'.</p>'+
+    '<p class="hint">Movement under the §03 settings (evidence: Methodology §08–§09). The tier table excludes movement; the adjusted figures here include it. For annual subscribers, read the month-six movement as renewal risk at month twelve, not mid-term cancellation.</p>'+
+    '<p class="beh-lead">Adjusted revenue per starting user: <span class="mono">'+fmt$(beh.adjRevPerStart)+'</span> against '+fmt$(beh.staticAdjRevPerStart)+' with no movement'+(S.mode!=="cap"?' on the same take-up basis':'')+moneyChip(beh.adjRevPerStart-beh.staticAdjRevPerStart)+'. Adjusted margin: <span class="mono" style="font-size:14px">'+(beh.adjRevPerStart>0?fmtPct(beh.adjMargin):"—")+'</span> against '+(beh.staticAdjRevPerStart>0?fmtPct(beh.staticAdjMargin):"—")+(beh.adjRevPerStart>0&&beh.staticAdjRevPerStart>0?ptsChip(beh.adjMargin-beh.staticAdjMargin):"")+'.</p>'+
     '<div class="mixrow"><span class="mlab">Starting mix</span><span>'+mixBar(start)+'<div class="src" style="margin-top:4px">'+mixNums(start)+"</div></span></div>"+
     '<div class="mixrow"><span class="mlab">Ending mix</span><span>'+mixBar(beh.endUsers)+'<div class="src" style="margin-top:4px">'+mixNums(beh.endUsers)+"</div></span></div>"+
     mixLegend()+
     '<div class="kpis" style="margin-bottom:4px">'+
     kpi2(fmt$(beh.adjRevPerStart),"Adj. revenue / starting user","Lead metric: after movement, per user the month started with",true)+
     kpi2(fmtInt(beh.endTotal),"Users remaining, of "+fmtInt(START_TOTAL),fmtPct(beh.endTotal/START_TOTAL,0)+" of the starting population")+
-    kpi2(fmtInt(beh.totalChurn),"Churn in the month",churnNote)+
+    kpi2(fmtInt(beh.totalChurn),beh.totalChurn<0?"Net movement in the month":"Churn in the month",churnNote)+
     kpi2(fmtInt(beh.downCount),"Downgrades in the month","One plan down. Basic downgraders count as churn.")+
     kpi2(fmtInt(beh.upCount),"Upgrades in the month","One plan up, the response the ladder is priced to produce.")+
     "</div>"+
-    '<p class="src" style="margin-top:8px">Wall split, realized shares of the '+fmtInt(beh.wallUsers)+' users who hit the wall: pay '+fmtPct(beh.effSplit.pay,0)+', upgrade '+fmtPct(beh.effSplit.up,0)+', downgrade '+fmtPct(beh.effSplit.down,0)+', churn '+fmtPct(beh.effSplit.churn,0)+', stay '+fmtPct(beh.effSplit.stay,0)+'. Realized shares differ from the §03 settings where the ladder binds: Advanced wall users cannot upgrade, Basic downgrades count as churn, and reconciliation scales churn. '+(S.mode==="cap"?"A hard cap offers nothing to buy, so the pay share is zero and its users stay. ":"Paid take-up: "+fmtInt(beh.takers)+" users. ")+(beh.reconScale<1?("Reconciliation applied: the raw test total (price departures plus wall churn, Basic downgrades counted) exceeded twice the 4.2% baseline, so wall churn was scaled to "+Math.round(beh.reconScale*100)+"% of its raw rate. Realized departures are "+fmtInt(beh.totalChurn)+", above the "+fmtInt(beh.capTotal)+" cap figure, because Basic downgrades are counted in the test but not scaled (Methodology §08)."):"Total departures sit inside twice the 4.2% baseline churn, so no reconciliation scaling was needed.")+"</p>"+sensLine;
+    '<p class="src" style="margin-top:8px">'+(beh.wallUsers===0?'No users hit the wall in this state, so there is no wall split to report.':('Wall split, realized shares of the '+fmtInt(beh.wallUsers)+' users who hit the wall: pay '+fmtPct(beh.effSplit.pay,0)+', upgrade '+fmtPct(beh.effSplit.up,0)+', downgrade '+fmtPct(beh.effSplit.down,0)+', churn '+fmtPct(beh.effSplit.churn,0)+', stay '+fmtPct(beh.effSplit.stay,0)+'. Realized shares differ from the §03 settings where the ladder binds: Advanced wall users cannot upgrade, and Basic downgrades count as churn. '))+(S.mode==="cap"?"A hard cap offers nothing to buy, so the pay share is zero and its users stay. ":"Paid take-up: "+fmtInt(beh.takers)+" users. ")+(beh.reconScale<1?("Reconciliation applied: the raw test total (price departures plus wall churn, Basic downgrades counted) exceeded twice the 4.2% baseline, so wall churn was scaled to "+(beh.reconScale*100).toFixed(1)+"% of its raw rate. "+(beh.totalChurn<0?("The month nets to a gain of "+fmtInt(-beh.totalChurn)+" users, so realized departures of "+fmtInt(beh.totalChurn)+" sit below the "+fmtInt(beh.capTotal)+" cap figure: price departures enter the test floored at zero, so a net price inflow pulls the realized total under the tested total"):("Realized departures are "+fmtInt(beh.totalChurn)+", "+(beh.totalChurn>beh.capTotal?(Math.max(0,beh.priceChurn)>=beh.capTotal?("above the "+fmtInt(beh.capTotal)+" cap figure: price departures of "+fmtInt(Math.max(0,beh.priceChurn))+" are not scaled and alone exceed the cap"):Math.max(0,beh.priceChurn)>0?("above the "+fmtInt(beh.capTotal)+" cap figure, because price departures and Basic downgrades are counted in the test but not scaled"):("above the "+fmtInt(beh.capTotal)+" cap figure, because Basic downgrades are counted in the test but not scaled")):(Math.abs(beh.totalChurn-beh.capTotal)<1?("at the "+fmtInt(beh.capTotal)+" cap figure: wall churn was scaled so the tested total lands on the cap, and no unscaled flow carries the realized total past it"):("below the "+fmtInt(beh.capTotal)+" cap figure: price departures enter the test floored at zero, so a net price inflow pulls realized departures under the tested total")))))+" (Methodology §08)."):"Total departures sit inside twice the 4.2% baseline churn, so no reconciliation scaling was needed.")+"</p>"+sensLine;
   function kpi2(v,k,s,lead){return '<div class="kpi'+(lead?" lead-kpi":"")+'"><div class="v">'+v+'</div><div class="k">'+k+'</div><div class="s">'+s+"</div></div>";}
 }
 function renderComparison(S,sim,beh){
@@ -1655,15 +1726,15 @@ function renderComparison(S,sim,beh){
   function tdCls(v,bestV,lead){var c="mono";if(lead)c+=" lead";if(Math.abs(v-bestV)<1e-9)c+=" best";return ' class="'+c+'"';}
   var html="";
   rowsData.forEach(function(r){
-    var b=r.b;
+    var b=r.b;var noRev=!(b.adjRevPerStart>0)&&!(b.staticRevPerUser>0);var noAdj=!(b.adjRevPerStart>0),noStatic=!(b.staticRevPerUser>0);
     html+="<tr"+(r.current?' class="current-row"':"")+">"+
      "<td class='name' data-label='Scenario'>"+r.name+(r.key?'<br><button type="button" class="loadbtn" data-load="'+r.key+'">Load</button>':"")+"</td>"+
      "<td data-label='Policy' style='text-align:left'>"+MODE_LABEL[r.mode]+"</td>"+
      "<td"+tdCls(b.adjRevPerStart,bestRev,true)+" data-label='Adj. revenue / starting user'>"+fmt$(b.adjRevPerStart)+moneyChip(b.adjRevPerStart-base.adjRevPerStart)+"</td>"+
-     "<td"+tdCls(b.adjMargin,bestAdj,false)+" data-label='Adj. margin'>"+fmtPct(b.adjMargin)+ptsChip(b.adjMargin-base.adjMargin)+"</td>"+
+     "<td"+tdCls(b.adjMargin,bestAdj,false)+" data-label='Adj. margin'>"+(noAdj?"—":fmtPct(b.adjMargin)+ptsChip(b.adjMargin-base.adjMargin))+"</td>"+
      "<td"+tdCls(b.staticCostPerUser,bestCost,false)+" data-label='Mean cost / user'>"+fmt$(b.staticCostPerUser)+"</td>"+
-     "<td"+tdCls(b.staticMargin,bestMargin,false)+" data-label='Portfolio margin (guardrail)'>"+fmtPct(b.staticMargin)+ptsChip(b.staticMargin-base.staticMargin)+"</td>"+
-     "<td data-label='Portfolio floor'>"+(b.staticMargin<S.floor?'<span class="flag breach">Breach</span>':'<span class="flag ok">Within floor</span>')+"<div class='src'>floor "+Math.round(S.floor*100)+"%</div></td>"+
+     "<td"+tdCls(b.staticMargin,bestMargin,false)+" data-label='Portfolio margin (guardrail)'>"+(noStatic?"—":fmtPct(b.staticMargin)+ptsChip(b.staticMargin-base.staticMargin))+"</td>"+
+     "<td data-label='Portfolio floor'>"+(noStatic?'<span class="src">undefined at zero revenue</span>':(b.staticMargin<S.floor?'<span class="flag breach">Breach</span>':'<span class="flag ok">Within floor</span>'))+"<div class='src'>portfolio only · floor "+Math.round(S.floor*100)+"%</div></td>"+
      "<td"+tdCls(b.endTotal,bestUsers,false)+" data-label='Users remaining'>"+fmtInt(b.endTotal)+"</td>"+
      "<td"+tdCls(b.totalChurn,bestChurn,false)+" data-label='Churn'>"+fmtInt(b.totalChurn)+"</td>"+
      "<td"+tdCls(b.downCount,bestDown,false)+" data-label='Downgrades'>"+fmtInt(b.downCount)+"</td>"+
@@ -1673,7 +1744,7 @@ function renderComparison(S,sim,beh){
   });
   var ci=$("cmpInsights");
   if(ci){
-    var mVals=rowsData.map(function(r){return r.b.staticMargin;});
+    var mVals=rowsData.filter(function(r){return r.b.staticRevPerUser>0;}).map(function(r){return r.b.staticMargin;});
     var cVals=rowsData.map(function(r){return r.b.staticCostPerUser;});
     var rVals=rowsData.map(function(r){return r.b.adjRevPerStart;});
     var uVals=rowsData.map(function(r){return r.b.endTotal;});
@@ -1700,12 +1771,13 @@ function renderComparison(S,sim,beh){
       return arr;
     }
     var baseRank=rankAt(S.bElasticity);
-    var parts=["Sensitivity: at the current elasticity of "+S.bElasticity.toFixed(1)+", "+baseRank[0].name+" leads "+baseRank[1].name+" by "+fmt$(baseRank[0].v-baseRank[1].v)+"."];
+    var parts=["Sensitivity: among the preset rows, at the current elasticity of "+S.bElasticity.toFixed(1)+", "+baseRank[0].name+" leads "+baseRank[1].name+" by "+fmt$(baseRank[0].v-baseRank[1].v)+"."];
     [-0.5,-1].forEach(function(el){
+      if(Math.abs(el-S.bElasticity)<1e-9)return;
       var r=rankAt(el);
       var baseNames=baseRank.map(function(y){return y.name;});
       if(r[0].name===baseRank[0].name&&r[1].name===baseRank[1].name){
-        parts.push("At "+el.toFixed(1)+" the top two hold, and the gap becomes "+fmt$(r[0].v-r[1].v)+".");
+        parts.push("At "+el.toFixed(1)+" the top two hold, and the gap stands at "+fmt$(r[0].v-r[1].v)+".");
       }else if(r[0].name===baseRank[0].name){
         var dropped=baseRank[1], riser=r[1];
         var riserBase=baseRank[baseNames.indexOf(riser.name)];
@@ -1714,7 +1786,7 @@ function renderComparison(S,sim,beh){
         parts.push("At "+el.toFixed(1)+", "+r[0].name+" takes the lead at "+fmt$(r[0].v)+".");
       }
     });
-    parts.push("The leader's row is the one least moved by elasticity, because its prices are the published prices. Treat the order as conditional on the elasticity setting, not as a finding on its own.");
+    parts.push("Among the preset rows, only the Generous allowances row changes plan prices, so it is the only preset row whose revenue moves with the elasticity setting. Treat the order as conditional on that setting, not as a finding on its own.");
     sensEl.textContent=parts.join(" ");
   }
 }
@@ -1728,13 +1800,19 @@ document.addEventListener("input",function(e){
   clearTimeout(timer);timer=setTimeout(update,110);
 });
 document.addEventListener("change",function(e){
-  if(e.target&&(e.target.id==="rollover"||e.target.id==="pickerTier")){
+  if(e.target&&e.target.id==="pickerTier"){
+    /* the picker previews an allowance; it changes no scenario setting, so
+       it never marks the scenario Custom */
+    clearTimeout(timer);timer=setTimeout(update,30);return;
+  }
+  if(e.target&&e.target.id==="rollover"){
     if(!applyingScen)markCustom();
     clearTimeout(timer);timer=setTimeout(update,30);
   }
 });
 $("shortfallSeg").addEventListener("click",function(e){
   var b=e.target.closest("button");if(!b)return;
+  if(b.dataset.mode===shortfallMode)return;
   shortfallMode=b.dataset.mode;
   Array.prototype.forEach.call($("shortfallSeg").querySelectorAll("button"),function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
   if(!applyingScen)markCustom();
@@ -1746,7 +1824,14 @@ function setSeg(mode){
   shortfallMode=mode;
   Array.prototype.forEach.call($("shortfallSeg").querySelectorAll("button"),function(x){x.setAttribute("aria-pressed",x.getAttribute("data-mode")===mode?"true":"false");});
 }
+var presetSig=null,presetKey="baseline";
+function stateSig(){var S=readState();return JSON.stringify({plans:S.plans,tasks:S.tasks,frontIn:S.frontIn,frontOut:S.frontOut,stdIn:S.stdIn,stdOut:S.stdOut,img:S.img,qStd:S.qStd,tailMix:S.tailMix,mixW:S.mixW,routing:S.routing,uMedian:S.uMedian,uP90:S.uP90,uP99:S.uP99,rollover:S.rollover,floor:S.floor,mode:S.mode,ovMult:S.ovMult,topup:S.topup,pct:S.pct,sFront:S.sFront,sStd:S.sStd,sRoute:S.sRoute,sGrowth:S.sGrowth});}
 function markCustom(){
+  if(presetSig&&stateSig()===presetSig){
+    var sc0=SCEN[presetKey];
+    if(sc0&&$("scenarioSel").value==="custom"){$("scenarioSel").value=presetKey;var st0=$("scenState");st0.textContent=sc0.name;st0.className="flag ok";$("scenDesc").textContent=sc0.desc;}
+    return;
+  }
   var sel=$("scenarioSel");if(!sel||sel.value==="custom")return;
   sel.value="custom";
   var st=$("scenState");st.textContent="Custom";st.className="flag watch";
@@ -1766,17 +1851,17 @@ function applyBase(){
   setVal("mixBasic",25);setVal("mixCore",25);setVal("mixPlus",25);setVal("mixAdv",25);
 }
 var SCEN={
-  baseline:{name:"Baseline",desc:"Published plans as they stand: hard cap, no rollover, 70% margin floor.",rec:"Set allowances at the 75th percentile of demand (250 credits at the current usage shape), keep the site build priced as the on-ramp, and turn rollover on. Most users then finish a build cycle without meeting the wall, and the shortfall policy only has to govern the heavy tail."},
-  surge:{name:"Power-user surge",desc:"Usage more than triples (median 70, p90 700, p99 4,500 actions), 60% frontier routing.",inputs:{uMedian:70,uP90:700,uP99:4500,routing:60},rec:"Add a paid shortfall path before the surge lands, so the 86% of users who reach the wall can buy through it. Under the hard cap that demand goes unserved, and the wall split leans toward churn and downgrades."},
-  frontier:{name:"Frontier price shock",desc:"Frontier prices +120% ($6.60 / $33.00 per 1M), 60% of text routed to it.",inputs:{rFrontIn:6.6,rFrontOut:33,routing:60},rec:"Absorb the shock at current prices and hold any pass-through in reserve. Portfolio margin falls to 97.2% and stays far above the 70% floor, so work the routing mix instead: move share toward the standard model wherever the quality gap is acceptable."},
-  routing:{name:"All-standard routing",desc:"All text on the standard model, standard rates halved ($0.15 / $0.75 per 1M). The catalogue's cost floor.",inputs:{routing:0,rStdIn:0.15,rStdOut:0.75},rec:"Make standard routing the default for drafting and scanning tasks, and keep the frontier model on site builds, where output quality is the product. The saving runs about $0.33 per user per month against the baseline, and it costs 2.7 points on the quality index (88.0 against 90.7)."},
+  baseline:{name:"Baseline",desc:"Published plan prices and allowances, with all five modeled tasks priced in credits: hard cap, no rollover, 70% margin floor. The product live today meters only two of the five surfaces; the Metered today preset holds that case.",rec:"Set allowances at the 75th percentile of demand (250 credits at the current usage shape), keep the site build priced as the on-ramp, and turn rollover on. Most users then finish a build cycle without meeting the wall, and the shortfall policy only has to govern the heavy tail."},
+  surge:{name:"Power-user surge",desc:"Usage more than triples (median 70, p90 700, p99 4,500 actions), routing scale at 60% (a 35% mix-weighted frontier share of actions).",inputs:{uMedian:70,uP90:700,uP99:4500,routing:60},rec:"Add a paid shortfall path before the surge lands, so the 86% of users who reach the wall can buy through it. Under the hard cap that demand goes unserved, and the wall split leans toward churn and downgrades."},
+  frontier:{name:"Frontier price shock",desc:"Frontier prices +120% ($6.60 / $33.00 per 1M), routing scale at 60%, which scales each task's frontier share toward double (the build's share caps at 100%) and takes the mix-weighted frontier share of actions to 35%.",inputs:{rFrontIn:6.6,rFrontOut:33,routing:60},rec:"Absorb the shock at current prices and hold any pass-through in reserve. Portfolio margin falls to 97.2% and stays far above the 70% floor, so work the routing mix instead: move share toward the standard model wherever the quality gap is acceptable."},
+  routing:{name:"All-standard routing",desc:"All text on the standard model, standard rates halved ($0.15 / $0.75 per 1M). The catalogue's cost floor.",inputs:{routing:0,rStdIn:0.15,rStdOut:0.75},rec:"Use this row as the cost floor, then stop short of it: make standard routing the default for drafting and scanning tasks, and keep the frontier model on site builds, where output quality is the product. The saving runs about $0.33 per user per month against the baseline, and it costs 2.7 points on the quality index (88.0 against 90.7)."},
   hardcap:{name:"Hard cap, tight allowances",desc:"Allowances halved (Core 10, Plus 20, Advanced 60), no rollover, floor at 85%.",inputs:{floor:85},mode:"cap",rollover:false,planMonthly:[null,10,20,60],rec:"Leave the allowances alone and work the wall instead, starting with the upgrade offer shown at the moment a user hits the cap. With 79% of users reaching the wall, that offer matters more than another allowance cut, and the 85% floor never binds in this row because the cap truncates serving cost first."},
-  topup:{name:"Cheap top-up packs",desc:"Top-ups at $0.50 a credit, rollover on, floor at 50%.",inputs:{topupPrice:0.5,floor:50},mode:"topup",rollover:true,rec:"Adopt top-up packs as the default shortfall policy at $0.50 a credit and keep rollover on. The wall becomes a checkout: adjusted revenue reaches $79.15 per starting user and churn falls to 5.9%, at a cost of about three points of adjusted margin against the baseline."},
-  overage:{name:"Overage billing at 1\u00d7",desc:"Excess billed at the implied per-credit price, with no penalty multiplier. Rollover on, floor at 65%.",inputs:{ovMult:1,floor:65},mode:"overage",rollover:true,rec:"Pilot overage at the implied rate on Advanced first, with a monthly cap per account, and treat the $120.82 as a ceiling until take-up is measured. This row bills every credit of shortfall, so its realized revenue rests on the §03 take-up assumption more than on any price in the table."},
-  generous:{name:"Generous allowances, higher prices",desc:"Allowances ~15× (Core 300, Plus 600, Advanced 1,500), prices up (Core $39, Plus $69, Advanced $139), rollover on.",planMonthly:[null,300,600,1500],planPrice:[null,39,69,139],rollover:true,rec:"Keep the generous allowances on Core and Plus, and attach a shortfall policy to Advanced. Advanced holds the set's only floor breach, at its p99 user (68.5% against the 70% floor), while the lower tiers produce the lowest wall share in the table at 31.1%."},
+  topup:{name:"Cheap top-up packs",desc:"Top-ups at $0.50 a credit, rollover on, floor at 50%.",inputs:{topupPrice:0.5,floor:50},mode:"topup",rollover:true,rec:"Adopt top-up packs as the default shortfall policy at $0.50 a credit and keep rollover on. The wall becomes a checkout: at the default §03 settings, adjusted revenue reaches $63.57 per starting user and churn falls to 5.9%, at a cost of about three and a half points of adjusted margin against the baseline."},
+  overage:{name:"Overage billing at 1\u00d7",desc:"Excess billed at the implied per-credit price, with no penalty multiplier. Rollover on, floor at 65%.",inputs:{ovMult:1,floor:65},mode:"overage",rollover:true,rec:"Pilot overage at the implied rate on Advanced first, with a monthly cap per account, a lever this model does not run, and treat this row's adjusted revenue as the uncapped ceiling until take-up is measured ($120.82 at the default §03 settings). This row bills every credit of shortfall, so its realized revenue rests on the §03 take-up assumption more than on any price in the table."},
+  generous:{name:"Generous allowances, higher prices",desc:"Allowances ~15× (Core 300, Plus 600, Advanced 1,500), prices up (Core $39, Plus $69, Advanced $139), rollover on.",planMonthly:[null,300,600,1500],planPrice:[null,39,69,139],rollover:true,rec:"Keep the generous allowances on Core and Plus, and attach a shortfall policy to Advanced. Advanced holds the set's only floor breach on the average-mix guardrail, at its p99 user (68.5% against the 70% floor), while this preset produces the lowest wall share in the table at 31.1%."},
   freebuild:{name:"Builds unmetered",desc:"Site builds priced at 0 credits, so builds never draw from the allowance. Every other task price and plan setting matches the baseline: hard cap, no rollover, 70% margin floor.",inputs:{task_credits_0:0},rec:"Keep site builds priced at zero credits and let the meter and the shortfall policy govern the small tasks. The wall share falls to 63.1%, and the guardrail to watch is p99 serving cost: builds leave the credit denominator, cost per credit rises, and the Advanced tail margin thins to 86.0% while tier means stay near 99%."},
-  filedmix:{name:"Filed mix",desc:"Baseline settings with the portfolio mix set to the filed shape: Basic 55, Core 30, Plus 10, Advanced 5. Squarespace's fiscal 2023 filing put Presence at 69.6% of revenue and Commerce at 30.4%, and Commerce subscribers sit below 30.4% of the base because those plans cost more.",mixW:[55,30,10,5],rec:"Use this mix whenever a figure stands for Squarespace's book. Static revenue per user falls from $49.00 on equal weights to $29.00, because 85% of the base sits on Basic and Core. Mean serving cost falls from $0.43 to $0.17 per user under the same weighting, and the mix-weighted portfolio margin rises from 99.1% to 99.4%. Per-tier margins and the 69.4% wall share hold at their baseline values, and adjusted revenue per starting user stays at $47.22, because the behavior layer starts every scenario from equal counts."},
-  meteredtoday:{name:"Metered today",desc:"Only the two surfaces Squarespace charges credits for today draw on the allowance: image generation standing in for Image Studio, and the SEO scan standing in for an AI Visibility run. Site builds, page regenerations, and copy drafts are priced at zero credits, matching the current product, where builds, Clarkson edits, and text tools are unmetered.",inputs:{task_credits_0:0,task_credits_1:0,task_credits_2:0},rec:"Read this row as the product as it ships today. Median credit demand falls from 74 credits to 19, and Core's 20 credits cover the median user: coverage on Core rises from 24% to 52%, the wall share falls from 69.4% to 49.3%, and Basic accounts for about half of the wall users who remain. Adjusted revenue holds at $47.49 because plans and prices are untouched. The exposure moves to serving cost, which rises from $0.43 to $1.06 per user as unmetered demand gets served in full, and the Advanced p99 user on the tail mix drops to a 64.2% margin while tier means stay near 98%. Watch serving cost on the build and text surfaces here; the meter cannot see them."}
+  filedmix:{name:"Presence-heavy mix",desc:"Baseline settings with the portfolio mix weighted toward the entry tiers: Basic 55, Core 30, Plus 10, Advanced 5. The weights are an analyst construction with no published source. Squarespace's fiscal 2023 filing put Presence at 69.6% of revenue and Commerce at 30.4%, and Commerce subscribers sit below 30.4% of the base because those plans cost more.",mixW:[55,30,10,5],rec:"Use this mix for a book-level read weighted toward the entry tiers, where Squarespace's revenue concentrates. Static revenue per user falls from $49.00 on equal weights to $29.00, because 85% of the base sits on Basic and Core. Mean serving cost falls from $0.43 to $0.17 per user under the same weighting, and the mix-weighted portfolio margin rises from 99.1% to 99.4%. Per-tier margins and the 69.4% wall share hold at their baseline values, and at the default §03 settings, adjusted revenue per starting user stays at $47.22, because the behavior layer starts every scenario from equal counts."},
+  meteredtoday:{name:"Metered today",desc:"Only the two surfaces Squarespace charges credits for today draw on the allowance: image generation standing in for Image Studio, and the SEO scan standing in for an AI Visibility run. Site builds, page regenerations, and copy drafts are priced at zero credits, matching the current product, where builds, Clarkson edits, and text tools are unmetered.",inputs:{task_credits_0:0,task_credits_1:0,task_credits_2:0},rec:"Read this row as the product as it ships today. Median credit demand falls from 74 credits to 19, and Core's 20 credits cover the median user: coverage on Core rises from 24% to 52%, the wall share falls from 69.4% to 49.3%, and Basic accounts for about half of the wall users who remain. At the default §03 settings, adjusted revenue holds at $47.49 because plans and prices are untouched. The exposure moves to serving cost, which rises from $0.43 to $1.06 per user as the smaller credit total lets most users' full demand through the allowance, and the Advanced p99 user on the tail mix drops to a 64.2% margin while tier means stay near 98%. Watch serving cost on the build and text surfaces here; the meter cannot see them."}
 };
 function applyScenario(key){
   var sc=SCEN[key];if(!sc)return;
@@ -1793,11 +1878,13 @@ function applyScenario(key){
   $("scenarioSel").value=key;
   var st=$("scenState");st.textContent=sc.name;st.className="flag ok";
   $("scenDesc").textContent=sc.desc;
+  presetKey=key;presetSig=stateSig();
   applyingScen=false;
 }
 $("scenarioSel").addEventListener("change",function(){
   var v=$("scenarioSel").value;
   if(SCEN[v])applyScenario(v);
+  else if(v==="custom"){var st=$("scenState");st.textContent="Custom";st.className="flag watch";$("scenDesc").textContent="Settings differ from the last preset loaded.";}
 });
 $("cmpRows").addEventListener("click",function(e){
   var b=e.target.closest("button[data-load]");if(!b)return;
@@ -1810,6 +1897,7 @@ $("copyMemo").addEventListener("click",function(){
   function fallback(){var ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done();}catch(err){$("copyStatus").textContent="Copy failed. Select the memo text manually.";}document.body.removeChild(ta);}
 });
 $("resetBtn").addEventListener("click",function(){if(window.confirm("Reset every setting to the published baseline?"))location.reload();});
+presetKey="baseline";presetSig=stateSig();
 update();
 })();
 </script>
@@ -1854,14 +1942,16 @@ update();
     var b=e.target&&e.target.closest?e.target.closest("button[data-load]"):null;
     if(!b)return;
     show("sim",false);
-    var sc=document.getElementById("scenarios");
+    /* the preset is already applied by the comparison handler; land on the
+       results it produced rather than back at the picker */
+    var sc=document.getElementById("sec-h-margins");
     if(sc)sc.scrollIntoView();
   });
   if(location.hash==="#methodology")show("method",false);
   else if(location.hash==="#comparison")show("compare",false);
 })();
 </script>
-<div class="resultbar" id="resultbar" aria-live="polite"><div class="in"><span><strong id="rbScen">Baseline</strong> · Adj. revenue / starting user <span class="rb-v" id="rbRev">—</span></span><span>Margin <span class="rb-v" id="rbMargin">—</span></span><span>Mean cost <span class="rb-v" id="rbCost">—</span></span><button type="button" id="rbCompare">Compare all scenarios →</button></div></div>
+<div class="resultbar" id="resultbar" aria-live="polite"><div class="in"><span><strong id="rbScen">Baseline</strong> · Adj. revenue / starting user <span class="rb-v" id="rbRev">—</span></span><span>Margin <span class="rb-v" id="rbMargin">—</span></span><span>Mean cost <span class="rb-v" id="rbCost">—</span></span><button type="button" id="rbCompare">Compare all scenarios →</button><button type="button" id="rbClose" aria-label="Hide the results bar" style="margin-left:8px">✕</button></div></div>
 <script>
 (function(){
   "use strict";
@@ -1871,7 +1961,7 @@ update();
     var head=sec.querySelector(".sec-head"); if(!head) return;
     var body=document.createElement("div"); body.className="fold-body";
     var kids=Array.prototype.slice.call(sec.childNodes);
-    kids.forEach(function(n){ if(n!==head) body.appendChild(n); });
+    kids.forEach(function(n){ if(n!==head && !(n.classList&&n.classList.contains("sec-sub"))) body.appendChild(n); });
     sec.appendChild(body);
     var btn=document.createElement("button"); btn.type="button"; btn.className="fold-btn";
     function sync(){ var open=sec.classList.contains("fold-open"); btn.textContent=open?"Hide −":"Open +"; btn.setAttribute("aria-expanded",open?"true":"false"); }
@@ -1892,13 +1982,19 @@ update();
     t.scrollIntoView({behavior:"smooth",block:"start"});
   }
   Array.prototype.forEach.call(document.querySelectorAll(".step[data-goto]"),function(b){
-    b.addEventListener("click",function(){ goTo(b.getAttribute("data-goto"), b.getAttribute("data-goto")==="#sec-h-plans"); });
+    b.addEventListener("click",function(){
+      if(b.getAttribute("data-openall")){ setAll(true); goTo("#sec-h-plans",true); }
+      else goTo(b.getAttribute("data-goto"), b.getAttribute("data-goto")==="#sec-h-plans");
+    });
   });
   Array.prototype.forEach.call(document.querySelectorAll('#view-sim .toc a.seclink'),function(a){
-    a.addEventListener("click",function(){ var t=document.querySelector(a.getAttribute("href")); if(t&&t.classList.contains("fold")){ t.classList.add("fold-open"); var b=t.querySelector(".fold-btn"); if(b)b.textContent="Hide −"; } });
+    a.addEventListener("click",function(){ var t=document.querySelector(a.getAttribute("href")); if(t&&t.classList.contains("fold")){ t.classList.add("fold-open"); var b=t.querySelector(".fold-btn"); if(b){ b.textContent="Hide −"; b.setAttribute("aria-expanded","true"); } } });
   });
   /* sticky results bar: mirrors the KPI row once the reader scrolls past it */
   var bar=document.getElementById("resultbar");
+  var rbDismissed=false;
+  var rbClose=document.getElementById("rbClose");
+  if(rbClose)rbClose.addEventListener("click",function(){ rbDismissed=true; bar.classList.remove("show"); });
   function syncBar(){
     var simView=document.getElementById("view-sim");
     var kpis=document.querySelectorAll("#kpis .kpi .v");
@@ -1909,7 +2005,7 @@ update();
     }
     var st=document.getElementById("scenState"); if(st) document.getElementById("rbScen").textContent=st.textContent;
     var past=window.scrollY>900 && simView && !simView.hidden;
-    bar.classList.toggle("show",!!past);
+    bar.classList.toggle("show",!!past && !rbDismissed);
   }
   window.addEventListener("scroll",syncBar,{passive:true});
   setInterval(syncBar,800); syncBar();
