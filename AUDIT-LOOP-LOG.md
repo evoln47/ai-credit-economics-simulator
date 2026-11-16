@@ -356,6 +356,84 @@ The page was driven in the same headless Chromium before and after the edit, and
 
 None. No audited figure moved: adjusted revenue $47.22, static revenue $49.00, portfolio margin 99.1%, mean cost $0.43, median demand 74 credits, churn 8.9%, wall share 69.4%, frontier preset margin 97.2%, p99 full-demand cost $68.55, top-up preset adjusted revenue $63.57, and the Comparison ranking (Overage, Generous, Top-up) all reproduce on the edited page. The prep pack gained one talk-track subsection (§1, "The two margin views") presenting the two bases; no prep-pack figure changed.
 
+## Post-loop addition (Nov 15, 2026): demand-chart marker labels and swatch legend
+
+Built at Evan's direction the same day, after he read the §02 demand chart in his browser and found the allowance markers very difficult to read. Local only, not pushed, on the same terms as the §10 addition above.
+
+### What was built
+
+The histogram's markers were five vertical lines in one ink with one dash pattern and no on-chart labels; the only key was a single text line under the chart listing the labels with no swatches, so no line could be matched to a plan. drawHist now builds its markers first and lays out a label chip per marker: a small rounded chip at the top of each line showing plan name and value (for example "Core 20", "Advanced 120", "75th pct 250"), drawn in the page's tokens (card fill, line2 border, ink text). The picker pick's chip takes the accent treatment (accent-soft fill, accent border, accent-deep text) so it stays distinct from the plan allowances. Chip widths are estimated from label length; each chip is centred on its marker line and clamped so it never leaves the 640-wide frame. Chips are stacked into rows by a greedy collision pass over the clamped intervals, the top pad grows to fit the rows, and each marker line starts at its own chip's lower edge. Under both chart instances, the old text list is replaced by a legend in the page's small-source typography: a 24px line swatch in each marker's own style (dashed ink for plan allowances, solid accent for the pick) beside its label, with the unit stated once at the end. One new CSS block (.hist-legend) in the existing tokens; no new colors, no new fonts. The mini chart in the header card keeps its chips only while the layout needs at most two rows; at the defaults the layout needs three, so the mini ships with the swatch legend alone and its bars keep their full height. The §02 caption paragraph and all other copy are unchanged.
+
+### Verification
+
+The page was driven in headless Chromium before and after the edit. The rendered body text, excluding the two chart containers, the script, and the style block, is byte-identical across the edit (matching length and SHA-256), which covers the §04 KPI strip, the finding banner, the recommendation strip, the §04 tier table, the Comparison table, and the §10 stack and operating outputs. The audited defaults print as before: adjusted revenue $47.22 against static $49.00, portfolio margin 99.1%, mean AI cost $0.43, wall share 69.4%, fully loaded gross margin 79.5%. Screenshots at 1280px and 390px in light and dark mode were read individually. The §02 chart at the defaults shows five chips in three staggered rows with no collisions and no edge overflow in either scheme, and the legend swatches match their lines. The header mini chart shows the swatch legend at desktop width in both schemes. At phone width the page's own media query hides the header mini card (pre-existing behavior, untouched), so the phone checks cover the §02 chart, where the HTML legend wraps at full size under the scaled chart. Chip geometry was stress-tested through the real plan inputs: a tight cluster (monthly 18 / 20 / 22 with a 19 one-time mark) stacks into four rows; every allowance set to 1 produces six markers in five rows at the clamped left edge; a wide spread (5 / 300 / 9,000) takes two rows; a right-edge cluster (8,000 / 9,000 / 9,999) takes four rows. No chip left the frame and no two chips overlapped in any variant. The screenshots were taken with the sandbox's fallback font because the webfont download is blocked here; the fallback runs wider than IBM Plex Sans and still fits inside every chip, so the shipped font fits with more room. Banned-word scan of all new copy, CSS, and code comments: clean.
+
+### Headline-number impact
+
+None. The change is rendering only: the model, the fit, the bins, and every computed figure are untouched, and the before/after rendered-text comparison above is the proof.
+
+## Post-loop rebuild (Nov 15, 2026): sorted tier assignment, per-tier demand bands
+
+Built at Evan's direction after he asked whether each plan should have its own distribution shape, and chose the sorted design: one underlying lognormal population, with users sorted into tiers by demand so each tier has its own effective shape. Local only, not pushed. This also builds the item the methodology review logged below and the original loop set aside: a persistent per-user demand component, so rollover banks settle per user type.
+
+### Design decisions
+
+- **Population and draws.** The population is now 40,000 positions. Each position has a persistent demand level (a standard normal draw, fixed for the whole run) and an independent monthly noise draw for each of the six months. A month's demand draw combines the two with weights sqrt(0.7) and sqrt(0.3): 70% of the variance in a month's log-demand comes from the user's persistent level and 30% from that month's noise. The 0.7 split is an analyst assumption with no published value. Because the combination is still standard normal, the pooled month-six distribution is the same fitted lognormal as before (anchors median 20, p90 200, p99 1,500 actions; fitted sigma 1.84, fitted p90 212, fitted p99 1,453). The fit did not change; who sits where did.
+- **Sorting key.** Positions are sorted once by their persistent level and split into quarters: the lightest 10,000 start on Basic, the next 10,000 on Core, the next on Plus, the heaviest 10,000 on Advanced. The persistent level was chosen over the mean of a position's six monthly draws for three reasons: band membership is a property of the user rather than of one month's luck, so it stays meaningful in month six; it is defined before any policy runs, so allowances and rollover cannot feed back into the assignment; and it is computed once from the fixed seed, so every preset and scenario shares the same population and assignment (common random numbers preserved). Sorting by realized draws would have re-sorted on noise and entangled the assignment with the volume-growth override. Main limitation, stated in Methodology §04 and §11: the sorting is perfect and the quarters are equal, while real plan choice also reflects price sensitivity, team size, and habit, so real bands overlap more. In any single month the model's bands overlap too, because 30% of a month's draw is noise.
+- **Guardrails and picker.** The percentile guardrail users (median, p90, p99 cost rows) are now read inside each tier's own band, and the §05 picker percentile is read inside the selected plan's band. At the defaults the Core pick at the 75th percentile moves from 250 credits (pooled) to 89 (Core's own band), and the current allowances sit at the 23rd (Core), 16th (Plus), and 12th (Advanced) percentiles of their own users, against the 24th, 37th, and 61st pooled percentiles the old page printed.
+- **§02 presentation.** The histogram still pools all four bands. A compact table under it prints each band's observed month-six median, p90, and p99 demand in credits. No band-boundary lines were added to the chart: the bands are quarters of the persistent level, not of month-six demand, so a boundary line on the month-six axis would misstate the design. The marker chips and swatch legend from the legend fix are untouched and were re-verified by screenshot.
+- **§10 recalibration.** The non-AI cost-of-revenue Base case moved from 16.1% to 15.7% of revenue. The Base is defined as the residual that makes the loaded stack total the filed fiscal 2023 cost-of-revenue share (20.50%) at the defaults; the model's AI-serving share of revenue rose from 0.88% to 1.27% under the sorted design, so the residual moved with it. The loaded gross margin at the defaults stays at the filed 79.5% and the operating view stays at 8.3%. The Low and High cases (13.0% and 19.0%) are unchanged and still bracket the Base as a sensitivity band.
+- **Zero-credit edge state.** With every task priced at zero credits, the finding banner and the tail line now read full-demand costs from the pooled action counts. Tier 0's percentile costs previously stood in for the pooled user in that state; the two routes agree at $73.15 there, verified below.
+
+### Before / after (defaults unless a preset is named)
+
+| Figure | Before | After |
+|---|---|---|
+| Adjusted revenue per starting user | $47.22 | $46.31 |
+| Static revenue per user | $49.00 | $49.00 |
+| Portfolio AI-serving margin | 99.1% | 98.7% |
+| Median demand, pooled | 74 credits | 71 credits (fitted 71) |
+| Median demand by band (Basic / Core / Plus / Advanced) | 74 credits on every tier | 11 / 44 / 115 / 473 credits |
+| Band p90, credits | — | 48 / 169 / 444 / 2,503 |
+| Band p99, credits | — | 147 / 510 / 1,251 / 11,667 |
+| Mean AI cost per user | $0.43 | $0.62 |
+| Mean AI cost by tier | $0.00 / $0.25 / $0.45 / $1.03 | $0.00 / $0.27 / $0.55 / $1.68 |
+| Wall share, portfolio | 69.4% | 87.2% |
+| Wall share by tier | 100% / 75.9% / 62.9% / 38.8% | 100% / 76.8% / 84.0% / 88.0% |
+| Breakage by tier (Core / Plus / Advanced) | 13.3% / 22.2% / 41.5% | 9.3% / 5.9% / 4.4% |
+| Churn (baseline 4.2%) | 3,550 users, 8.9% | 3,656 users, 9.1% |
+| p99 full-demand serving cost | $68.55 | $73.15 |
+| Picker pick, Core at the 75th percentile | 250 credits | 89 credits |
+| Frontier preset portfolio margin | 97.2% | 96.0% |
+| Top-up preset adjusted revenue (churn) | $63.57 (5.9%) | $62.73 (7.3%) |
+| Overage preset adjusted revenue | $120.82 | $106.73 |
+| Generous preset adjusted revenue | $65.01 | $64.57 |
+| Take-up swing, 10% to 25% (Methodology §11) | about $24 top-up / $83 overage | about $12 top-up / $44 overage |
+| Comparison ranking, top three | Overage, Generous, Top-up | Overage, Generous, Top-up (unchanged) |
+| §10 loaded gross margin | 79.5% | 79.5% |
+| §10 loaded margin by tier | 79.4% / 79.1% / 79.5% / 79.7% | 79.8% / 79.5% / 79.7% / 79.4% |
+| §10 operating margin | 8.3% | 8.3% |
+
+Rows inside the baseline cluster of the Comparison table (adjusted revenue $46.25 to $46.44 after the rebuild, against $46.91 to $47.49 before) reordered among themselves; the three paid-policy rows at the top did not move.
+
+### Claim-level change: the Generous preset's floor breach is gone
+
+The old Generous recommendation said Advanced held the set's only floor breach, at its p99 user (68.5% against the 70% floor). Under the sorted design no tier breaches the floor on the average-mix guardrail in that preset. The mechanism is the persistence change itself: under the old independent draws, the user standing at Advanced's month-six p99 was a typically light user having one heavy month, and arrived at month six with a full rollover bank, so roughly two months of the 1,500-credit grant could be served. A persistently heavy user banks nothing, so the p99 user's served cost halves and the margin clears. The thin figure in that row is now Plus's p99 user on the tail mix, at 63.0%. The preset's recommendation text was rewritten to say so, and the same mechanism is why breakage fell across the paid tiers at the defaults.
+
+### Verification
+
+- **Independent recomputation.** The demand layer and the month-six hard-cap mechanics were re-implemented from the documented spec in a separate script (same seed and fill order, quartile assignment on the persistent level, fitted sigma, mix-weighted credits and cost per credit). It reproduced every printed figure it covers: band medians 10.7 / 43.7 / 114.7 / 472.9 against the page's 11 / 44 / 115 / 473 credits; band p99s 146.8 / 509.7 / 1,250.8 / 11,666.8 against 147 / 510 / 1,251 / 11,667; per-tier mean costs $0.00 / $0.27 / $0.55 / $1.68; wall shares 100% / 76.8% / 84.0% / 88.0%; pooled median 71.17 credits (20.05 actions, against the 20 anchor) and the p99 full-demand cost $73.149 against the page's $73.15.
+- **Direction checks.** Wall rates rise with band weight (Core 76.8%, Plus 84.0%, Advanced 88.0%) because the allowances climb more slowly than band demand. Advanced holds the tail: its band p99 is 11,667 credits against a pooled p99 of about 5,007. Basic's covered share at the defaults stays exactly 0%, and its month-six notes (no monthly allowance, one-time grant spent) are unchanged. With rollover switched on at the defaults, breakage falls to 0.8% / 0.3% / 0.2% on Core / Plus / Advanced and wall shares fall, the per-type bank settlement the design was built to show.
+- **Full extraction.** The page was driven in headless Chromium at the defaults and under all ten non-baseline presets before and after the rebuild, through the same harness the audit loop used. Every static figure quoted in page copy was updated from the after-extraction: the lede (3.6 times the Core allowance), the §04 note (23rd percentile of Core's own users), all eleven preset recommendations, Methodology §08's realized churn (3,656 users, 9.1%), and §11's take-up swings.
+- **§10 checks.** The basis switch was driven both ways: the loaded position prints the 79.5% headline with loaded-basis flags, and the AI position restores 98.7%. The stack totals 20.5% of revenue at the recalibrated Base, and the operating view prints 8.3%.
+- **Edge state.** All five task credit prices set to zero: the finding banner and the tail line read the pooled-action branches ($1.04 median full-demand cost, $73.15 at p99), and no NaN or undefined text appears in the banner, KPI strip, or memo.
+- **Screenshots.** The §02 chart and the header mini chart were captured at 1280px and 390px in light and dark mode and read individually: the marker chips and swatch legend render exactly as the legend fix left them, with the picker chip now reading "75th pct 89"; the mini chart ships legend-only at the defaults, as before. The new band table renders as a four-column table on desktop and as stacked labelled cards on phone.
+- **Copy.** Methodology §03 gained the mixture note, §04 was rewritten for the sorted design, §06 names the within-band picker, §10's assumptions list states the sorting assumption, and §11's two single-shape limits were replaced with the new design's limits (perfect sorting and equal quarters; bands as slices of one fitted curve). The README's model description was updated to match. Banned-word scan of all new and edited copy: clean.
+
+### Headline-number impact
+
+Adjusted revenue $47.22 to $46.31, portfolio AI margin 99.1% to 98.7%, mean AI cost $0.43 to $0.62, pooled median demand 74 to 71 credits, churn 8.9% to 9.1%, wall share 69.4% to 87.2%, frontier preset margin 97.2% to 96.0%, p99 full-demand cost $68.55 to $73.15, top-up adjusted revenue $63.57 to $62.73, overage $120.82 to $106.73. Static revenue ($49.00), the §10 loaded gross margin (79.5%), the operating margin (8.3%), and the Comparison top three are unchanged. The prep documents were updated to the new figures in the same pass; the Generous-preset breach claim and the picker-pick claim changed in substance, not only in number, and are flagged in the rebuild report.
+
 ## Push status
 
 The pass-1 push (index.html, README.md, this log) was attempted Nov 14 and timed out on the approval card; HEAD was verified unchanged afterward (97d8513), so nothing is live yet. All changes are local. The push will be retried with the pass-2 changes included. Four attempts in total had failed on the unanswered approval card, by timeout or interruption, as of the pass-8 checkpoint, with HEAD re-verified unchanged at 97d85134be23bbe4033b5969d557ef1ec08ebf7c after each one. Passes 9–17's changes are local on the same terms: one approval tap on the pending push card publishes passes 1–17 together.
