@@ -12,6 +12,7 @@ A single-page interactive model of how a website builder prices AI features thro
 - **Margin decomposition** — change a provider price, the model routing mix, or usage growth, and the profit change, in dollars per user, is split into rate, mix, volume, and interaction effects.
 - **Benchmarks** — published credit mechanics from Framer, Wix, and Webflow next to the modeled tiers.
 - **Decisions memo** — a plain-language record of the current settings and the reasoning they imply, generated from the model state.
+- **Fully loaded view (§10)** — a cost stack on top of the AI-serving figures: payment processing per subscriber (2.9% + $0.30 per monthly charge) and a non-AI cost of revenue line calibrated so the stack totals Squarespace's fiscal 2023 cost-of-revenue share (20.5% of revenue; gross margin 79.5%) at the defaults, plus an operating view at the filed fiscal 2023 expense shares. A switch chooses whether the §04 headline margin and its guardrail check report the AI-serving basis or the fully loaded basis.
 
 ## Defaults and sources
 
