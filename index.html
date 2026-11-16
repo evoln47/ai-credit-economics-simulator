@@ -1579,11 +1579,15 @@ function drawHist(S,sim,recommended,target){
   data.forEach(function(v){var b=Math.floor((Math.log10(Math.max(1,v))-lo)/(hi-lo)*bins);counts[clamp(b,0,bins-1)]++;});
   var maxC=Math.max.apply(null,counts);
   function xFor(v){return padL+(Math.log10(Math.max(1,v))-lo)/(hi-lo)*(W-padL*2);}
-  /* markers: plan allowances dashed, the picker pick solid accent */
+  /* markers: each plan allowance gets its own dash pattern, repeated on the
+     line, the chip border and the legend swatch, so the four plans read apart
+     by line style alone; the picker pick stays a solid accent line */
+  var PLAN_DASH={Basic:{dash:"0.1 3.6",cap:"round",lw:2},Core:{dash:"9 3 2 3",cap:"butt",lw:1.75},Plus:{dash:"5 3",cap:"butt",lw:1.75},Advanced:{dash:"13 4",cap:"butt",lw:1.75}};
+  function planMark(v,label,name){var st=PLAN_DASH[name]||{dash:"4 3",cap:"butt",lw:1.75};return {v:v,label:label,color:"var(--ink2)",dash:st.dash,cap:st.cap,lw:st.lw,pick:false};}
   var marks=[];
-  S.plans.forEach(function(p){if(p.monthly>0)marks.push({v:p.monthly,label:p.name+" "+p.monthly,color:"var(--ink2)",dash:"4 3",pick:false});});
-  if(S.plans[0].one>0)marks.push({v:S.plans[0].one,label:"Basic "+S.plans[0].one+" once",color:"var(--ink2)",dash:"4 3",pick:false});
-  marks.push({v:recommended,label:ordinal(S.pct)+" pct "+fmtInt(recommended),color:"var(--accent)",dash:"",pick:true});
+  S.plans.forEach(function(p){if(p.monthly>0)marks.push(planMark(p.monthly,p.name+" "+p.monthly,p.name));});
+  if(S.plans[0].one>0)marks.push(planMark(S.plans[0].one,"Basic "+S.plans[0].one+" once","Basic"));
+  marks.push({v:recommended,label:ordinal(S.pct)+" pct "+fmtInt(recommended),color:"var(--accent)",dash:"",cap:"butt",lw:2,pick:true});
   /* label chips: one per marker, centred on its line and clamped to the frame */
   var chipH=17,chipGap=4,chipFS=11;
   marks.forEach(function(mk){
@@ -1617,13 +1621,13 @@ function drawHist(S,sim,recommended,target){
   /* marker lines run from their chip (or the plot top) down to the plot foot */
   marks.forEach(function(mk){
     var yTop=showChips?(6+mk.row*(chipH+chipGap)+chipH):padT;
-    s+='<line x1="'+mk.x.toFixed(1)+'" y1="'+yTop+'" x2="'+mk.x.toFixed(1)+'" y2="'+(padT+bh)+'" stroke="'+mk.color+'" stroke-width="'+(mk.dash?1:2)+'" '+(mk.dash?'stroke-dasharray="'+mk.dash+'"':'')+'></line>';
+    s+='<line x1="'+mk.x.toFixed(1)+'" y1="'+yTop+'" x2="'+mk.x.toFixed(1)+'" y2="'+(padT+bh)+'" stroke="'+mk.color+'" stroke-width="'+mk.lw+'" '+(mk.dash?'stroke-dasharray="'+mk.dash+'" stroke-linecap="'+mk.cap+'"':'')+'></line>';
   });
   /* label chips along the top, one per marker; the pick takes the accent treatment */
   if(showChips){
     marks.forEach(function(mk){
       var y=6+mk.row*(chipH+chipGap);
-      s+='<g><rect x="'+(mk.cx-mk.w/2).toFixed(1)+'" y="'+y+'" width="'+mk.w.toFixed(1)+'" height="'+chipH+'" rx="4" fill="'+(mk.pick?"var(--accent-soft)":"var(--card)")+'" stroke="'+(mk.pick?"var(--accent)":"var(--line2)")+'" stroke-width="'+(mk.pick?1.2:1)+'"></rect>'
+      s+='<g><rect x="'+(mk.cx-mk.w/2).toFixed(1)+'" y="'+y+'" width="'+mk.w.toFixed(1)+'" height="'+chipH+'" rx="4" fill="'+(mk.pick?"var(--accent-soft)":"var(--card)")+'" stroke="'+(mk.pick?"var(--accent)":"var(--line2)")+'" stroke-width="'+(mk.pick?1.2:1)+'"'+(mk.dash?' stroke-dasharray="'+mk.dash+'" stroke-linecap="'+mk.cap+'"':'')+'></rect>'
         +'<text x="'+mk.cx.toFixed(1)+'" y="'+(y+chipH/2)+'" dy="0.36em" font-size="'+chipFS+'" font-weight="600" fill="'+(mk.pick?"var(--accent-deep)":"var(--ink)")+'" text-anchor="middle">'+mk.label+'</text></g>';
     });
   }
@@ -1631,7 +1635,7 @@ function drawHist(S,sim,recommended,target){
   /* marker legend: a swatch in each marker's own style beside its label */
   var leg='<div class="hist-legend"><span class="hl-lead">Markers:</span>';
   marks.forEach(function(mk){
-    leg+='<span class="hl-item"><svg width="24" height="10" viewBox="0 0 24 10" aria-hidden="true" focusable="false"><line x1="1" y1="5" x2="23" y2="5" stroke="'+mk.color+'" stroke-width="'+(mk.dash?2:2.5)+'"'+(mk.dash?' stroke-dasharray="5 3"':'')+'></line></svg>'+mk.label+'</span>';
+    leg+='<span class="hl-item"><svg width="36" height="10" viewBox="0 0 36 10" aria-hidden="true" focusable="false"><line x1="1" y1="5" x2="35" y2="5" stroke="'+mk.color+'" stroke-width="'+mk.lw+'"'+(mk.dash?' stroke-dasharray="'+mk.dash+'" stroke-linecap="'+mk.cap+'"':'')+'></line></svg>'+mk.label+'</span>';
   });
   leg+='<span>credits</span></div>';
   s+=leg;
