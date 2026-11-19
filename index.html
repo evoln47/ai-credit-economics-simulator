@@ -12,7 +12,7 @@
 <style>
 :root{
   --paper:#F3F4F6; --paper2:#E9EBEF; --card:#FFFFFF; --ink:#0F1B2D; --ink2:#3D4A5F; --muted:#6B7789;
-  --line:#E2E6EC; --line2:#CBD2DC; --accent:#0B6E5D; --accent-deep:#084F43; --accent-soft:#E3F2EE;
+  --line:#E2E6EC; --line2:#CBD2DC; --accent:#0B6E5D; --p1:#2563EB; --p2:#0B6E5D; --p3:#B45309; --p4:#7C3AED; --histbar:#8FA6BF; --accent-deep:#084F43; --accent-soft:#E3F2EE;
   --good:#067647; --good-bg:#EAFBF1; --bad:#B42318; --bad-bg:#FEF2F0; --warn:#9A6206; --warn-bg:#FDF6E3;
   --banner:#0C2530; --banner-ink:#EAF4F1; --banner-accent:#5EEAD4;
   --shadow:0 1px 2px rgba(15,27,45,.05),0 1px 3px rgba(15,27,45,.04);
@@ -21,7 +21,7 @@
 }
 @media (prefers-color-scheme: dark){
   :root{ --paper:#0A0F16; --paper2:#131A24; --card:#121A25; --ink:#E9EDF3; --ink2:#AFBACA; --muted:#8492A5;
-  --line:#232F3F; --line2:#35445A; --accent:#3EC9B0; --accent-deep:#3EC9B0; --accent-soft:#0E2B27;
+  --line:#232F3F; --line2:#35445A; --accent:#3EC9B0; --p1:#6EA8FE; --p2:#3EC9B0; --p3:#F2B25C; --p4:#B79CFA; --histbar:#54708F; --accent-deep:#3EC9B0; --accent-soft:#0E2B27;
   --good:#4ADE80; --good-bg:#0D2B1C; --bad:#F08A7D; --bad-bg:#331A16; --warn:#E8BC5A; --warn-bg:#2E2510;
   --banner:#0E2B33; --banner-ink:#EAF4F1; --banner-accent:#5EEAD4;
   --shadow:0 1px 2px rgba(0,0,0,.35); --shadow-lg:0 8px 24px rgba(0,0,0,.4); }
@@ -484,7 +484,7 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
         <p class="note">At <span id="tailMixPct">30%</span>, serving the p99 user's full demand would cost <span class="mono" id="tailCostLine">—</span></p>
       </div>
       <div id="histChart" role="img" aria-label="Histogram of simulated monthly credit demand with plan allowance markers"></div>
-      <p class="src" id="histCaption">Monthly credit demand (log scale). Markers: plan allowances and the picker pick.</p>
+      <p class="src" id="histCaption">Monthly credit demand per user (log scale). Lower panel: each plan's monthly allowance and the picker pick, on the same scale.</p>
       <table class="stack" aria-label="Month-six demand inside each plan's tier band" style="margin-top:10px">
         <thead><tr><th>Plan band</th><th>Median demand</th><th>p90</th><th>p99</th></tr></thead>
         <tbody id="bandRows"></tbody>
@@ -1580,72 +1580,78 @@ function presetSim(key,S){
 /* ---------- chart ---------- */
 function drawHist(S,sim,recommended,target){
   var data=sim.demand;var mini=!!target;
-  var W=640,H=(mini?170:230),padL=8,padB=30;
-  var lo=Math.log10(1),hi=Math.log10(Math.max(10000,data[data.length-1]));
+  var W=640,padL=70,padR=12,plotW=W-padL-padR;
+  var lo=0,hi=Math.log10(Math.max(10000,data[data.length-1]));
+  function xFor(v){return padL+(Math.log10(Math.max(1,v))-lo)/(hi-lo)*plotW;}
   var bins=26,counts=new Array(bins).fill(0);
   data.forEach(function(v){var b=Math.floor((Math.log10(Math.max(1,v))-lo)/(hi-lo)*bins);counts[clamp(b,0,bins-1)]++;});
   var maxC=Math.max.apply(null,counts);
-  function xFor(v){return padL+(Math.log10(Math.max(1,v))-lo)/(hi-lo)*(W-padL*2);}
-  /* markers: each plan allowance gets its own dash pattern, repeated on the
-     line, the chip border and the legend swatch, so the four plans read apart
-     by line style alone; the picker pick stays a solid accent line */
-  var PLAN_DASH={Basic:{dash:"0.1 3.6",cap:"round",lw:2},Core:{dash:"9 3 2 3",cap:"butt",lw:1.75},Plus:{dash:"5 3",cap:"butt",lw:1.75},Advanced:{dash:"13 4",cap:"butt",lw:1.75}};
-  function planMark(v,label,name){var st=PLAN_DASH[name]||{dash:"4 3",cap:"butt",lw:1.75};return {v:v,label:label,color:"var(--ink2)",dash:st.dash,cap:st.cap,lw:st.lw,pick:false};}
-  var marks=[];
-  S.plans.forEach(function(p){if(p.monthly>0)marks.push(planMark(p.monthly,p.name+" "+p.monthly,p.name));});
-  if(S.plans[0].one>0)marks.push(planMark(S.plans[0].one,"Basic "+S.plans[0].one+" once","Basic"));
-  marks.push({v:recommended,label:ordinal(S.pct)+" pct "+fmtInt(recommended),color:"var(--accent)",dash:"",cap:"butt",lw:2,pick:true});
-  /* label chips: one per marker, centred on its line and clamped to the frame */
-  var chipH=17,chipGap=4,chipFS=11;
-  marks.forEach(function(mk){
-    mk.x=xFor(mk.v);
-    mk.w=Math.max(46,mk.label.length*6.5+16);
-    mk.cx=Math.min(Math.max(mk.x,6+mk.w/2),W-6-mk.w/2);
-  });
-  /* stack chips into rows so no two chips in a row overlap */
-  var rows=[];
-  marks.slice().sort(function(a,b){return a.x-b.x;}).forEach(function(mk){
-    var placed=false;
-    for(var r=0;r<rows.length&&!placed;r++){
-      var clash=false;
-      for(var i=0;i<rows[r].length;i++){var o=rows[r][i];if(mk.cx-mk.w/2<o.cx+o.w/2+5&&o.cx-o.w/2<mk.cx+mk.w/2+5){clash=true;break;}}
-      if(!clash){mk.row=r;rows[r].push(mk);placed=true;}
-    }
-    if(!placed){mk.row=rows.length;rows.push([mk]);}
-  });
-  var nRows=rows.length;
-  /* the mini chart keeps chips only while two rows still leave the bars room */
-  var showChips=!mini||nRows<=2;
-  var padT=showChips?(6+(nRows*chipH+(nRows-1)*chipGap)+6):14;
-  var bh=H-padT-padB,bw=(W-padL*2)/bins;
+  var med=quantile(data,0.5);
+  var PC=["var(--p1)","var(--p2)","var(--p3)","var(--p4)"];
+  /* panel 1: the pooled distribution, one colour, horizontal gridlines only */
+  var padT=mini?24:28,plotH=mini?92:118;
+  var H=mini?(padT+plotH+34):(padT+plotH+10+5*22+36);
   var s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="presentation" aria-hidden="true">';
-  counts.forEach(function(c,i){var h=(c/maxC)*bh;var x=padL+i*bw;
-    s+='<rect x="'+x.toFixed(1)+'" y="'+(padT+bh-h).toFixed(1)+'" width="'+(bw-1.5).toFixed(1)+'" height="'+h.toFixed(1)+'" fill="var(--accent)" opacity="0.82"></rect>';});
-  [1,10,100,1000,10000].forEach(function(v){if(v<=Math.pow(10,hi)){var x=xFor(v);
-    s+='<text x="'+x.toFixed(1)+'" y="'+(H-14)+'" font-size="10" fill="var(--muted)" text-anchor="middle">'+fmtInt(v)+'</text>';
-    s+='<line x1="'+x.toFixed(1)+'" y1="'+padT+'" x2="'+x.toFixed(1)+'" y2="'+(padT+bh)+'" stroke="var(--line)" stroke-width="1"></line>';}});
-  s+='<text x="'+(W/2)+'" y="'+(H-1)+'" font-size="10" fill="var(--muted)" text-anchor="middle">credits demanded per user per month (log scale)</text>';
-  /* marker lines run from their chip (or the plot top) down to the plot foot */
-  marks.forEach(function(mk){
-    var yTop=showChips?(6+mk.row*(chipH+chipGap)+chipH):padT;
-    s+='<line x1="'+mk.x.toFixed(1)+'" y1="'+yTop+'" x2="'+mk.x.toFixed(1)+'" y2="'+(padT+bh)+'" stroke="'+mk.color+'" stroke-width="'+mk.lw+'" '+(mk.dash?'stroke-dasharray="'+mk.dash+'" stroke-linecap="'+mk.cap+'"':'')+'></line>';
-  });
-  /* label chips along the top, one per marker; the pick takes the accent treatment */
-  if(showChips){
-    marks.forEach(function(mk){
-      var y=6+mk.row*(chipH+chipGap);
-      s+='<g><rect x="'+(mk.cx-mk.w/2).toFixed(1)+'" y="'+y+'" width="'+mk.w.toFixed(1)+'" height="'+chipH+'" rx="4" fill="'+(mk.pick?"var(--accent-soft)":"var(--card)")+'" stroke="'+(mk.pick?"var(--accent)":"var(--line2)")+'" stroke-width="'+(mk.pick?1.2:1)+'"'+(mk.dash?' stroke-dasharray="'+mk.dash+'" stroke-linecap="'+mk.cap+'"':'')+'></rect>'
-        +'<text x="'+mk.cx.toFixed(1)+'" y="'+(y+chipH/2)+'" dy="0.36em" font-size="'+chipFS+'" font-weight="600" fill="'+(mk.pick?"var(--accent-deep)":"var(--ink)")+'" text-anchor="middle">'+mk.label+'</text></g>';
+  var step=Math.pow(10,Math.floor(Math.log10(maxC)));
+  if(maxC/step<2)step/=2;
+  if(maxC/step>4)step*=2;
+  for(var gv=0;gv<=maxC+1;gv+=step){
+    var gy=padT+plotH-(gv/maxC)*plotH;
+    s+='<line x1="'+padL+'" y1="'+gy.toFixed(1)+'" x2="'+(W-padR)+'" y2="'+gy.toFixed(1)+'" stroke="var(--line)" stroke-width="'+(gv===0?1.4:1)+'"></line>';
+    s+='<text x="'+(padL-8)+'" y="'+gy.toFixed(1)+'" dy="0.36em" font-size="10.5" fill="var(--muted)" text-anchor="end">'+fmtInt(gv)+'</text>';
+  }
+  s+='<text x="'+(padL-8)+'" y="'+(padT-16)+'" font-size="10.5" fill="var(--muted)" text-anchor="end">users</text>';
+  var bw=plotW/bins;
+  counts.forEach(function(c,i){var h=(c/maxC)*plotH;var x=padL+i*bw;
+    s+='<rect x="'+x.toFixed(1)+'" y="'+(padT+plotH-h).toFixed(1)+'" width="'+(bw-1.5).toFixed(1)+'" height="'+h.toFixed(1)+'" fill="var(--histbar)"></rect>';});
+  var mx=xFor(med);
+  s+='<line x1="'+mx.toFixed(1)+'" y1="'+padT+'" x2="'+mx.toFixed(1)+'" y2="'+(padT+plotH)+'" stroke="var(--ink)" stroke-width="1.6"></line>';
+  var mtx=Math.min(Math.max(mx,padL+70),W-padR-70);
+  s+='<text x="'+mtx.toFixed(1)+'" y="'+(padT-16)+'" font-size="11.5" font-weight="600" fill="var(--ink)" text-anchor="middle">Median user: '+fmtInt(med)+' credits</text>';
+  function axis(y){
+    var out='';
+    [1,10,100,1000,10000,100000].forEach(function(v){if(Math.log10(v)<=hi){var x=xFor(v);
+      out+='<text x="'+x.toFixed(1)+'" y="'+y+'" font-size="10.5" fill="var(--muted)" text-anchor="middle">'+fmtInt(v)+'</text>';}});
+    out+='<text x="'+(padL+plotW/2)+'" y="'+(y+15)+'" font-size="10.5" fill="var(--muted)" text-anchor="middle">credits demanded per user per month (log scale)</text>';
+    return out;
+  }
+  if(mini){
+    s+=axis(padT+plotH+16);
+  } else {
+    /* panel 2: allowances on the same scale, one labelled row per plan */
+    var stripY=padT+plotH+10,rowH=22;
+    S.plans.forEach(function(p,i){
+      var ry=stripY+i*rowH+rowH/2;
+      s+='<line x1="'+padL+'" y1="'+ry+'" x2="'+(W-padR)+'" y2="'+ry+'" stroke="var(--line)" stroke-width="1"></line>';
+      s+='<text x="'+(padL-8)+'" y="'+ry+'" dy="0.36em" font-size="11.5" font-weight="600" fill="var(--ink2)" text-anchor="end">'+p.name+'</text>';
+      if(p.monthly>0){
+        var dx=xFor(p.monthly);
+        s+='<circle cx="'+dx.toFixed(1)+'" cy="'+ry+'" r="5" fill="'+PC[i]+'"></circle>';
+        var lab=fmtInt(p.monthly)+' credits / mo';
+        if(dx>W-padR-130){s+='<text x="'+(dx-10).toFixed(1)+'" y="'+ry+'" dy="0.36em" font-size="11.5" font-weight="600" fill="'+PC[i]+'" text-anchor="end">'+lab+'</text>';}
+        else{s+='<text x="'+(dx+10).toFixed(1)+'" y="'+ry+'" dy="0.36em" font-size="11.5" font-weight="600" fill="'+PC[i]+'">'+lab+'</text>';}
+      } else {
+        s+='<text x="'+(padL+2)+'" y="'+ry+'" dy="0.36em" font-size="11" fill="var(--muted)">no monthly credits</text>';
+      }
+      if(i===0&&p.one>0){
+        var ox=xFor(p.one);
+        s+='<circle cx="'+ox.toFixed(1)+'" cy="'+ry+'" r="5" fill="var(--card)" stroke="'+PC[i]+'" stroke-width="2"></circle>';
+        var olab=fmtInt(p.one)+' one-time';
+        if(ox>W-padR-130||(p.monthly>0&&Math.abs(ox-xFor(p.monthly))<110)){s+='<text x="'+(ox-10).toFixed(1)+'" y="'+ry+'" dy="0.36em" font-size="11.5" font-weight="600" fill="'+PC[i]+'" text-anchor="end">'+olab+'</text>';}
+        else{s+='<text x="'+(ox+10).toFixed(1)+'" y="'+ry+'" dy="0.36em" font-size="11.5" font-weight="600" fill="'+PC[i]+'">'+olab+'</text>';}
+      }
     });
+    var ry2=stripY+4*rowH+rowH/2;
+    s+='<line x1="'+padL+'" y1="'+ry2+'" x2="'+(W-padR)+'" y2="'+ry2+'" stroke="var(--line)" stroke-width="1"></line>';
+    s+='<text x="'+(padL-8)+'" y="'+ry2+'" dy="0.36em" font-size="11.5" font-weight="600" fill="var(--ink2)" text-anchor="end">Picker</text>';
+    var px=xFor(recommended);
+    s+='<circle cx="'+px.toFixed(1)+'" cy="'+ry2+'" r="5.5" fill="var(--ink)"></circle>';
+    var plab=ordinal(S.pct)+' pct of '+S.plans[S.pickerTier].name+': '+fmtInt(recommended)+' credits';
+    if(px>W-padR-200){s+='<text x="'+(px-11).toFixed(1)+'" y="'+ry2+'" dy="0.36em" font-size="11.5" font-weight="600" fill="var(--ink)" text-anchor="end">'+plab+'</text>';}
+    else{s+='<text x="'+(px+11).toFixed(1)+'" y="'+ry2+'" dy="0.36em" font-size="11.5" font-weight="600" fill="var(--ink)">'+plab+'</text>';}
+    s+=axis(stripY+5*rowH+16);
   }
   s+='</svg>';
-  /* marker legend: a swatch in each marker's own style beside its label */
-  var leg='<div class="hist-legend"><span class="hl-lead">Markers:</span>';
-  marks.forEach(function(mk){
-    leg+='<span class="hl-item"><svg width="36" height="10" viewBox="0 0 36 10" aria-hidden="true" focusable="false"><line x1="1" y1="5" x2="35" y2="5" stroke="'+mk.color+'" stroke-width="'+mk.lw+'"'+(mk.dash?' stroke-dasharray="'+mk.dash+'" stroke-linecap="'+mk.cap+'"':'')+'></line></svg>'+mk.label+'</span>';
-  });
-  leg+='<span>credits</span></div>';
-  s+=leg;
   $(target||"histChart").innerHTML=s;
 }
 /* ---------- render ---------- */
@@ -1815,7 +1821,7 @@ function update(){
     var pickRight=0;sim.demand.forEach(function(v){if(v>rec)pickRight++;});
     var pickPct=Math.round(pickRight/sim.demand.length*100);
     var hc=$("histCaption");
-    if(hc)hc.textContent="Monthly credit demand (log scale). Markers: plan allowances and the picker pick. Advanced's "+fmtInt(advAllow)+" monthly credits cover about "+advPct+"% of users, so about "+(100-advPct)+"% still sit to its right, and the picker marker (the "+ordinal(S.pct)+" percentile of "+S.plans[S.pickerTier].name+"'s own users) leaves "+pickPct+"% of all users to its right. "+(advPct>=100?"The top plan covers the full demand shape in this state.":"");
+    if(hc)hc.textContent="Monthly credit demand per user (log scale). Lower panel: each plan's monthly allowance and the picker pick, on the same scale. Advanced's "+fmtInt(advAllow)+" monthly credits cover about "+advPct+"% of users, so about "+(100-advPct)+"% still sit to its right, and the picker pick (the "+ordinal(S.pct)+" percentile of "+S.plans[S.pickerTier].name+"'s own users) leaves "+pickPct+"% of all users to its right. "+(advPct>=100?"The top plan covers the full demand shape in this state.":"");
   })();
   /* picker hypothetical */
   var am={};am[S.pickerTier]=Math.round(rec);
