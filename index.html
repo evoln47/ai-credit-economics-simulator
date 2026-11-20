@@ -1611,7 +1611,8 @@ function drawHist(S,sim,recommended,target){
   function axis(y){
     var out='';
     [1,10,100,1000,10000,100000].forEach(function(v){if(Math.log10(v)<=hi){var x=xFor(v);
-      out+='<text x="'+x.toFixed(1)+'" y="'+y+'" font-size="10.5" fill="var(--muted)" text-anchor="middle">'+fmtInt(v)+'</text>';}});
+      if(x>W-padR-24){out+='<text x="'+(W-padR)+'" y="'+y+'" font-size="10.5" fill="var(--muted)" text-anchor="end">'+fmtInt(v)+'</text>';}
+      else{out+='<text x="'+x.toFixed(1)+'" y="'+y+'" font-size="10.5" fill="var(--muted)" text-anchor="middle">'+fmtInt(v)+'</text>';}}});
     out+='<text x="'+(padL+plotW/2)+'" y="'+(y+15)+'" font-size="10.5" fill="var(--muted)" text-anchor="middle">credits demanded per user per month (log scale)</text>';
     return out;
   }
@@ -1630,15 +1631,16 @@ function drawHist(S,sim,recommended,target){
         var lab=fmtInt(p.monthly)+' credits / mo';
         if(dx>W-padR-130){s+='<text x="'+(dx-10).toFixed(1)+'" y="'+ry+'" dy="0.36em" font-size="11.5" font-weight="600" fill="'+PC[i]+'" text-anchor="end">'+lab+'</text>';}
         else{s+='<text x="'+(dx+10).toFixed(1)+'" y="'+ry+'" dy="0.36em" font-size="11.5" font-weight="600" fill="'+PC[i]+'">'+lab+'</text>';}
-      } else {
+      } else if(!(i===0&&p.one>0)) {
         s+='<text x="'+(padL+2)+'" y="'+ry+'" dy="0.36em" font-size="11" fill="var(--muted)">no monthly credits</text>';
       }
       if(i===0&&p.one>0){
         var ox=xFor(p.one);
         s+='<circle cx="'+ox.toFixed(1)+'" cy="'+ry+'" r="5" fill="var(--card)" stroke="'+PC[i]+'" stroke-width="2"></circle>';
         var olab=fmtInt(p.one)+' one-time';
-        if(ox>W-padR-130||(p.monthly>0&&Math.abs(ox-xFor(p.monthly))<110)){s+='<text x="'+(ox-10).toFixed(1)+'" y="'+ry+'" dy="0.36em" font-size="11.5" font-weight="600" fill="'+PC[i]+'" text-anchor="end">'+olab+'</text>';}
-        else{s+='<text x="'+(ox+10).toFixed(1)+'" y="'+ry+'" dy="0.36em" font-size="11.5" font-weight="600" fill="'+PC[i]+'">'+olab+'</text>';}
+        var onote=p.monthly>0?'':'<tspan fill="var(--muted)" font-weight="400"> · no monthly credits</tspan>';
+        if(ox>W-padR-130||(p.monthly>0&&Math.abs(ox-xFor(p.monthly))<110)){s+='<text x="'+(ox-10).toFixed(1)+'" y="'+ry+'" dy="0.36em" font-size="11.5" font-weight="600" fill="'+PC[i]+'" text-anchor="end">'+olab+onote+'</text>';}
+        else{s+='<text x="'+(ox+10).toFixed(1)+'" y="'+ry+'" dy="0.36em" font-size="11.5" font-weight="600" fill="'+PC[i]+'">'+olab+onote+'</text>';}
       }
     });
     var ry2=stripY+4*rowH+rowH/2;
