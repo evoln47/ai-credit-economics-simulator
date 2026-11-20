@@ -93,6 +93,8 @@ select{padding:7px 10px;border:1px solid var(--line2);border-radius:6px;backgrou
 select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 /* range sliders: custom track & thumb */
 input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:24px;background:transparent;cursor:pointer;margin:2px 0}
+input[type=range].hasnum{width:calc(100% - 68px);vertical-align:middle}
+.numin{margin-left:8px;vertical-align:middle}
 input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:99px;background:linear-gradient(to right,var(--accent) 0%,var(--accent) var(--fill,50%),var(--paper2) var(--fill,50%))}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;height:19px;border-radius:50%;background:var(--card);border:2px solid var(--accent);margin-top:-7px;box-shadow:0 1px 4px rgba(15,27,45,.25);transition:transform .12s}
 input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
@@ -2024,6 +2026,35 @@ update();
   }
   var ranges=document.querySelectorAll('input[type="range"]');
   Array.prototype.forEach.call(ranges,function(el){ fill(el); el.addEventListener("input",function(){ fill(el); }); });
+})();
+</script>
+<script>
+(function(){
+  var pairs=[];
+  function syncBox(r,b){ if(document.activeElement!==b && b.value!==r.value) b.value=r.value; }
+  Array.prototype.forEach.call(document.querySelectorAll('input[type="range"]'),function(r){
+    if(!r.id)return;
+    var b=document.createElement("input");
+    b.type="number"; b.className="numin sm";
+    b.min=r.min; b.max=r.max; b.step=r.step; b.value=r.value;
+    b.setAttribute("aria-label","Numeric entry for "+(r.getAttribute("aria-label")||r.id));
+    r.classList.add("hasnum");
+    r.parentNode.insertBefore(b,r.nextSibling);
+    pairs.push([r,b]);
+    r.addEventListener("input",function(){ syncBox(r,b); });
+    b.addEventListener("change",function(){
+      var v=parseFloat(b.value);
+      if(isNaN(v)){ b.value=r.value; return; }
+      var mn=parseFloat(r.min), mx=parseFloat(r.max), st=parseFloat(r.step)||1;
+      v=Math.min(mx,Math.max(mn,v));
+      v=Math.round(v/st)*st;
+      v=Math.round(v*1000)/1000;
+      if(String(v)!==String(r.value)){ r.value=v; r.dispatchEvent(new Event("input",{bubbles:true})); }
+      b.value=r.value;
+    });
+    b.addEventListener("keydown",function(e){ if(e.key==="Enter"){ e.preventDefault(); b.blur(); } });
+  });
+  setInterval(function(){ pairs.forEach(function(p){ syncBox(p[0],p[1]); }); },700);
 })();
 </script>
 <script>
