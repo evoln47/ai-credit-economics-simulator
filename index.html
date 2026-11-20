@@ -162,6 +162,13 @@ svg text{font-family:"IBM Plex Mono",monospace}
 .bench li strong{color:var(--ink)}
 /* ---------- decomposition ---------- */
 .decomp-row{display:grid;grid-template-columns:170px 1fr 104px;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.pickread strong{font-size:21px;color:var(--ink)}
+.ladder{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.lchip{border:1px solid var(--line2);background:var(--card);border-radius:999px;padding:5px 11px;font-size:12px;font-family:inherit;cursor:pointer;color:var(--ink2)}
+.lchip:hover{border-color:var(--accent);color:var(--accent-deep)}
+.lchip.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-deep);font-weight:700}
+.phead{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700;border-bottom:2px solid var(--line2)}
+#pickerOutCard{border-top:3px solid var(--accent)}
 .decomp-row:last-child{border-bottom:none}
 .decomp-row .mono{font-weight:600}
 .dbar{height:10px;background:var(--paper2);border-radius:99px;position:relative;overflow:hidden}
@@ -594,7 +601,8 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
       <div class="ctl">
         <label for="pct">Set the allowance at this percentile of the plan's own demand <output id="pctOut">75th</output></label>
         <input type="range" id="pct" min="40" max="97" step="1" value="75">
-        <p class="note">That is <strong class="mono" id="pctCredits">—</strong> at the current shape. Ladder: <span class="mono" id="pctLadder">—</span>.</p>
+        <p class="note pickread">That is <strong class="mono" id="pctCredits">—</strong> <span class="src">at the current shape</span></p>
+        <div class="ladder" id="pctLadder" role="group" aria-label="Percentile ladder for the selected plan"></div>
       </div>
       <div class="ctl">
         <label for="pickerTier">Preview it on this plan</label>
@@ -1798,7 +1806,7 @@ function update(){
   /* allowance picker: percentiles are read inside each plan's own tier band */
   var rec=quantile(sim.demandByTier[S.pickerTier],S.pct/100);
   $("pctCredits").textContent=fmtInt(rec)+" credits";
-  $("pctLadder").textContent=[50,70,75,80,90,95].map(function(q){return "p"+q+" "+fmtInt(quantile(sim.demandByTier[S.pickerTier],q/100));}).join(" · ");
+  $("pctLadder").innerHTML=[50,70,75,80,90,95].map(function(q){return '<button type="button" class="lchip'+(q===S.pct?" on":"")+'" data-pct="'+q+'" aria-pressed="'+(q===S.pct?"true":"false")+'">p'+q+' · '+fmtInt(quantile(sim.demandByTier[S.pickerTier],q/100))+'</button>';}).join("");
   var arows="";
   S.plans.forEach(function(p,pi){
     var eff=p.monthly>0?p.monthly:p.one;
@@ -1840,6 +1848,7 @@ function update(){
   var cur=sim.tiers[S.pickerTier];
   $("pickerTitle").textContent=S.plans[S.pickerTier].name+" at the "+ordinal(S.pct)+" percentile ("+fmtInt(rec)+" credits)";
   $("pickerBody").innerHTML=
+    '<div class="decomp-row phead"><span></span><span style="text-align:right">Now</span><span style="text-align:right">At the pick</span></div>'+
     prow("Included credits",fmtInt(cur.monthly),fmtInt(hypo.monthly))+
     prow("Mean serving cost",fmt$(cur.meanCost),fmt$(hypo.meanCost))+
     prow("Extra revenue (overage / top-ups)",fmt$(cur.meanExtra),fmt$(hypo.meanExtra))+
@@ -1849,7 +1858,7 @@ function update(){
     prow("Breakage",cur.breakage==null?"—":fmtPct(cur.breakage),hypo.breakage==null?"—":fmtPct(hypo.breakage))+
     prow("Users fully covered by the allowance",fmtPct(cur.covered),fmtPct(hypo.covered))+
     '<p class="src" style="margin-top:10px">Moving '+S.plans[S.pickerTier].name+' to the '+ordinal(S.pct)+' percentile '+((cur.meanRev>0&&hypo.meanRev>0)?((function(){var d=hypo.margin-cur.margin;if(Math.abs(d)<0.0005)return "leaves its margin unchanged at "+fmtPct(cur.margin)+(hypo.breakage==null?(cur.breakage==null?", and breakage stays undefined at that allowance":", and breakage becomes undefined at that allowance, because the allowance leaves no available credits"):", and leaves breakage at "+fmtPct(hypo.breakage))+", with users fully covered at "+fmtPct(hypo.covered);return (d>0?"raises ":"costs ")+(Math.abs(d)*100).toFixed(1)+" points of margin"+(hypo.breakage==null?", and breakage becomes undefined at that allowance":", and changes breakage to "+fmtPct(hypo.breakage))+", with users fully covered moving from "+fmtPct(cur.covered)+" to "+fmtPct(hypo.covered);})()):("has an undefined margin at a $0 price, so the margin change does not apply. Breakage at that allowance is "+(hypo.breakage==null?"—":fmtPct(hypo.breakage))+", and users fully covered move from "+fmtPct(cur.covered)+" to "+fmtPct(hypo.covered)))+"."+(cur.rev99>0&&hypo.rev99>0&&D.avgCredits>0?" Tail-mix p99 margin moves from "+fmtPct(cur.tm99)+" to "+fmtPct(hypo.tm99)+".":"")+"</p>"+(S.mode!=="cap"?'<p class="src">Extra revenue is stated before the §03 paid take-up: '+(S.mode==="topup"?"in this layer every wall user buys half of the shortfall":"in this layer the full shortfall is billed")+', and the behavior layer restates it at the take-up rate.</p>':"");
-  function prow(k,a,b){return '<div class="decomp-row"><span>'+k+'</span><span class="src" style="text-align:right">now <span class="mono" style="color:var(--ink2)">'+a+'</span></span><span class="mono" style="text-align:right;font-weight:600">'+b+'</span></div>';}
+  function prow(k,a,b){return '<div class="decomp-row"><span>'+k+'</span><span style="text-align:right"><span class="mono" style="color:var(--ink2)">'+a+'</span></span><span class="mono" style="text-align:right;font-weight:600">'+b+'</span></div>';}
   /* decomposition */
   var effDisc=($("effRate")?num("effRate",0):0)/100;
   var base=portfolioProfit(S);
@@ -2100,6 +2109,12 @@ document.addEventListener("change",function(e){
     if(!applyingScen)markCustom();
     clearTimeout(timer);timer=setTimeout(update,30);
   }
+});
+$("pctLadder").addEventListener("click",function(e){
+  var b=e.target.closest("button[data-pct]");if(!b)return;
+  setVal("pct",b.dataset.pct);
+  if(!applyingScen)markCustom();
+  update();
 });
 $("shortfallSeg").addEventListener("click",function(e){
   var b=e.target.closest("button");if(!b)return;
