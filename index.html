@@ -363,7 +363,7 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
 <div id="view-sim">
 <header class="masthead">
   <h1>AI Credit Economics Simulator</h1>
-  <p class="lede">Squarespace sells AI as plan credits. This model asks what those credits cost to serve, and which allowance and shortfall rules keep that cost inside a target margin when, at the baseline, the median user needs about 3.6 times the Core allowance. <strong>10,000 users per plan</strong>, month 6 reported.</p>
+  <p class="lede">Squarespace sells AI as plan credits. This model asks what those credits cost to serve, and which allowance and shortfall rules keep that cost inside a target margin when, at the baseline, the median user needs about 3.6 times the Core allowance. <strong>10,000 users per plan</strong>, month 6 reported. Every margin in the model is an AI serving margin: plan revenue minus the cost of serving that plan's AI usage, with the rest of Squarespace's cost base outside the model.</p>
   <div class="assump">
     <p class="assump-h">Assumptions</p>
     <ul>
@@ -374,7 +374,7 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
       <li>20% of users who hit their allowance wall take the paid option. This take-up rate is an assumption with no published value behind it.</li>
       <li>Baseline churn is 4.2% a month, and total departures in any scenario are capped at twice that baseline.</li>
       <li>A top-up purchase serves half of a user's shortfall.</li>
-      <li>The fully loaded view (§10) applies Squarespace's fiscal 2023 cost structure: total cost of revenue at 20.5% of revenue, with payment processing at 3.5%.</li>
+      <li>Every margin is an AI serving margin: plan revenue minus the cost of serving that plan's AI usage. Hosting, support, research, sales, and the rest of the cost base sit outside the model, so these margins run higher than a company gross margin and compare policies against each other.</li>
       <li>Every run uses a fixed random seed, so the same settings always produce the same draws.</li>
     </ul>
   </div>
@@ -417,7 +417,6 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
   <a class="seclink" href="#sec-h-plans">Settings</a>
   <a class="seclink" href="#sec-h-margins">Results</a>
   <a class="seclink" href="#sec-h-memo">Memo</a>
-  <a class="seclink" href="#sec-h-loaded">Loaded view</a>
   <a class="seclink" href="#sec-h-notes">Notes</a>
 </nav>
 <div class="group-label" id="setup-start">Settings <small>Folded by default. Open only what you want to change.</small></div>
@@ -577,7 +576,6 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
 <section id="sec-h-margins" aria-labelledby="h-margins">
   <div class="sec-head"><span class="sec-num">04</span><h2 id="h-margins">Tier margins, month six</h2></div>
   <div class="kpis" id="kpis"></div>
-  <p class="src" id="marginViewNote" hidden></p>
   <div class="card beh-summary" id="behSummary"></div>
   <div class="card big-table" style="padding:6px 14px">
     <table class="stack" aria-label="Tier margin results">
@@ -708,7 +706,7 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
 <!-- ============ 8. MEMO ============ -->
 <section id="sec-h-measure" aria-labelledby="h-measure">
   <div class="sec-head"><span class="sec-num">08</span><h2 id="h-measure">Measuring the demand inputs</h2></div>
-  <p class="hint">The measurement plan is written out in §11, Notes on the model, under §08 · Measuring the demand inputs.</p>
+  <p class="hint">The measurement plan is written out in §10, Notes on the model, under §08 · Measuring the demand inputs.</p>
   <div class="card">
   </div>
 </section>
@@ -723,69 +721,13 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
 </section>
 
 <!-- ============ 10. FULLY LOADED VIEW ============ -->
-<section id="sec-h-loaded" aria-labelledby="h-loaded">
-  <div class="sec-head"><span class="sec-num">10</span><h2 id="h-loaded">Fully loaded view: the rest of the cost stack</h2></div>
-  <div class="grid2">
-    <div class="card">
-      <h3>Which margin leads</h3>
-      <div class="seg" role="group" aria-label="Margin basis" id="marginViewSeg">
-        <button type="button" data-mview="ai" aria-pressed="true">AI serving margin</button>
-        <button type="button" data-mview="loaded" aria-pressed="false">Fully loaded gross margin</button>
-      </div>
-      <h3 style="margin-top:18px">The calibrated line</h3>
-      <div class="seg" role="group" aria-label="Cost case" id="stackCaseSeg">
-        <button type="button" data-case="low" aria-pressed="false">Low cost</button>
-        <button type="button" data-case="base" aria-pressed="true">Base</button>
-        <button type="button" data-case="high" aria-pressed="false">High cost</button>
-      </div>
-      <div class="ctl" style="margin-top:14px">
-        <label for="ldNonAI">Non-AI cost of revenue, % of revenue <output id="ldNonAIOut">15.7%</output></label>
-        <input type="range" id="ldNonAI" min="0" max="30" step="0.1" value="15.7">
-      </div>
-    </div>
-    <div class="card">
-      <h3>The stack, per user per month</h3>
-      <div id="stackLines">—</div>
-      <p class="src" id="stackNote" style="margin-top:10px"></p>
-    </div>
-  </div>
-  <div class="card big-table" style="padding:6px 14px;margin-top:16px">
-    <table class="stack" aria-label="Fully loaded tier margins">
-      <thead><tr>
-        <th>Plan</th><th>Revenue</th><th>AI serving cost</th><th>Processing</th><th>Non-AI cost of revenue</th><th>Total cost</th><th>Loaded gross margin</th><th>Loaded margin @ p99 user</th><th>Guardrail, loaded basis</th>
-      </tr></thead>
-      <tbody id="loadedRows"></tbody>
-    </table>
-  </div>
-  <p class="src">Loaded guardrail flags test the tier's loaded margin, and its loaded p99 margin, against the §03 floor, on the average task mix. The p99 loaded cost adds processing and the non-AI line to the p99 user's serving cost, at that user's revenue. Loaded margins are a scale check on the §04 figures, not plan-level accounting: the calibration target is a company-level filed ratio, applied to a four-plan model at list prices.</p>
-  <div class="card" style="margin-top:16px">
-    <h3>One step further: an operating view</h3>
-    <div class="beh-grid">
-      <div class="ctl">
-        <label for="ldRD">Research and product development, % of revenue <output id="ldRDOut">23.9%</output></label>
-        <input type="range" id="ldRD" min="0" max="40" step="0.1" value="23.9">
-      </div>
-      <div class="ctl">
-        <label for="ldMS">Marketing and sales, % of revenue <output id="ldMSOut">34.5%</output></label>
-        <input type="range" id="ldMS" min="0" max="50" step="0.1" value="34.5">
-      </div>
-      <div class="ctl">
-        <label for="ldGA">General and administrative, % of revenue <output id="ldGAOut">12.8%</output></label>
-        <input type="range" id="ldGA" min="0" max="30" step="0.1" value="12.8">
-      </div>
-    </div>
-    <div id="opLines" style="margin-top:12px">—</div>
-    <p class="src" id="opNote" style="margin-top:10px"></p>
-  </div>
-</section>
-
 <footer class="foot">
   <p><strong>Method.</strong> Lognormal demand fitted to §02; users sort into plans by demand level, lightest quarter on Basic, heaviest on Advanced; six months simulated, month 6 reported. Hard cap: actions stop at the balance. Overage: excess billed. Top-ups: half bought, half forgone. Not Squarespace's internal numbers: full detail in Methodology.</p>
   <p>Defaults: published Squarespace prices and allowances (Oct 2026), public per-token list prices (Nov 2026), competitor packaging from public pages. Behavior defaults from Methodology §09; paid take-up has no published value and is an explicit assumption.</p>
 </footer>
 <section id="sec-h-notes" aria-labelledby="h-notes">
-  <div class="sec-head"><span class="sec-num">11</span><h2 id="h-notes">Notes on the model</h2></div>
-  <p class="sec-sub">The explanation that used to sit beside the controls, gathered in one place. Each group names the section it belongs to.</p>
+  <div class="sec-head"><span class="sec-num">10</span><h2 id="h-notes">Notes on the model</h2></div>
+  <p class="sec-sub">How the model works, section by section. Each group names the section it belongs to.</p>
   <h3 style="margin-top:22px">The demand chart</h3>
   <p class="hint">The §02 distribution, up front, drawn from the same data and driven by the same §02 sliders. The full-size chart lives in §02.</p>
   <h3 style="margin-top:22px">§01 · Plans and rate card</h3>
@@ -799,7 +741,7 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
   <p class="hint">Mix = share of monthly actions, renormalized to 100%; if every mix is set to zero the model falls back to equal weights. Frontier % = the share of that task's text tokens routed to the frontier model; the §01 routing slider scales every task's share together, so task-level differences survive a global shift.</p>
   <p class="note">Builds are charged in full whether kept or abandoned. Abandonment changes who got value, not what the build cost to serve, so it has no slider.</p>
   <p class="hint">Lognormal fitted to your three points. Median is exact; spread fits p90 and p99.</p>
-  <p class="note" style="margin-top:8px"><span class="ev-tag assump">No published value</span> The three anchors (median 20, p90 200, p99 1,500 actions a month) are analyst assumptions with no published source, and almost every headline figure moves with them. §11 sets out the measurement plan that would replace them with observed values.</p>
+  <p class="note" style="margin-top:8px"><span class="ev-tag assump">No published value</span> The three anchors (median 20, p90 200, p99 1,500 actions a month) are analyst assumptions with no published source, and almost every headline figure moves with them. §10 sets out the measurement plan that would replace them with observed values.</p>
   <p class="note">Percentile guardrail users (p50, p90, p99) are read inside each plan's own tier band and costed on a mix tilted toward site builds, because heavy users build more than they draft. The portfolio simulation still runs every user on the average mix; this control prices the guardrail rows only.</p>
   <h3 style="margin-top:22px">§03 · Policy levers</h3>
   <p class="sec-sub">The pricing team's choices. Wix = hard cap, no top-ups. Framer = top-ups, published burn rates.</p>
@@ -835,18 +777,6 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
   <p class="hint">Take-up is observed in the same experiment: the share of wall users who buy, and the share of the shortfall they buy, are two different numbers and the model keeps them separate (Methodology §08). Serving cost per action is reconciled monthly against provider invoices at the task level, which is also the check on the per-task routing shares in §02: if invoiced frontier tokens diverge from the modeled shares, the shares move, not the invoice. Decision this informs: the top-up price in §03 and the routing default in §01.</p>
   <h3 style="margin-top:22px">§09 · Current state memo</h3>
   <p class="sec-sub">The current settings and results in memo form, generated from the current state of the simulator.</p>
-  <h3 style="margin-top:22px">§10 · Fully loaded view</h3>
-  <p class="sec-sub">Every margin in §04 counts AI serving cost alone against the full plan price, and §04 says so on its face. That basis is the right one for credit and allowance decisions, and it is not a plan margin. This section stacks the rest of cost of revenue on top of the same simulated tiers: payment processing on each subscriber's monthly charge, and a non-AI cost of revenue line for hosting, support, domains, and infrastructure. The switch below then chooses which of the two margins the §04 headline and its guardrail check report. No second simulation runs: each loaded figure is read from the revenue and serving cost §04 already computed, with the stack added. Loading a preset leaves this section's settings as they are set, like the §03 behavior settings.</p>
-  <p class="hint">Sets the basis of the §04 headline margin and its guardrail check.</p>
-  <p class="note">AI serving is the default, and the Comparison view and the §09 memo stay on that basis in both positions of this switch. Fully loaded switches the §04 KPI strip, the tiers-breaching check, and the §04 guardrail flags to the loaded basis, and each switched surface names the basis it is on. The margin columns in the §04 table stay on the AI-serving basis; the loaded per-tier figures live in the table below.</p>
-  <p class="hint">One line in the stack is a calibration rather than a filed figure. Three set points:</p>
-  <p class="note"><span class="ev-tag assump">Calibrated</span> Squarespace does not break AI serving or card processing out of cost of revenue, so this line is calibrated rather than read off a filing: at the Base set point the whole stack (AI serving, processing, and this line) totals 20.5% of revenue at the defaults, the cost-of-revenue share in Squarespace's fiscal 2023 results (revenue $1,012.3 million, cost of revenue $207.5 million, gross margin 79.5%; fiscal 2023 Form 10-K, the last annual report before the company was taken private). Low and High set the line to 13.0% and 19.0% of revenue, a sensitivity band around the calibration, not reported figures. <span class="ev-tag live">Filed figures</span></p>
-  <p class="note"><span class="ev-tag index">Published rate</span> Payment processing is computed per subscriber, not as a share of revenue: 2.9% of the monthly charge plus $0.30 per charge, the standard published card rate. A tier's full monthly revenue (plan price plus any overage or top-up revenue) is treated as one charge per subscriber.</p>
-  <p class="hint">Portfolio level, weighted like the §04 guardrail margin. Shares are of the revenue on the first line.</p>
-  <p class="hint">The three reported operating expense lines, at their fiscal 2023 shares of revenue, applied to the same portfolio. Each slider starts at the filed share; move one and the view becomes a stress case rather than a restatement.</p>
-  <p class="note"><span class="ev-tag live">Filed figure</span> $242.2 million of fiscal 2023 revenue.</p>
-  <p class="note"><span class="ev-tag live">Filed figure</span> $349.6 million of fiscal 2023 revenue.</p>
-  <p class="note"><span class="ev-tag live">Filed figure</span> $129.3 million of fiscal 2023 revenue.</p>
 </section>
 
 </div><!-- /view-sim -->
@@ -966,10 +896,6 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
     <div class="sec-head"><span class="sec-num">06</span><h2 id="m-margin">Margins and the picker</h2></div>
     <div class="card doc-card">
       <p>Margin per user per month: (revenue − serving cost) ÷ revenue, revenue being price plus overage/top-up revenue. A tier breaches when its margin, or its p99 user's, falls below the floor. Portfolio figures use the §06 mix weights, equal user counts by default. The picker swaps one plan's allowance for a percentile of that plan's own tier band, price and policy held. In overage mode the plan's current implied rate is held as well, so the comparison isolates the allowance instead of repricing overage through the allowance in the rate's denominator.</p>
-      <p>Simulator §10 restates the same tiers on a fully loaded basis. The loaded cost adds two lines to serving cost: payment processing at 2.9% of the tier's monthly revenue plus $0.30, one charge per subscriber; and a non-AI cost of revenue line entered as a share of revenue, calibrated so the stack totals the 20.5% cost-of-revenue share in Squarespace's fiscal 2023 results at the defaults (gross margin 79.5%). Loaded margins use the same formula and the same floor test, at the tier mean and at the p99 user. No second simulation runs: the loaded figures are read from the §04 output. The §10 switch chooses which basis the §04 headline margin and guardrail report; the Comparison view and the §09 memo stay on the AI-serving basis. The operating view below the loaded table applies Squarespace's fiscal 2023 operating expense shares to the loaded gross profit; it is a reasonableness check on the stack, stated before interest and tax, and it includes stock-based compensation inside the filed expense lines, which is why the filing's adjusted EBITDA margin (23.3%, which adds that compensation back) sits above it as a ceiling.</p>
-    </div>
-  </section>
-
   <section aria-labelledby="m-decomp">
     <div class="sec-head"><span class="sec-num">07</span><h2 id="m-decomp">Decomposition</h2></div>
     <div class="card doc-card">
@@ -1109,9 +1035,6 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
         <li>Users sort into plans by demand level: the lightest quarter of the population starts on Basic and the heaviest quarter on Advanced, so each plan's users form one band of the pooled usage distribution (Methodology §04).</li>
         <li>Prices are list prices. No negotiated rates, prompt caching, or batch discounts.</li>
         <li>All AI cost is charged against the full plan price, including the part of the price that pays for the website itself.</li>
-        <li>The fully loaded view (Simulator §10) treats the non-AI cost of revenue as a single share of revenue, 15.7% at the Base case, calibrated so the loaded stack totals Squarespace's fiscal 2023 cost-of-revenue share of 20.5% at the defaults. Squarespace does not report an AI-serving or processing split inside cost of revenue, so the split is the model's; the Low and High cases (13.0% and 19.0% for the non-AI line) are a sensitivity band, not reported figures.</li>
-        <li>Payment processing in Simulator §10 is priced at the standard published card rate, 2.9% plus $0.30, applied to each tier's full monthly revenue as one charge per subscriber per month.</li>
-        <li>The operating view in Simulator §10 applies Squarespace's fiscal 2023 operating expense shares of revenue (research and product development 23.9%, marketing and sales 34.5%, general and administrative 12.8%) to the modeled book. Each share starts at the filed figure and can be moved into a stress case.</li>
       </ul>
     </div>
   </section>
@@ -1136,7 +1059,6 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
         <li>The behavior layer's wall split is reconciled by construction: the raw test total (price departures plus wall churn, Basic downgrades counted) is capped at twice the 4.2% baseline churn, and wall churn scales down to fit when the raw responses exceed the cap. At the defaults, realized departures run above the cap figure because Basic downgrades are counted in the test but not scaled; under a net price inflow they can land below it, because price departures enter the test floored at zero. Read adjusted figures as bounded by that discipline rule, not as a forecast of actual departures.</li>
         <li>Upgraders are costed at the average cost of the tier they join, though they are the heaviest users of the tier they left. The upgrade flow's cost side is therefore understated and the adjusted margin flattered by an amount the model does not separately quantify.</li>
         <li>Image generation scores 100 on the quality index by construction: it is a flat per-image cost with no routing decision, so a fifth of the action mix sits at frontier quality in the index regardless of the routing settings.</li>
-        <li>The fully loaded view (Simulator §10) inherits the book it restates: an equal-count, four-plan model at list prices. Its calibration target is a company-level filed ratio, so the loaded margins are a scale check on the AI-serving figures, not plan-level accounting. Squarespace's actual plan margins depend on its real tier mix, its negotiated provider rates, and how its cost of revenue divides among plans, none of which is public.</li>
       </ul>
       <p style="margin-top:16px"><button class="btn" type="button" id="backToSim">Back to the simulator</button></p>
     </div>
@@ -1155,7 +1077,6 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
         <li>OpenStax through the University of Minnesota, Principles of Microeconomics, Chapter 5 on elasticity, with the 2011 Netflix case. <a href="https://publishing.lib.umn.edu/openmicro/05_elasticity.html" target="_blank" rel="noopener">publishing.lib.umn.edu/openmicro/05_elasticity</a></li>
         <li>Netflix, Q4 2023 shareholder letter, SEC Exhibit 99.1, January 23, 2024. <a href="https://www.sec.gov/Archives/edgar/data/1065280/000106528024000029/ex991_q423.htm" target="_blank" rel="noopener">sec.gov/Archives/edgar/data/1065280/000106528024000029/ex991_q423</a></li>
         <li>Squarespace, Q4 and fiscal 2023 results, SEC 8-K Exhibit 99.1, February 28, 2024. <a href="https://www.sec.gov/Archives/edgar/data/1496963/000149696324000007/sqsp-02282024x8kexhibit991.htm" target="_blank" rel="noopener">sec.gov/Archives/edgar/data/1496963/000149696324000007/sqsp-02282024x8kexhibit991</a></li>
-        <li>Squarespace, fiscal 2023 Form 10-K, the last annual report before the company was taken private: statements of operations (cost of revenue $207.5 million on revenue of $1,012.3 million; research and product development $242.2 million; marketing and sales $349.6 million; general and administrative $129.3 million; operating income $83.7 million) and the adjusted EBITDA reconciliation ($235.4 million). The same statements appear in the fiscal 2023 results release listed directly above. Cited by Simulator §10 and Methodology §06.</li>
         <li>Wix, Q4 and full year 2023 results, February 21, 2024, via Nasdaq. <a href="https://www.nasdaq.com/press-release/wix-reports-fourth-quarter-and-full-year-2023-results-2024-02-21" target="_blank" rel="noopener">nasdaq.com/press-release/wix-reports-fourth-quarter-and-full-year-2023-results-2024-02-21</a></li>
         <li>Music Business Worldwide coverage of Spotify's Q3 2023 earnings call, via bigdrumbeat.com. <a href="https://www.bigdrumbeat.com/spotifys-price-hike-didnt-hurt-subscriptions-and-3-other-things-we-learned-on-its-latest-earnings-call/" target="_blank" rel="noopener">bigdrumbeat.com/spotifys-price-hike-didnt-hurt-subscriptions-and-3-other-things-we-learned-on-its-latest-earnings-call</a></li>
         <li>Grubb and Osborne (2015), Cellular Service Demand, American Economic Review 105(1), pages 234–271, abstract page. <a href="https://www.aeaweb.org/articles?id=10.1257/aer.20120283&page=129&per-page=21&from=j" target="_blank" rel="noopener">aeaweb.org/articles?id=10.1257/aer.20120283</a></li>
@@ -1259,33 +1180,6 @@ TASKS0.forEach(function(t,idx){
 
 /* ---------- state ---------- */
 var shortfallMode="cap";
-/* §10 fully loaded view: a display basis plus a cost stack read from its own
-   controls. Neither enters readState or the scenario signature: loading a
-   preset leaves them as they are set, like the §03 behavior settings. */
-var marginView="ai";
-var STACK_CASES={low:13.0,base:15.7,high:19.0};
-function readStack(){
-  return {
-    nonAI:clamp(num("ldNonAI",15.7),0,60)/100,
-    rd:clamp(num("ldRD",23.9),0,100)/100,
-    ms:clamp(num("ldMS",34.5),0,100)/100,
-    ga:clamp(num("ldGA",12.8),0,100)/100
-  };
-}
-/* processing on one monthly charge per subscriber: 2.9% of the charge plus
-   $0.30. A tier's full monthly revenue is the charge; no revenue, no charge. */
-function procFee(rev){return rev>0?0.029*rev+0.30:0;}
-/* the loaded restatement of one simulated tier: the tier's own revenue and
-   serving cost from §04, with processing and the non-AI line added. Margin
-   follows the same convention as the simulation's umargin. */
-function loadedTier(t,nonAI){
-  var proc=procFee(t.meanRev),nonAICost=nonAI*t.meanRev,total=t.meanCost+proc+nonAICost;
-  var proc99=procFee(t.rev99),total99=t.cost99+proc99+nonAI*t.rev99;
-  var proc90=procFee(t.rev90),total90=t.cost90+proc90+nonAI*t.rev90;
-  function lm(rev,tot){return rev>0?(rev-tot)/rev:(tot>0?-1:1);}
-  return {proc:proc,nonAI:nonAICost,total:total,margin:lm(t.meanRev,total),
-    proc99:proc99,total99:total99,m99:lm(t.rev99,total99),m90:lm(t.rev90,total90)};
-}
 function readState(){
   var plans=PLANS0.map(function(p,idx){
     return {name:p.name,price:Math.max(0,num("plan_price_"+idx,p.price)),monthly:Math.max(0,num("plan_monthly_"+idx,p.monthly)),one:Math.max(0,num("plan_one_"+idx,p.one))};
@@ -1735,30 +1629,11 @@ function update(){
   var portMargin=portfolioMarginOf(S,sim);
   var mw=mixWeights(S),portCost=0,portRevW=0;sim.tiers.forEach(function(t,i){portCost+=mw[i]*t.meanCost;portRevW+=mw[i]*t.meanRev;});
   var equalMix=mw.every(function(v){return Math.abs(v-0.25)<1e-9;});
-  /* §10 loaded restatement of the same tiers, same mix weights as the
-     guardrail margin above; the floor test mirrors the AI-basis one */
-  var stack=readStack();
-  var loadedTiers=sim.tiers.map(function(t){return loadedTier(t,stack.nonAI);});
-  var ldRev=0,ldCost=0,ldProc=0,ldNonAI=0;
-  sim.tiers.forEach(function(t,i){ldRev+=mw[i]*t.meanRev;ldCost+=mw[i]*loadedTiers[i].total;ldProc+=mw[i]*loadedTiers[i].proc;ldNonAI+=mw[i]*loadedTiers[i].nonAI;});
-  var loadedMargin=ldRev>0?(ldRev-ldCost)/ldRev:(ldCost>0?-1:1);
-  var ldBreaches=[];
-  sim.tiers.forEach(function(t,i){if((t.meanRev>0&&loadedTiers[i].margin<S.floor)||(t.rev99>0&&loadedTiers[i].m99<S.floor))ldBreaches.push(t.plan.name);});
-  var ldUndef=[];sim.tiers.forEach(function(t){if(!(t.meanRev>0))ldUndef.push(t.plan.name);});
   $("kpis").innerHTML=
     kpi(fmt$(behEarly.adjRevPerStart),"Adj. revenue / starting user","Lead metric: after movement. "+fmtInt(behEarly.endTotal)+" of "+fmtInt(START_TOTAL)+" users remaining; static "+fmt$(behEarly.staticRevPerUser)+(S.mode!=="cap"?" (an upper bound, before take-up)":""),true)+
-    (marginView==="loaded"
-      ?kpi(ldRev>0?fmtPct(loadedMargin):"—","Fully loaded gross margin (guardrail)","AI serving plus the §10 cost stack (processing and non-AI cost of revenue), against the full plan price. "+(equalMix?"Equal user counts per plan":"Mix-weighted per the §06 weights")+", current policy")
-      :kpi(portRevW>0?fmtPct(portMargin):"—","Portfolio margin (guardrail)","AI cost only, against the full plan price. "+(equalMix?"Equal user counts per plan":"Mix-weighted per the §06 weights")+", current policy"))+
+    kpi(portRevW>0?fmtPct(portMargin):"—","Portfolio margin (guardrail)","AI serving cost only, against the full plan price. "+(equalMix?"Equal user counts per plan":"Mix-weighted per the §06 weights")+", current policy")+
     kpi(fmt$(portCost),"Mean AI cost per user / mo","Month six, policy applied. Median demand "+fmtInt(medD)+" cr, "+fmt$(medCostFull)+" to serve in full")+
-    (marginView==="loaded"
-      ?kpi(ldBreaches.length?ldBreaches.join(", "):"None","Tiers breaching the guardrail","Fully loaded basis (§10). Floor set at "+Math.round(S.floor*100)+"% in section 03")
-      :kpi(breaches.length?breaches.join(", "):"None","Tiers breaching the guardrail","Floor set at "+Math.round(S.floor*100)+"% in section 03"));
-  var mvn=$("marginViewNote");
-  if(mvn){
-    if(marginView==="loaded"){mvn.hidden=false;mvn.textContent="Fully loaded view is on (§10): the headline margin above, the breaching check, and the guardrail flags in the table below all test the loaded margins. The margin columns in the table stay on the AI-serving basis; §10 holds the loaded per-tier figures.";}
-    else{mvn.hidden=true;mvn.textContent="";}
-  }
+    kpi(breaches.length?breaches.join(", "):"None","Tiers breaching the guardrail","Floor set at "+Math.round(S.floor*100)+"% in section 03");
   function kpi(v,k,s,lead){return '<div class="kpi'+(lead?" lead-kpi":"")+'"><div class="v">'+v+'</div><div class="k">'+k+'</div><div class="s">'+s+'</div></div>';}
   var ovNoteEl=$("ovNote");
   if(ovNoteEl){
@@ -1774,20 +1649,9 @@ function update(){
   var rows="";
   sim.tiers.forEach(function(t,ti){
     var breach,watch,tailWatch,flag,flagNote;
-    if(marginView==="loaded"){
-      /* §10 basis: the flags test the loaded margins from the table in §10;
-         the margin columns in this table stay on the AI-serving basis */
-      var lt=loadedTiers[ti];
-      breach=(t.meanRev>0&&lt.margin<S.floor)||(t.rev99>0&&lt.m99<S.floor);
-      watch=!breach&&t.rev90>0&&lt.m90<S.floor;
-      tailWatch=false;
-      flag=breach?'<span class="flag breach">Breach</span>':(watch?'<span class="flag watch">Watch: p90</span>':(!(t.meanRev>0)?'<span class="flag watch">Undefined</span>':'<span class="flag ok">Within floor</span>'));
-      flagNote=breach?(!(t.meanRev>0)?" margin undefined at a $0 price":(t.rev99>0&&lt.m99<S.floor)?" loaded p99 user at "+fmtPct(lt.m99):" loaded overall at "+fmtPct(lt.margin)):(watch?" loaded p90 user at "+fmtPct(lt.m90):(!(t.meanRev>0)?" margin undefined at a $0 price":" loaded basis (§10)"));
-    }else{
-      breach=(t.meanRev>0&&t.margin<S.floor)||(t.rev99>0&&t.m99<S.floor); watch=!breach&&t.rev90>0&&t.m90<S.floor; tailWatch=!breach&&!watch&&t.rev99>0&&D.avgCredits>0&&t.tm99<S.floor;
-      flag=breach?'<span class="flag breach">Breach</span>':(watch?'<span class="flag watch">Watch: p90</span>':(tailWatch?'<span class="flag watch">Watch: tail mix</span>':(!(t.meanRev>0)?'<span class="flag watch">Undefined</span>':'<span class="flag ok">Within floor</span>')));
-      flagNote=breach?(!(t.meanRev>0)?" margin undefined at a $0 price":(t.rev99>0&&t.m99<S.floor)?" p99 user at "+fmtPct(t.m99):" overall at "+fmtPct(t.margin)):(tailWatch?" p99 user at "+fmtPct(t.tm99):(watch?" p90 user at "+fmtPct(t.m90):(!(t.meanRev>0)?" margin undefined at a $0 price":"")));
-    }
+    breach=(t.meanRev>0&&t.margin<S.floor)||(t.rev99>0&&t.m99<S.floor); watch=!breach&&t.rev90>0&&t.m90<S.floor; tailWatch=!breach&&!watch&&t.rev99>0&&D.avgCredits>0&&t.tm99<S.floor;
+    flag=breach?'<span class="flag breach">Breach</span>':(watch?'<span class="flag watch">Watch: p90</span>':(tailWatch?'<span class="flag watch">Watch: tail mix</span>':(!(t.meanRev>0)?'<span class="flag watch">Undefined</span>':'<span class="flag ok">Within floor</span>')));
+    flagNote=breach?(!(t.meanRev>0)?" margin undefined at a $0 price":(t.rev99>0&&t.m99<S.floor)?" p99 user at "+fmtPct(t.m99):" overall at "+fmtPct(t.margin)):(tailWatch?" p99 user at "+fmtPct(t.tm99):(watch?" p90 user at "+fmtPct(t.m90):(!(t.meanRev>0)?" margin undefined at a $0 price":"")));
     if(t.monthly===0){var grantTxt=t.plan.one>0?"the one-time grant is spent":"there is no one-time grant";var noteTxt=S.mode==="cap"?(t.meanCost===0?("No monthly allowance in month six: "+grantTxt+", so no AI cost is served."):("No monthly allowance in month six: "+grantTxt+". Nothing in this state draws on the allowance, so demand is served in full.")):S.mode==="overage"?(D.avgCredits===0?("No monthly allowance in month six: "+grantTxt+", and no shortfall arises in this state, because no task is priced in credits."):("No monthly allowance in month six: "+grantTxt+", and the shortfall is billed in full.")):(D.avgCredits===0?("No monthly allowance in month six: "+grantTxt+", and no shortfall arises in this state, because no task is priced in credits."):("No monthly allowance in month six: "+grantTxt+", and the shortfall is partly bought at the top-up price."));flagNote=(flagNote?flagNote+" ":"")+noteTxt;}
     rows+="<tr><td class='name' data-label='Plan'>"+t.plan.name+"</td><td class='mono' data-label='Price'>"+fmt$(t.plan.price,0)+"</td><td class='mono' data-label='Included cr'>"+(t.monthly>0?fmtInt(t.monthly):(t.plan.one>0?fmtInt(t.plan.one)+" once":"0"))+"</td>"+
      "<td class='mono' data-label='Cost @ median user'>"+fmt$(t.cost50)+"</td><td class='mono' data-label='Cost @ p90'>"+fmt$(t.cost90)+"</td><td class='mono' data-label='Cost @ p99'>"+fmt$(t.cost99)+"</td>"+
@@ -1888,57 +1752,6 @@ function update(){
   memo+="<p><strong>Buyer behavior.</strong> Adjusted revenue per starting user is "+fmt$(beh.adjRevPerStart)+" against "+fmt$(beh.staticAdjRevPerStart)+" if nobody moved"+(S.mode!=="cap"?" (the comparator restated on the same take-up basis, so the gap measures movement alone)":"")+(beh.adjRevPerStart>0?("; adjusted margin is "+fmtPct(beh.adjMargin)+" against "+fmtPct(beh.staticAdjMargin)+"."):("; adjusted margin is undefined in this state, because revenue is zero."))+" Under the §03 settings, the starting 40,000 users end the month at "+fmtInt(beh.endTotal)+": "+(beh.totalChurn<0?("a net price inflow adds "+fmtInt(-beh.totalChurn)+" users after the wall's losses"):("churn takes "+fmtInt(beh.totalChurn)))+", "+fmtInt(beh.downCount)+" drop one plan, and "+fmtInt(beh.upCount)+" move up one plan. The upgrade flow is the softest part of that figure: "+(beh.upCount>=10?(fmtPct(beh.afterPrice[0]*(1-sim.tiers[0].covered)*beh.split.up/beh.upCount,0)+" of upgraders come out of Basic, "+(S.plans[0].monthly===0?"whose users are wall-exposed by construction because Basic has no monthly allowance in month six":"which in this state has a monthly allowance of "+fmtInt(S.plans[0].monthly)+" credits and a wall share of "+fmtPct(1-sim.tiers[0].covered))+", so read the upgrade count as an upper bound rather than a measured flow."):beh.upCount>0?("Fewer than ten upgraders move in expectation in this state, so the Basic share of that flow is not a stable figure to quote."):"There are no upgraders in this state, so the upgrade flow has no Basic share to report.")+" Wall users split five ways (pay, upgrade, downgrade, churn, stay), and total departures are reconciled against the 4.2% baseline churn as described in Methodology §08. The Comparison view ranks every preset by this revenue figure. Defaults come from Methodology §09; paid take-up and the upgrade share have no published values and remain assumptions.</p>";
   $("memoBody").innerHTML=memo;
   $("memoBody").dataset.plain=memo.replace(/<\/p>/g,"\n\n").replace(/<br[^>]*>/g,"\n").replace(/<[^>]+>/g,"").replace(/[ \t]+\n/g,"\n").replace(/\n{3,}/g,"\n\n").trim();
-  renderLoaded(S,sim,stack,loadedTiers,ldRev,ldCost,ldProc,ldNonAI,loadedMargin,portMargin);
-}
-/* ---------- §10 fully loaded view ---------- */
-function renderLoaded(S,sim,stack,loadedTiers,ldRev,ldCost,ldProc,ldNonAI,loadedMargin,aiMargin){
-  $("ldNonAIOut").textContent=(stack.nonAI*100).toFixed(1)+"%";
-  $("ldRDOut").textContent=(stack.rd*100).toFixed(1)+"%";
-  $("ldMSOut").textContent=(stack.ms*100).toFixed(1)+"%";
-  $("ldGAOut").textContent=(stack.ga*100).toFixed(1)+"%";
-  /* keep the two segmented controls honest when a slider or another path
-     moves the state underneath them */
-  Array.prototype.forEach.call($("marginViewSeg").querySelectorAll("button"),function(x){x.setAttribute("aria-pressed",x.getAttribute("data-mview")===marginView?"true":"false");});
-  Array.prototype.forEach.call($("stackCaseSeg").querySelectorAll("button"),function(x){var v=STACK_CASES[x.getAttribute("data-case")];x.setAttribute("aria-pressed",Math.abs(v-stack.nonAI*100)<0.05?"true":"false");});
-  function srow(k,v,share){return '<div class="decomp-row"><span>'+k+'</span><span class="src" style="text-align:right">'+(share||"")+'</span><span class="mono" style="text-align:right;font-weight:600">'+v+'</span></div>';}
-  function share(v){return ldRev>0?fmtPct(v/ldRev):"";}
-  var aiCost=ldCost-ldProc-ldNonAI;
-  $("stackLines").innerHTML=
-    srow("Revenue",fmt$(ldRev),"")+
-    srow("AI serving cost (§04)",fmt$(aiCost),share(aiCost))+
-    srow("Payment processing",fmt$(ldProc),share(ldProc))+
-    srow("Non-AI cost of revenue",fmt$(ldNonAI),share(ldNonAI))+
-    srow("Total cost of revenue",fmt$(ldCost),share(ldCost))+
-    srow("Fully loaded gross margin",ldRev>0?fmtPct(loadedMargin):"—","")+
-    srow("AI-serving margin, same tiers",ldRev>0?fmtPct(aiMargin):"—","");
-  $("stackNote").textContent=(ldRev>0?("Against the §03 floor of "+Math.round(S.floor*100)+"%, the loaded portfolio margin "+(loadedMargin<S.floor?"does not clear it":"clears it")+". The per-tier check runs in the table below, because a portfolio average can clear a floor its tail fails. "):"")+"The §04 headline currently reports the "+(marginView==="loaded"?"fully loaded basis.":"AI-serving basis.");
-  var rows="";
-  sim.tiers.forEach(function(t,i){
-    var lt=loadedTiers[i];
-    var breach=(t.meanRev>0&&lt.margin<S.floor)||(t.rev99>0&&lt.m99<S.floor), watch=!breach&&t.rev90>0&&lt.m90<S.floor;
-    var flag=breach?'<span class="flag breach">Breach</span>':(watch?'<span class="flag watch">Watch: p90</span>':(!(t.meanRev>0)?'<span class="flag watch">Undefined</span>':'<span class="flag ok">Within floor</span>'));
-    var flagNote=breach?((t.rev99>0&&lt.m99<S.floor)?" p99 user at "+fmtPct(lt.m99):" overall at "+fmtPct(lt.margin)):(watch?" p90 user at "+fmtPct(lt.m90):(!(t.meanRev>0)?" margin undefined at a $0 price":""));
-    rows+="<tr><td class='name' data-label='Plan'>"+t.plan.name+"</td>"+
-     "<td class='mono' data-label='Revenue'>"+fmt$(t.meanRev)+"</td>"+
-     "<td class='mono' data-label='AI serving cost'>"+fmt$(t.meanCost)+"</td>"+
-     "<td class='mono' data-label='Processing'>"+fmt$(lt.proc)+"</td>"+
-     "<td class='mono' data-label='Non-AI cost of revenue'>"+fmt$(lt.nonAI)+"</td>"+
-     "<td class='mono' data-label='Total cost'>"+fmt$(lt.total)+"</td>"+
-     "<td class='mono' data-label='Loaded gross margin'>"+(t.meanRev>0?fmtPct(lt.margin):"—")+"</td>"+
-     "<td class='mono "+((t.rev99>0&&lt.m99<S.floor)?"neg":"")+"' data-label='Loaded margin @ p99 user'>"+(t.rev99>0?fmtPct(lt.m99):"—")+"</td>"+
-     "<td data-label='Guardrail, loaded basis'>"+flag+"<div class='src'>"+flagNote+"</div></td></tr>";
-  });
-  $("loadedRows").innerHTML=rows;
-  var gp=ldRev-ldCost,rdD=stack.rd*ldRev,msD=stack.ms*ldRev,gaD=stack.ga*ldRev;
-  var opProfit=gp-rdD-msD-gaD;
-  var opMargin=ldRev>0?opProfit/ldRev:(opProfit>0?-1:(opProfit<0?-1:1));
-  $("opLines").innerHTML=
-    srow("Loaded gross profit",fmt$(gp),share(gp))+
-    srow("Research and product development","−"+fmt$(rdD),fmtPct(stack.rd))+
-    srow("Marketing and sales","−"+fmt$(msD),fmtPct(stack.ms))+
-    srow("General and administrative","−"+fmt$(gaD),fmtPct(stack.ga))+
-    srow("Operating margin",ldRev>0?fmtPct(opMargin):"—","");
-  $("opNote").textContent="At the current settings this view prints "+(ldRev>0?fmtPct(opMargin):"an undefined operating margin")+", against Squarespace's reported fiscal 2023 operating margin of 8.3% (operating income $83.7 million on revenue of $1,012.3 million). The reported adjusted EBITDA margin of 23.3% sits above this view by construction: it adds back stock-based compensation (10.6% of fiscal 2023 revenue) and depreciation and amortization (4.3%). Read 23.3% as a ceiling the operating view should stay under, not as a target. The expense shares are fiscal 2023 actuals applied to a modeled book, so the comparison is a reasonableness check on the stack, not a forecast.";
 }
 /* ---------- behavior & comparison rendering ---------- */
 function mixBar(users){
@@ -2090,13 +1903,9 @@ function rankOf(sorted,v){var c=0;for(var i=0;i<sorted.length;i++){if(sorted[i]<
 /* ---------- events ---------- */
 var timer=null, applyingScen=false;
 var BEH_IDS={bElasticity:1,bWallChurn:1,bWallDown:1,bTakeUp:1,bWallUpgrade:1};
-/* §10 stack controls are a display basis, not scenario state: like the §03
-   behavior settings they survive preset loads and never mark a scenario
-   Custom */
-var STACK_IDS={ldNonAI:1,ldRD:1,ldMS:1,ldGA:1};
 document.addEventListener("input",function(e){
   if(e.target&&e.target.id==="pickerTier")return;
-  if(!applyingScen&&e.target.id!=="scenarioSel"&&!BEH_IDS[e.target.id]&&!STACK_IDS[e.target.id])markCustom();
+  if(!applyingScen&&e.target.id!=="scenarioSel"&&!BEH_IDS[e.target.id])markCustom();
   clearTimeout(timer);timer=setTimeout(update,110);
 });
 document.addEventListener("change",function(e){
@@ -2122,22 +1931,6 @@ $("shortfallSeg").addEventListener("click",function(e){
   shortfallMode=b.dataset.mode;
   Array.prototype.forEach.call($("shortfallSeg").querySelectorAll("button"),function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
   if(!applyingScen)markCustom();
-  update();
-});
-$("marginViewSeg").addEventListener("click",function(e){
-  var b=e.target.closest("button");if(!b)return;
-  if(b.dataset.mview===marginView)return;
-  marginView=b.dataset.mview;
-  Array.prototype.forEach.call($("marginViewSeg").querySelectorAll("button"),function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
-  update();
-});
-$("stackCaseSeg").addEventListener("click",function(e){
-  var b=e.target.closest("button");if(!b)return;
-  var el=$("ldNonAI");if(!el)return;
-  el.value=STACK_CASES[b.dataset.case];
-  /* the dispatched input refreshes the slider fill and the debounced
-     update; STACK_IDS keeps it out of the Custom flag */
-  el.dispatchEvent(new Event("input"));
   update();
 });
 /* ---------- scenario presets ---------- */
