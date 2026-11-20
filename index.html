@@ -43,6 +43,10 @@ a{color:var(--accent)}
 h1{font-size:clamp(32px,5vw,44px);font-weight:700;letter-spacing:-.028em;color:var(--ink)}
 .lede{font-size:16.5px;line-height:1.6;color:var(--ink2);max-width:760px;margin:14px 0 18px}
 .lede strong{color:var(--ink)}
+.assump{margin:0 0 20px;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);box-shadow:var(--shadow);padding:12px 16px;max-width:760px}
+.assump .assump-h{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 8px}
+.assump ul{margin:0;padding-left:18px;font-size:13px;line-height:1.55;color:var(--ink2)}
+.assump li{margin:2px 0}
 .stamp{display:flex;flex-wrap:wrap;gap:0;margin:0 0 20px;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);box-shadow:var(--shadow);overflow:hidden}
 .stamp span{font-size:12.5px;padding:9px 14px;color:var(--ink2);display:flex;align-items:center;gap:8px}
 .stamp span + span{border-left:1px solid var(--line)}
@@ -353,6 +357,20 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
 <header class="masthead">
   <h1>AI Credit Economics Simulator</h1>
   <p class="lede">Squarespace sells AI as plan credits. This model asks what those credits cost to serve, and which allowance and shortfall rules keep that cost inside a target margin when, at the baseline, the median user needs about 3.6 times the Core allowance. <strong>10,000 users per plan</strong>, month 6 reported.</p>
+  <div class="assump">
+    <p class="assump-h">Assumptions</p>
+    <ul>
+      <li>Demand follows a lognormal curve fitted to three analyst-set anchors: a median of 20 actions per user per month, a 90th percentile of 200, and a 99th percentile of 1,500. No published usage data sits behind these anchors.</li>
+      <li>The simulation runs 40,000 users, 10,000 per plan, sorted into plan bands by demand level, over six months. Month six is the reported month.</li>
+      <li>A user's demand level persists from month to month (correlation 0.7). The rest of each month's demand is fresh noise.</li>
+      <li>Token costs blend input and output prices at 60/40. Heavy users run a tail mix with builds at 30% of actions, against 5% in the average mix.</li>
+      <li>20% of users who hit their allowance wall take the paid option. This take-up rate is an assumption with no published value behind it.</li>
+      <li>Baseline churn is 4.2% a month, and total departures in any scenario are capped at twice that baseline.</li>
+      <li>A top-up purchase serves half of a user's shortfall.</li>
+      <li>The fully loaded view (§10) applies Squarespace's fiscal 2023 cost structure: total cost of revenue at 20.5% of revenue, with payment processing at 3.5%.</li>
+      <li>Every run uses a fixed random seed, so the same settings always produce the same draws.</li>
+    </ul>
+  </div>
   <div class="stamp">
     <span>Plans · Squarespace, index-grade Oct 2026</span>
     <span>Rates · Public list prices, Nov 2026</span>
@@ -560,7 +578,6 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
   <div class="sec-head"><span class="sec-num">04</span><h2 id="h-margins">Tier margins, month six</h2></div>
   <div class="kpis" id="kpis"></div>
   <p class="src" id="marginViewNote" hidden></p>
-  <p class="src">Static view: the tier table below holds the population at 10,000 users per plan. The behavior card is the adjusted view, after movement. The static portfolio figures weight the four plans by the §06 mix weights, equal by default. The behavior card is the adjusted view, and its figures start every scenario from equal user counts, so adjusted revenue does not move when the §06 weights change. Squarespace's revenue concentrates in the lower plan families (Methodology §09), so read the portfolio margin as a policy comparison, not a forecast of the actual book. Percentile users in the table are read inside each plan's own tier band (§02) and costed at the average task mix, with a tail-mix margin beside each p99 figure: heavy users skew toward builds, so the average-mix tail cost is a floor. The guardrail flags run on the average-mix figures; the tail-mix margin is shown for judgment, and at defaults the two sit within a point of each other.</p>
   <div class="card beh-summary" id="behSummary"></div>
   <div class="card big-table" style="padding:6px 14px">
     <table class="stack" aria-label="Tier margin results">
