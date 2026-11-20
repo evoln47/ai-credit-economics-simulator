@@ -1502,7 +1502,7 @@ function drawHist(S,sim,recommended,target){
   var med=quantile(data,0.5);
   var PC=["var(--p1)","var(--p2)","var(--p3)","var(--p4)"];
   /* panel 1: the pooled distribution, one colour, horizontal gridlines only */
-  var padT=mini?24:28,plotH=mini?92:118;
+  var padT=mini?24:28,plotH=mini?132:168;
   var H=mini?(padT+plotH+34):(padT+plotH+10+5*22+36);
   var s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="presentation" aria-hidden="true">';
   var step=Math.pow(10,Math.floor(Math.log10(maxC)));
