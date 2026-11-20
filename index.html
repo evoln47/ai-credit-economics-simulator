@@ -382,8 +382,8 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
   </div>
   <p class="src">A working model by Evan Volness · November 2026 · Built from published plans, public list prices, and the published evidence in Methodology §09.</p>
   <div class="card" id="topHistCard" style="margin-top:16px">
-    <h2>Monthly credit demand, and where the allowances sit</h2>
-    <div id="histChartTop" role="img" aria-label="Histogram of simulated monthly credit demand with plan allowance markers"></div>
+    <h2>Monthly credit demand per user</h2>
+    <div id="histChartTop" role="img" aria-label="Histogram of simulated monthly credit demand"></div>
   </div>
 </header>
 <div class="steps" aria-label="How to use this simulator">
@@ -842,7 +842,7 @@ section.fold.fold-open .sec-sub{margin-bottom:16px}
   <section aria-labelledby="m-what">
     <div class="sec-head"><span class="sec-num">01</span><h2 id="m-what">What the model does</h2></div>
     <div class="card doc-card">
-      <p>One question: what does it cost to serve AI usage sold as plan credits, and which allowance and shortfall rules keep that cost inside a target margin? A pricing model, not a forecast: no data from Squarespace's actual business.</p>
+      <p>One question: what does it cost to serve AI usage sold as plan credits, and which allowance and shortfall rules keep that cost inside a target margin? A pricing model, not a forecast: no data from Squarespace's actual business. It takes in the published plan ladder and credit allowances, a per-task table of credit prices and token counts priced at provider list rates, and a demand distribution fitted to three analyst-set anchors. It simulates 40,000 users over six months, sorted into the four plan tiers by demand, with the chosen shortfall policy and buyer behavior applied each month. It reports the serving margin by tier, the allowance implied by a chosen percentile of a tier's own demand, and a decomposition of what moves the result.</p>
     </div>
   </section>
 
@@ -1734,7 +1734,7 @@ function update(){
   var pAll=portfolioProfit(S,{frontMult:(1+S.sFront)*(1-effDisc),stdMult:(1+S.sStd)*(1-effDisc),routing:clamp(S.routing+S.sRoute,0,1),scale:1+S.sGrowth});
   var eRate=pRate-base,eMix=pMix-base,eVol=pVol-base,eAll=pAll-base,eInt=eAll-eRate-eMix-eVol;
   var erOut=$("effRateOut");if(erOut)erOut.textContent=Math.round(effDisc*100)+"%";
-  $("decompBase").textContent="Portfolio revenue minus AI cost per user per month: "+(base>=0?fmt$(base):"−"+fmt$(Math.abs(base)))+" now, "+((base+eAll)>=0?fmt$(base+eAll):"−"+fmt$(Math.abs(base+eAll)))+" under the scenario. Change: "+(eAll>=0?"+":"−")+fmt$(Math.abs(eAll))+"."+(effDisc>0?(" The rate effect includes a "+Math.round(effDisc*100)+"% effective-rate discount on the frontier and standard text rates."):"")+(equalMix?"":" Portfolio figures use the mix weights set in this section.");
+  $("decompBase").textContent="Portfolio revenue minus AI cost per user per month, before buyer movement: "+(base>=0?fmt$(base):"−"+fmt$(Math.abs(base)))+" now, "+((base+eAll)>=0?fmt$(base+eAll):"−"+fmt$(Math.abs(base+eAll)))+" under the scenario. Change: "+(eAll>=0?"+":"−")+fmt$(Math.abs(eAll))+"."+(effDisc>0?(" The rate effect includes a "+Math.round(effDisc*100)+"% effective-rate discount on the frontier and standard text rates."):"")+(equalMix?"":" Portfolio figures use the mix weights set in this section.");
   var parts=[["Volume: usage growth",eVol],["Mix: routing share",eMix],["Rate: provider prices",eRate],["Interaction (residual)",eInt],["Total change",eAll]];
   var maxAbs=Math.max(0.5,Math.abs(eRate),Math.abs(eMix),Math.abs(eVol),Math.abs(eInt),Math.abs(eAll));
   $("decompBody").innerHTML=parts.map(function(pt){
@@ -1866,7 +1866,7 @@ function renderComparison(S,sim,beh){
      '<div class="kpi lead-kpi"><div class="v">'+fmt$(rMax)+'</div><div class="k">Adj. revenue / starting user: highest</div><div class="s">'+nm(rVals,rMax)+'. Spread across scenarios: '+fmt$(rMax-rMin)+' per starting user, after movement.</div></div>'+
      '<div class="kpi"><div class="v">'+((Math.max.apply(null,mVals)-Math.min.apply(null,mVals))*100).toFixed(1)+' pts</div><div class="k">Portfolio margin (guardrail) spread</div><div class="s">Widest gap between scenarios on the guardrail metric.</div></div>'+
      '<div class="kpi"><div class="v">'+fmtInt(Math.min.apply(null,uVals))+" \u2013 "+fmtInt(Math.max.apply(null,uVals))+'</div><div class="k">Users remaining, of 40,000</div><div class="s">Fewest remaining under '+nm(uVals,Math.min.apply(null,uVals))+'</div></div>'+
-     '<div class="kpi"><div class="v">'+fmt$(cMin)+" \u2013 "+fmt$(cMax)+'</div><div class="k">Mean AI cost per user, range</div><div class="s">Cheapest: '+nm(cVals,cMin)+". Costliest: "+nm(cVals,cMax)+(cMin>0?". That is a "+(cMax/cMin).toFixed(0)+"&times; spread.":".")+'</div></div>';
+     '<div class="kpi"><div class="v">'+fmt$(cMin)+" \u2013 "+fmt$(cMax)+'</div><div class="k">Mean AI cost per user, range</div><div class="s">Cheapest: '+nm(cVals,cMin)+". Costliest: "+nm(cVals,cMax)+(cMin>0?". That is a "+((Math.round(cMax*100)/100)/(Math.round(cMin*100)/100)).toFixed(0)+"&times; spread.":".")+'</div></div>';
   }
   $("cmpRows").innerHTML=html;
   var sensEl=$("cmpSens");
@@ -2031,12 +2031,13 @@ update();
 <script>
 (function(){
   var pairs=[];
-  function syncBox(r,b){ if(document.activeElement!==b && b.value!==r.value) b.value=r.value; }
+  function fmtVal(r){ var dec=(String(r.step).split(".")[1]||"").length; var v=parseFloat(r.value); if(isNaN(v)) return r.value; return String(Math.round(v*Math.pow(10,dec))/Math.pow(10,dec)); }
+  function syncBox(r,b){ if(document.activeElement!==b && b.value!==fmtVal(r)) b.value=fmtVal(r); }
   Array.prototype.forEach.call(document.querySelectorAll('input[type="range"]'),function(r){
     if(!r.id)return;
     var b=document.createElement("input");
     b.type="number"; b.className="numin sm";
-    b.min=r.min; b.max=r.max; b.step=r.step; b.value=r.value;
+    b.min=r.min; b.max=r.max; b.step=r.step; b.value=fmtVal(r);
     b.setAttribute("aria-label","Numeric entry for "+(r.getAttribute("aria-label")||r.id));
     r.classList.add("hasnum");
     r.parentNode.insertBefore(b,r.nextSibling);
@@ -2050,7 +2051,7 @@ update();
       v=Math.round(v/st)*st;
       v=Math.round(v*1000)/1000;
       if(String(v)!==String(r.value)){ r.value=v; r.dispatchEvent(new Event("input",{bubbles:true})); }
-      b.value=r.value;
+      b.value=fmtVal(r);
     });
     b.addEventListener("keydown",function(e){ if(e.key==="Enter"){ e.preventDefault(); b.blur(); } });
   });
